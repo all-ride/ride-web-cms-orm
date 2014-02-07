@@ -1,0 +1,22 @@
+{
+    "routes": [
+        {
+            "path": "/ajax/cms/orm/fields/select/%model%",
+            "controller": "pallo\\web\\cms\\controller\\FieldServiceController",
+            "action": "selectFieldsAction",
+            "id": "cms.ajax.orm.fields.select" 
+        },
+        {
+            "path": "/ajax/cms/orm/fields/select/%model%/%recursiveDepth%",
+            "controller": "pallo\\web\\cms\\controller\\FieldServiceController",
+            "action": "orderFieldsAction",
+            "id": "cms.ajax.orm.fields.order" 
+        },
+        {
+            "path": "/ajax/cms/orm/fields/unique/%model%",
+            "controller": "pallo\\web\\cms\\controller\\FieldServiceController",
+            "action": "uniqueFieldsAction",
+            "id": "cms.ajax.orm.fields.unique" 
+        }
+    ]
+}
