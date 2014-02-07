@@ -1,0 +1,48 @@
+{
+    "dependencies": [
+        {
+            "interfaces": "pallo\\library\\cms\\widget\\Widget",
+            "class": "pallo\\web\\cms\\controller\\widget\\ContentOverviewWidget",
+            "id": "orm.overview"
+        },    
+        {
+            "interfaces": "pallo\\library\\cms\\widget\\Widget",
+            "class": "pallo\\web\\cms\\controller\\widget\\ContentDetailWidget",
+            "id": "orm.detail"
+        },    
+        {
+            "interfaces": "pallo\\web\\cms\\view\\widget\\ContentOverviewView",
+            "class": "pallo\\web\\cms\\view\\widget\\predefined\\ContentBlockView",
+            "id": "block"
+        },    
+        {
+            "interfaces": "pallo\\web\\cms\\view\\widget\\ContentOverviewView",
+            "class": "pallo\\web\\cms\\view\\widget\\predefined\\ContentListView",
+            "id": "list"
+        },    
+        {
+            "interfaces": "pallo\\web\\cms\\view\\widget\\ContentDetailView",
+            "class": "pallo\\web\\cms\\view\\widget\\predefined\\ContentDetailView",
+            "id": "detail"
+        },
+        {
+            "class": "pallo\\library\\cms\\content\\ContentFacade",
+            "extends": "cms",
+            "id": "cms",
+            "calls": [
+                {
+                    "method": "addContentMapperIO",
+                    "arguments": [
+                        {
+                            "name": "io",
+                            "type": "dependency",
+                            "properties": {
+                                "interface": "pallo\\web\\cms\\content\\mapper\\io\\OrmContentMapperIO"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
