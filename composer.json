@@ -25,7 +25,8 @@
         "pallo/lib-validation": ">=0.1.0",
         "pallo/lib-widget": ">=0.1.1",
         "pallo/web-base": ">=0.1.0",
-        "pallo/web-cms": ">=0.5.0"
+        "pallo/web-cms": ">=0.5.0",
+        "pallo/web-orm": ">=0.1.0"
     }, 
     "autoload": {
         "psr-0": {
