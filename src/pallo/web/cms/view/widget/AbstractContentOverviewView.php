@@ -27,6 +27,14 @@ abstract class AbstractContentOverviewView extends TemplateView implements Conte
 	}
 
 	/**
+	 * Clones this view
+	 * @return null
+	 */
+	public function __clone() {
+	    $this->template = clone $this->template;
+	}
+
+	/**
 	 * Sets the content
 	 * @param string $locale Code of the current locale
 	 * @param integer $widgetId Id of the widget
