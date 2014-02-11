@@ -26,6 +26,14 @@ abstract class AbstractContentDetailView extends TemplateView implements Content
 	    $this->styles = array();
 	}
 
+	/**
+	 * Clones this view
+	 * @return null
+	 */
+	public function __clone() {
+	    $this->template = clone $this->template;
+	}
+
     /**
      * Sets the content
      * @param string $locale Code of the current locale
