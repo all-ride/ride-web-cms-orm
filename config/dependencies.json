@@ -26,6 +26,11 @@
             "id": "detail"
         },
         {
+            "interfaces": "pallo\\web\\cms\\orm\\filter\\ContentOverviewFilter",
+            "class": "pallo\\web\\cms\\orm\\filter\\SingleContentOverviewFilter",
+            "id": "single"
+        },
+        {
             "class": "pallo\\library\\cms\\content\\ContentFacade",
             "extends": "cms",
             "id": "cms",

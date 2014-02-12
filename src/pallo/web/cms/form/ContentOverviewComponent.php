@@ -48,6 +48,16 @@ class ContentOverviewComponent extends AbstractContentComponent {
     }
 
     /**
+     * Sets the available filters
+     * @param array $contentOverviewFilters Machine name as key, label as value
+     * @return null
+     * @see pallo\web\cms\orm\filter\ContentOverviewFilter
+     */
+    public function setContentOverviewFilters(array $contentOverviewFilters) {
+        $this->contentOverviewFilters = $contentOverviewFilters;
+    }
+
+    /**
      * Parse the data to form values for the component rows
      * @param mixed $data
      * @return array $data
@@ -59,6 +69,7 @@ class ContentOverviewComponent extends AbstractContentComponent {
 
         $result = parent::parseSetData($data);
         $result['condition'] = $data->getCondition();
+        $result['filters'] = $data->getFilters();
         $result['order'] = $data->getOrder();
         $result['pagination-enable'] = $data->isPaginationEnabled();
         $result['pagination-rows'] = $data->getPaginationRows();
@@ -98,6 +109,7 @@ class ContentOverviewComponent extends AbstractContentComponent {
         $result = parent::parseGetData($data);
 
         $result->setCondition($data['condition']);;
+        $result->setFilters($data['filters']);
         $result->setOrder($data['order']);
         $result->setIsPaginationEnabled($data['pagination-enable']);
         $result->setPaginationRows($data['pagination-rows']);
@@ -140,6 +152,10 @@ class ContentOverviewComponent extends AbstractContentComponent {
 	    }
 
 	    $translator = $options['translator'];
+
+	    $filterComponent = new ContentOverviewFilterComponent();
+	    $filterComponent->setFields($this->fieldService->getRelationFields($modelName));
+	    $filterComponent->setTypes($this->contentOverviewFilters);
 
 	    $builder->addRow('condition', 'text', array(
 	        'label' => $translator->translate('label.condition'),
@@ -198,6 +214,14 @@ class ContentOverviewComponent extends AbstractContentComponent {
 	    $builder->addRow('title', 'string', array(
 	        'label' => $translator->translate('label.title'),
 	        'description' => $translator->translate('label.title.description'),
+	    ));
+	    $builder->addRow('filters', 'collection', array(
+	        'type' => 'component',
+	        'options' => array(
+    	        'component' => $filterComponent,
+            ),
+	        'label' => $translator->translate('label.filters'),
+	        'description' => $translator->translate('label.filters.exposed.description'),
 	    ));
 	    $builder->addRow('empty-result-message', 'wysiwyg', array(
 	        'label' => $translator->translate('label.message.result.empty'),

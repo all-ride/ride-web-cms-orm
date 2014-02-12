@@ -15,6 +15,7 @@ use pallo\library\validation\exception\ValidationException;
 use pallo\web\cms\content\mapper\OrmContentMapper;
 use pallo\web\cms\controller\widget\AbstractWidget;
 use pallo\web\cms\form\ContentOverviewComponent;
+use pallo\web\cms\form\ContentOverviewFilterComponent;
 use pallo\web\cms\orm\ContentProperties;
 use pallo\web\cms\orm\FieldService;
 
@@ -54,6 +55,12 @@ class ContentOverviewWidget extends AbstractWidget {
      * @var pallo\library\orm\model\data\format\DataFormatter
      */
     private $dataFormatter;
+
+    /**
+     * Processed filters of the data
+     * @var array
+     */
+    private $filters;
 
     /**
      * Construct this widget
@@ -216,12 +223,16 @@ class ContentOverviewWidget extends AbstractWidget {
 
         $pagination = null;
         if ($contentProperties->willShowPagination()) {
+            $query = null;
             $paginationUrl = $this->request->getUrl();
             if (strpos($paginationUrl, '?') !== false) {
                 list($paginationUrl, $query) = explode('?', $paginationUrl, 2);
             }
 
             $paginationUrl .= '?' . self::PARAM_PAGE . '='. '%page%';
+            if ($query) {
+                $paginationUrl .= '&' . $query;
+            }
 
             $pagination = new Pagination($pages, $page);
             $pagination->setHref($paginationUrl);
@@ -236,7 +247,13 @@ class ContentOverviewWidget extends AbstractWidget {
             $moreUrl = $this->request->getBaseScript() . $node->getRoute($this->locale);
         }
 
-        $view->setContent($this->locale, $this->id, $result, $contentProperties, $pagination, $moreUrl);
+        $baseUrl = $this->request->getBaseScript() . $this->properties->getNode()->getRoute($this->locale);
+
+        foreach ($this->filters as $filterName => $filter) {
+            $filter['filter']->setVariables($this->filters, $this->model, $filterName, $this->locale, $baseUrl);
+        }
+
+        $view->setContent($this->locale, $this->id, $result, $contentProperties, $this->filters, $pagination, $moreUrl);
 
         return $view;
     }
@@ -356,6 +373,17 @@ class ContentOverviewWidget extends AbstractWidget {
             }
         }
 
+        $this->filters = array();
+
+        $filters = $contentProperties->getFilters();
+        foreach ($filters as $filter) {
+            $filterValue = $this->request->getQueryParameter($filter['field']);
+
+            $this->filters[$filter['field']] = array('filter' => $this->dependencyInjector->get('pallo\\web\\cms\\orm\\filter\\ContentOverviewFilter', $filter['type']));
+            $this->filters[$filter['field']]['type'] = $filter['type'];
+            $this->filters[$filter['field']]['value'] = $this->filters[$filter['field']]['filter']->applyQuery($this->model, $query, $filter['field'], $filterValue);
+        }
+
         $order = $contentProperties->getOrder();
         if ($order) {
             $query->addOrderBy($order);
@@ -420,6 +448,15 @@ class ContentOverviewWidget extends AbstractWidget {
             $preview .= $translator->translate('label.condition') . ': ' . $condition . '<br />';
         }
 
+        $filters = $contentProperties->getFilters();
+        if ($filters) {
+            foreach ($filters as $index => $filter) {
+                $filters[$index] = $filter['field'] . ' (' . $filter['type'] . ')';
+            }
+
+            $preview .= $translator->translate('label.filters') . ': ' . implode(', ', $filters) . '<br />';
+        }
+
         $order = $contentProperties->getOrder();
         if ($order) {
             $preview .= $translator->translate('label.order') . ': ' . $order . '<br />';
@@ -431,7 +468,7 @@ class ContentOverviewWidget extends AbstractWidget {
                 'offset' => $contentProperties->getPaginationOffset(),
             );
 
-            $preview .= $translator->translate('label.pagination', $parameters) . '<br />';
+            $preview .= $translator->translate('label.pagination.description', $parameters) . '<br />';
         }
 
         $view = $contentProperties->getView();
@@ -449,6 +486,12 @@ class ContentOverviewWidget extends AbstractWidget {
     public function propertiesAction(NodeModel $nodeModel, FieldService $fieldService) {
         $contentProperties = $this->getContentProperties();
         $translator = $this->getTranslator();
+
+        $contentOverviewFilters = $this->dependencyInjector->getAll('pallo\\web\\cms\\orm\\filter\\ContentOverviewFilter');
+        foreach ($contentOverviewFilters as $filterName => $filter) {
+            $contentOverviewFilters[$filterName] = $translator->translate('label.content.overview.filter.' . $filterName);
+        }
+
         $views = $this->dependencyInjector->getAll('pallo\\web\\cms\\view\\widget\\ContentOverviewView');
 
         $node = $this->properties->getNode();
@@ -459,6 +502,7 @@ class ContentOverviewWidget extends AbstractWidget {
 
         $component = new ContentOverviewComponent($fieldService);
         $component->setNodeOptions($nodeOptions);
+        $component->setContentOverviewFilters($contentOverviewFilters);
         $component->setViews($views);
 
         $form = $this->buildForm($component, $contentProperties);
@@ -481,12 +525,13 @@ class ContentOverviewWidget extends AbstractWidget {
 
         $selectFieldsAction = $this->getUrl('cms.ajax.orm.fields.select', array('model' => '%model%'));
         $orderFieldsAction = $this->getUrl('cms.ajax.orm.fields.order', array('model' => '%model%', 'recursiveDepth' => '%recursiveDepth%'));
+        $filterFieldsAction = $this->getUrl('cms.ajax.orm.fields.relation', array('model' => '%model%'));
 
         $view = $this->setTemplateView('cms/widget/orm/properties.overview', array(
         	'form' => $form->getView(),
         ));
         $view->addJavascript('js/cms/orm.js');
-        $view->addInlineJavascript('joppaContentInitializeOverviewProperties("' . $selectFieldsAction . '", "' . $orderFieldsAction . '");');
+        $view->addInlineJavascript('joppaContentInitializeOverviewProperties("' . $selectFieldsAction . '", "' . $orderFieldsAction . '", "' . $filterFieldsAction . '");');
 
         return false;
     }
