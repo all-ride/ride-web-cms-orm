@@ -113,6 +113,12 @@ class ContentProperties {
 	const PROPERTY_ID_FIELD = 'field.id';
 
 	/**
+	 * Name of the filters field setting
+	 * @var string
+	 */
+	const PROPERTY_FILTERS = 'filters';
+
+	/**
 	 * Name of the view class setting
 	 * @var string
 	 */
@@ -213,6 +219,12 @@ class ContentProperties {
      * @var string
      */
     private $condition;
+
+    /**
+     * Exposed filter fields
+     * @var array
+     */
+    private $filters;
 
     /**
      * Expression for the order by
@@ -412,6 +424,23 @@ class ContentProperties {
      */
     public function getCondition() {
         return $this->condition;
+    }
+
+    /**
+     * Sets the filters for the condition part of the query
+     * @param string|array $filters
+     * @return null
+     */
+    public function setFilters($filters) {
+        $this->filters = $filters;
+    }
+
+    /**
+     * Gets the filters for the condition part of the query
+     * @return array
+     */
+    public function getFilters() {
+        return $this->filters;
     }
 
     /**
@@ -773,9 +802,22 @@ class ContentProperties {
 		    $this->parameters = explode(self::SEPARATOR, $this->parameters);
 		}
 
+	    $this->filters = array();
+
+		$filters = $properties->getWidgetProperty(self::PROPERTY_FILTERS);
+		if ($filters) {
+		    $filters = explode(self::SEPARATOR, $filters);
+		    foreach ($filters as $filter) {
+		        list($filterType, $filterField) = explode(':', $filter, 2);
+
+		        $this->filters[$filterField] = array('type' => $filterType, 'field' => $filterField);
+		    }
+	    }
+
 		$fieldsString = $properties->getWidgetProperty(self::PROPERTY_MODEL_FIELDS);
 		if (!$fieldsString) {
 			$this->modelFields = null;
+
 			return;
 		}
 
@@ -798,11 +840,6 @@ class ContentProperties {
         $fields = null;
         if ($this->modelFields) {
         	$fields = implode(self::SEPARATOR, $this->modelFields);
-        }
-
-        $parameters = $this->parameters;
-        if (is_array($parameters)) {
-            $parameters = implode(',', $parameters);
         }
 
         $properties->setWidgetProperty(self::PROPERTY_MODEL_NAME, $this->modelName);
@@ -835,6 +872,7 @@ class ContentProperties {
             $properties->setWidgetProperty(self::PROPERTY_MORE_LABEL . $locale, null);
             $properties->setWidgetProperty(self::PROPERTY_MORE_NODE . $locale, null);
         }
+
         $properties->setWidgetProperty(self::PROPERTY_ID_FIELD, $this->idField);
         $properties->setWidgetProperty(self::PROPERTY_VIEW, $this->view);
         $properties->setWidgetProperty(self::PROPERTY_FORMAT_TITLE, $this->contentTitleFormat);
@@ -843,12 +881,30 @@ class ContentProperties {
         $properties->setWidgetProperty(self::PROPERTY_FORMAT_DATE, $this->contentDateFormat);
         $properties->setWidgetProperty(self::PROPERTY_TITLE . $locale, $this->title);
         $properties->setWidgetProperty(self::PROPERTY_EMPTY_RESULT_MESSAGE . $locale, $this->emptyResultMessage);
+
+        $parameters = $this->parameters;
         if ($parameters) {
+            if (is_array($parameters)) {
+                $parameters = implode(self::SEPARATOR, $parameters);
+            }
+
             $properties->setWidgetProperty(self::PROPERTY_PARAMETERS, $parameters);
             $properties->setWidgetProperty(self::PROPERTY_PARAMETERS_NONE, $this->parametersNone);
         } else {
             $properties->setWidgetProperty(self::PROPERTY_PARAMETERS, null);
             $properties->setWidgetProperty(self::PROPERTY_PARAMETERS_NONE, null);
+        }
+
+        $filters = $this->filters;
+        if (is_array($filters)) {
+            $filterValues = array();
+            foreach ($filters as $filter) {
+                $filterValues[] = $filter['type'] . ':' . $filter['field'];
+            }
+
+            $properties->setWidgetProperty(self::PROPERTY_FILTERS, implode(self::SEPARATOR, $filterValues));
+        } else {
+            $properties->setWidgetProperty(self::PROPERTY_FILTERS, null);
         }
 	}
 

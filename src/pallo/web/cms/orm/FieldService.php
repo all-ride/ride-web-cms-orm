@@ -5,6 +5,7 @@ namespace pallo\web\cms\orm;
 use pallo\library\orm\definition\field\BelongsToField;
 use pallo\library\orm\definition\field\HasField;
 use pallo\library\orm\definition\field\PropertyField;
+use pallo\library\orm\definition\field\RelationField;
 use pallo\library\orm\definition\ModelTable;
 use pallo\library\orm\OrmManager;
 
@@ -105,6 +106,34 @@ class FieldService {
         $fields = $meta->getFields();
         foreach ($fields as $fieldName => $field) {
             if (!$field instanceof PropertyField || !$field->isUnique()) {
+                continue;
+            }
+
+            $options[$fieldName] = $fieldName;
+        }
+
+        return $options;
+    }
+
+    /**
+     * Gets the relation fields of a model as options for a form field
+     * @param string $model Name of the selected model
+     * @return array
+     */
+    public function getRelationFields($model) {
+        $options = array();
+
+        if (!$model) {
+            return $options;
+        }
+
+        $model = $this->orm->getModel($model);
+        $meta = $model->getMeta();
+
+
+        $fields = $meta->getFields();
+        foreach ($fields as $fieldName => $field) {
+            if (!$field instanceof RelationField) {
                 continue;
             }
 

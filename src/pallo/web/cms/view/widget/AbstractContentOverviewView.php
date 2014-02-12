@@ -41,18 +41,20 @@ abstract class AbstractContentOverviewView extends TemplateView implements Conte
 	 * @param array $result Array with Content objects
 	 * @param pallo\web\cms\orm\ContentProperties $contentProperties Properties
 	 * for the view
+	 * @param array $filters Filters for the data
 	 * @param pallo\library\html\\Pagination $pagination Properties for the
 	 * pagination
 	 * @param string $moreUrl URL for the more link
 	 * @return null
 	 */
-	public function setContent($locale, $widgetId, array $result, ContentProperties $contentProperties, Pagination $pagination = null, $moreUrl = null) {
+	public function setContent($locale, $widgetId, array $result, ContentProperties $contentProperties, array $filters, Pagination $pagination = null, $moreUrl = null) {
 	    $this->template->set('locale', $locale);
 	    $this->template->set('widgetId', $widgetId);
 	    $this->template->set('result', $result);
 	    $this->template->set('properties', $contentProperties);
 	    $this->template->set('title', $contentProperties->getTitle());
 	    $this->template->set('emptyResultMessage', $contentProperties->getEmptyResultMessage());
+	    $this->template->set('filters', $filters);
 	    $this->template->set('pagination', $pagination);
 	    if ($moreUrl) {
     	    $this->template->set('moreUrl', $moreUrl);

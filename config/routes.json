@@ -17,6 +17,12 @@
             "controller": "pallo\\web\\cms\\controller\\FieldServiceController",
             "action": "uniqueFieldsAction",
             "id": "cms.ajax.orm.fields.unique" 
+        },
+        {
+            "path": "/ajax/cms/orm/fields/relation/%model%",
+            "controller": "pallo\\web\\cms\\controller\\FieldServiceController",
+            "action": "relationFieldsAction",
+            "id": "cms.ajax.orm.fields.relation" 
         }
     ]
 }

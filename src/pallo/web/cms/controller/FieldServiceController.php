@@ -59,4 +59,20 @@ class FieldServiceController extends AbstractController {
         $this->setJsonView(array('fields' => $fields));
     }
 
+	/**
+	 * Action to get the relation field options of the provided model
+	 * @param pallo\web\cms\orm\FieldService $fieldService
+	 * @param string $model Name of the model
+	 * @return null
+	 */
+    public function relationFieldsAction(FieldService $fieldService, $model) {
+        if ($model) {
+        	$fields = $fieldService->getRelationFields($model);
+        } else {
+            $fields = array();
+        }
+
+        $this->setJsonView(array('fields' => $fields));
+    }
+
 }
