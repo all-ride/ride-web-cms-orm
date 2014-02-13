@@ -2,7 +2,7 @@
     "name": "pallo/web-cms-orm",
     "description": "ORM integration with the CMS application of the Pallo framework",
     "license": "MIT",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "authors": [
         {
             "name": "Joris Vandeweerd",
@@ -26,6 +26,7 @@
         "pallo/lib-widget": ">=0.1.1",
         "pallo/web-base": ">=0.1.0",
         "pallo/web-cms": ">=0.5.0",
+        "pallo/web-cms-widgets": ">=0.1.0",
         "pallo/web-orm": ">=0.1.0"
     }, 
     "autoload": {

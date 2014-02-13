@@ -75,6 +75,7 @@
     "label.view.gallery": "Galerij",
     "label.view.detail": "Detail",
     "label.widget.properties.unset": "Deze widget werd nog niet ingesteld.",
+    "text.io.orm": "Databank",
     "title.condition": "Voorwaarde",
     "title.formats.data": "Data Formaten",
     "title.order": "Sortering",
