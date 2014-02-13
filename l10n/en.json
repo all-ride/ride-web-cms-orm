@@ -75,6 +75,7 @@
     "label.view.gallery": "Gallery",
     "label.view.detail": "Detail",
     "label.widget.properties.unset": "No properties have been set for this widget.",
+    "text.io.orm": "Database",
     "title.condition": "Condition",
     "title.formats.data": "Data Formats",
     "title.order": "Order",

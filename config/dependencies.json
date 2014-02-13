@@ -1,6 +1,11 @@
 {
     "dependencies": [
         {
+            "interfaces": "pallo\\web\\cms\\text\\io\\TextIO",
+            "class": "pallo\\web\\cms\\text\\io\\OrmTextIO",
+            "id": "orm"
+        },    
+        {
             "interfaces": "pallo\\library\\cms\\widget\\Widget",
             "class": "pallo\\web\\cms\\controller\\widget\\ContentOverviewWidget",
             "id": "orm.overview"

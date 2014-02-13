@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<models>
+    <model name="Text" modelClass="pallo\web\cms\orm\model\TextModel" dataClass="pallo\web\cms\orm\model\TextData">
+        <field name="text" type="text" localized="true" />
+        <field name="format" type="string" localized="true" />
+        <field name="dateAdded" type="datetime">
+            <option name="scaffold.form.omit" value="1" />
+        </field>
+        <field name="dateModified" type="datetime">
+            <option name="scaffold.form.omit" value="1" />
+        </field>
+        <field name="version" type="integer">
+            <option name="scaffold.form.omit" value="1" />
+        </field>
+
+        <format name="title">{text|htmlentities|truncate:160}</format>
+        <format name="teaser">{format}</format>
+
+        <option name="behaviour.date" value="true" />
+        <option name="behaviour.log" value="true" />
+        <option name="behaviour.version" value="true" />
+    </model>    
+</models>
