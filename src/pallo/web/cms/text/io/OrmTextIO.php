@@ -75,7 +75,9 @@ class OrmTextIO implements TextIO {
                 $text = $data;
             }
 
-            $text->setVersion($submittedData['version']);
+            if (isset($submittedData['version'])) {
+                $text->setVersion($submittedData['version']);
+            }
 
             $text->id = (integer) $widgetProperties->getWidgetProperty(self::PROPERTY_TEXT);
             $text->dataLocale = $l;
