@@ -156,7 +156,7 @@ class ContentOverviewWidget extends AbstractWidget {
                 return;
             }
         } else {
-            $arguments = null;
+            $arguments = array();
         }
 
         $page = 1;
@@ -228,6 +228,8 @@ class ContentOverviewWidget extends AbstractWidget {
             if (strpos($paginationUrl, '?') !== false) {
                 list($paginationUrl, $query) = explode('?', $paginationUrl, 2);
             }
+
+            $query = preg_replace('((&)?' . self::PARAM_PAGE . '=([0-9])*)', '', $query);
 
             $paginationUrl .= '?' . self::PARAM_PAGE . '='. '%page%';
             if ($query) {
@@ -309,7 +311,7 @@ class ContentOverviewWidget extends AbstractWidget {
         $type = $this->model->getName();
         foreach ($result as $index => $data) {
             $title = $this->dataFormatter->formatData($data, $titleFormat);
-            $url = null;
+            $url = $mapper->getUrl($node->getRootNodeId(), $this->locale, $data);
             $teaser = null;
             $image = null;
             $date = null;
@@ -329,9 +331,6 @@ class ContentOverviewWidget extends AbstractWidget {
                 $date = $this->dataFormatter->formatData($data, $dateFormat);
             }
 
-            if ($mapper) {
-                $url = $mapper->getUrl($node->getRootNodeId(), $this->locale, $data);
-            }
 
             $content = new Content($type, $title, $url, $teaser, $image, $date, $data);
 
@@ -350,7 +349,7 @@ class ContentOverviewWidget extends AbstractWidget {
      * @param array $arguments Arguments for the condition
      * @return zibo\library\orm\query\ModelQuery
      */
-    public function getModelQuery(ContentProperties $contentProperties, $locale, $page = 1, array $arguments = null) {
+    public function getModelQuery(ContentProperties $contentProperties, $locale, $page = 1, array $arguments) {
         $includeUnlocalizedData = $contentProperties->getIncludeUnlocalized();
 
         $query = $this->model->createQuery($locale);
@@ -366,6 +365,7 @@ class ContentOverviewWidget extends AbstractWidget {
 
         $condition = $contentProperties->getCondition();
         if ($condition) {
+            $arguments = $this->parseContextVariables($condition, $arguments);
             if ($arguments) {
                 $query->addConditionWithVariables($condition, $arguments);
             } else {
@@ -403,6 +403,53 @@ class ContentOverviewWidget extends AbstractWidget {
         }
 
         return $query;
+    }
+
+    /**
+     * Parses the context into the arguments
+     * @param string $condition Condition string
+     * @param array $arguments Already set arguments
+     * @return array Provided arguments with the resolved context arguments
+     * @throws Exception when the context arguments could not be parsed
+     */
+    public function parseContextVariables($condition, array $arguments) {
+        if (strpos($condition, '%context') === false) {
+            return $arguments;
+        }
+
+        $matches = array();
+
+        preg_match_all('(%context([A-Za-z0-9]|\\.)*%)', $condition, $matches);
+        if (!$matches[0]) {
+            throw new Exception('Could not parse context argument: no arguments matched');
+        }
+
+        $reflectionHelper = $this->model->getReflectionHelper();
+
+        foreach ($matches[0] as $variable) {
+            $tokens = explode('.', trim($variable, '%'));
+            array_shift($tokens);
+
+            $value = null;
+
+            do {
+                $token = array_shift($tokens);
+
+                if ($value === null) {
+                    $value = $this->getContext($token);
+                } else {
+                    $value = $reflectionHelper->getProperty($value, $token);
+                }
+
+                if ($value === null) {
+                    throw new Exception('Could not parse context arguments: ' . $variable . ' could not be resolved');
+                }
+            } while ($tokens);
+
+            $arguments[substr($variable, 1, -1)] = $value;
+        }
+
+        return $arguments;
     }
 
     /**
