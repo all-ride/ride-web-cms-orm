@@ -2,6 +2,8 @@
 
 namespace pallo\web\cms\orm\filter;
 
+use pallo\library\orm\definition\field\BelongsToField;
+use pallo\library\orm\definition\ModelTable;
 use pallo\library\orm\model\Model;
 use pallo\library\orm\query\ModelQuery;
 
@@ -94,11 +96,11 @@ class SingleContentOverviewFilter implements ContentOverviewFilter {
      * Applies the filter to the provided query
      * @param pallo\library\orm\model\Model $model
      * @param pallo\library\orm\query\ModelQuery $query
-     * @param string $field Name of the filter field
+     * @param string $fieldName Name of the filter field
      * @param string|array $value Submitted value
      * @return string|array Value of the filter
      */
-    public function applyQuery(Model $model, ModelQuery $query, $field, $value = null) {
+    public function applyQuery(Model $model, ModelQuery $query, $fieldName, $value = null) {
         $isArray = is_array($value);
         if ($value === null || ($isArray && !$value)) {
             return null;
@@ -108,7 +110,12 @@ class SingleContentOverviewFilter implements ContentOverviewFilter {
             $value = array_shift($value);
         }
 
-        $query->addCondition('{' . $field . '} = %1%', $value);
+        $field = $model->getMeta()->getField($fieldName);
+        if ($field instanceof BelongsToField) {
+            $query->addCondition('{' . $fieldName . '} = %1%', $value);
+        } else {
+            $query->addCondition('{' . $fieldName . '.' . ModelTable::PRIMARY_KEY . '} = %1%', $value);
+        }
 
         return $value;
     }
