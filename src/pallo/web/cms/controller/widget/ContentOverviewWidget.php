@@ -229,7 +229,7 @@ class ContentOverviewWidget extends AbstractWidget {
                 list($paginationUrl, $query) = explode('?', $paginationUrl, 2);
             }
 
-            $query = preg_replace('((&)?' . self::PARAM_PAGE . '=([0-9])*)', '', $query);
+            $query = preg_replace('((\\?)?' . self::PARAM_PAGE . '=([0-9])*(&)?)', '', $query);
 
             $paginationUrl .= '?' . self::PARAM_PAGE . '='. '%page%';
             if ($query) {
