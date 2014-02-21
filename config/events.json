@@ -1,7 +1,7 @@
 {
     "cms.menu.content": [
         {
-            "interface": "pallo\\web\\cms\\orm\\ApplicationListener",
+            "interface": "ride\\web\\cms\\orm\\ApplicationListener",
             "method": "prepareContentMenu"
         }    
     ]
