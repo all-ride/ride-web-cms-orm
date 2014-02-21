@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <models>
-    <model name="Text" modelClass="pallo\web\cms\orm\model\TextModel" dataClass="pallo\web\cms\orm\model\TextData">
+    <model name="Text" modelClass="ride\web\cms\orm\model\TextModel" dataClass="ride\web\cms\orm\model\TextData">
         <field name="text" type="text" localized="true" />
         <field name="format" type="string" localized="true" />
         <field name="dateAdded" type="datetime">

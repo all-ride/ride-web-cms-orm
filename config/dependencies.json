@@ -1,42 +1,42 @@
 {
     "dependencies": [
         {
-            "interfaces": "pallo\\web\\cms\\text\\io\\TextIO",
-            "class": "pallo\\web\\cms\\text\\io\\OrmTextIO",
+            "interfaces": "ride\\web\\cms\\text\\io\\TextIO",
+            "class": "ride\\web\\cms\\text\\io\\OrmTextIO",
             "id": "orm"
         },    
         {
-            "interfaces": "pallo\\library\\cms\\widget\\Widget",
-            "class": "pallo\\web\\cms\\controller\\widget\\ContentOverviewWidget",
+            "interfaces": "ride\\library\\cms\\widget\\Widget",
+            "class": "ride\\web\\cms\\controller\\widget\\ContentOverviewWidget",
             "id": "orm.overview"
         },    
         {
-            "interfaces": "pallo\\library\\cms\\widget\\Widget",
-            "class": "pallo\\web\\cms\\controller\\widget\\ContentDetailWidget",
+            "interfaces": "ride\\library\\cms\\widget\\Widget",
+            "class": "ride\\web\\cms\\controller\\widget\\ContentDetailWidget",
             "id": "orm.detail"
         },    
         {
-            "interfaces": "pallo\\web\\cms\\view\\widget\\ContentOverviewView",
-            "class": "pallo\\web\\cms\\view\\widget\\predefined\\ContentBlockView",
+            "interfaces": "ride\\web\\cms\\view\\widget\\ContentOverviewView",
+            "class": "ride\\web\\cms\\view\\widget\\predefined\\ContentBlockView",
             "id": "block"
         },    
         {
-            "interfaces": "pallo\\web\\cms\\view\\widget\\ContentOverviewView",
-            "class": "pallo\\web\\cms\\view\\widget\\predefined\\ContentListView",
+            "interfaces": "ride\\web\\cms\\view\\widget\\ContentOverviewView",
+            "class": "ride\\web\\cms\\view\\widget\\predefined\\ContentListView",
             "id": "list"
         },    
         {
-            "interfaces": "pallo\\web\\cms\\view\\widget\\ContentDetailView",
-            "class": "pallo\\web\\cms\\view\\widget\\predefined\\ContentDetailView",
+            "interfaces": "ride\\web\\cms\\view\\widget\\ContentDetailView",
+            "class": "ride\\web\\cms\\view\\widget\\predefined\\ContentDetailView",
             "id": "detail"
         },
         {
-            "interfaces": "pallo\\web\\cms\\orm\\filter\\ContentOverviewFilter",
-            "class": "pallo\\web\\cms\\orm\\filter\\SingleContentOverviewFilter",
+            "interfaces": "ride\\web\\cms\\orm\\filter\\ContentOverviewFilter",
+            "class": "ride\\web\\cms\\orm\\filter\\SingleContentOverviewFilter",
             "id": "single"
         },
         {
-            "class": "pallo\\library\\cms\\content\\ContentFacade",
+            "class": "ride\\library\\cms\\content\\ContentFacade",
             "extends": "cms",
             "id": "cms",
             "calls": [
@@ -47,7 +47,7 @@
                             "name": "io",
                             "type": "dependency",
                             "properties": {
-                                "interface": "pallo\\web\\cms\\content\\mapper\\io\\OrmContentMapperIO"
+                                "interface": "ride\\web\\cms\\content\\mapper\\io\\OrmContentMapperIO"
                             }
                         }
                     ]
