@@ -3,11 +3,8 @@
 namespace ride\web\cms\form;
 
 use ride\library\database\manipulation\expression\OrderExpression;
-use ride\library\form\component\AbstractComponent;
 use ride\library\form\FormBuilder;
 use ride\library\i18n\translator\Translator;
-
-use ride\web\cms\orm\ContentProperties;
 
 /**
  * Form to edit the properties of a content overview widget
@@ -136,7 +133,7 @@ class ContentOverviewComponent extends AbstractContentComponent {
 
 	/**
 	 * Prepares the form builder by adding row definitions
-	 * @param ride\library\html\form\builder\Builder $builder
+	 * @param \ride\library\form\FormBuilder $builder
 	 * @param array $options Extra options from the controller
 	 * @return null
 	 */
@@ -244,7 +241,7 @@ class ContentOverviewComponent extends AbstractContentComponent {
 
 	/**
 	 * Gets the options for the order direction
-	 * @param ride\library\i18n\translator\Translator $translator
+	 * @param \ride\library\i18n\translator\Translator $translator
 	 * @return array
 	 */
 	private function getOrderDirectionOptions(Translator $translator) {
@@ -256,7 +253,7 @@ class ContentOverviewComponent extends AbstractContentComponent {
 
 	/**
 	 * Gets the options for the parameters type
-	 * @param ride\library\i18n\translator\Translator $translator
+	 * @param \ride\library\i18n\translator\Translator $translator
 	 * @return array
 	 */
 	private function getParametersTypeOptions(Translator $translator) {
