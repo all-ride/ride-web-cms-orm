@@ -24,7 +24,7 @@ use \Exception;
 /**
  * Widget to show a overview of a content type
  */
-class ContentOverviewWidget extends AbstractWidget {
+class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
 
     /**
      * Machine name of this widget
@@ -589,6 +589,18 @@ class ContentOverviewWidget extends AbstractWidget {
         $contentProperties->getFromWidgetProperties($this->properties, $this->locale);
 
         return $contentProperties;
+    }
+
+    /**
+     * Gets the options for the styles
+     * @return array Array with the name of the option as key and the
+     * translation key as value
+     */
+    public function getWidgetStyleOptions() {
+        return array(
+            'container' => 'label.widget.style.container',
+            'title' => 'label.widget.style.title',
+        );
     }
 
 }
