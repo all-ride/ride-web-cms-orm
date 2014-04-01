@@ -24,13 +24,13 @@ class OrmTextIO implements TextIO {
 
     /**
      * Instance of the orm manager
-     * @var ride\library\orm\OrmManager
+     * @var \ride\library\orm\OrmManager
      */
     protected $orm;
 
     /**
      * Constructs a new text IO
-     * @param ride\library\orm\OrmManager $orm
+     * @param \ride\library\orm\OrmManager $orm
      * @return null
      */
     public function __construct(OrmManager $orm) {
@@ -40,12 +40,12 @@ class OrmTextIO implements TextIO {
 
     /**
      * Processes the properties form to update the editor for this io
-     * @param ride\library\form\FormBuilder $formBuilder Form builder for the
+     * @param \ride\library\form\FormBuilder $formBuilder Form builder for the
      * text properties
-     * @param ride\library\i18n\translator\Translator $translator Instance of
+     * @param \ride\library\i18n\translator\Translator $translator Instance of
      * the translator
      * @param string $locale Current locale
-     * @param ride\web\cms\text\Text $text
+     * @param \ride\web\cms\text\Text $text
      * @return null
      */
     public function processForm(FormBuilder $formBuilder, Translator $translator, $locale, Text $text) {
@@ -56,10 +56,10 @@ class OrmTextIO implements TextIO {
 
     /**
      * Store the text in the data source
-     * @param ride\library\widget\WidgetProperties $widgetProperties Instance
+     * @param \ride\library\widget\WidgetProperties $widgetProperties Instance
      * of the widget properties
      * @param string|array $locale Code of the current locale
-     * @param ride\web\cms\text\Text $text Instance of the text
+     * @param \ride\web\cms\text\Text $text Instance of the text
      * @param array $data Submitted data
      * @return null
      */
@@ -90,10 +90,10 @@ class OrmTextIO implements TextIO {
 
     /**
      * Gets the text from the data source
-     * @param ride\library\widget\WidgetProperties $widgetProperties Instance of
+     * @param \ride\library\widget\WidgetProperties $widgetProperties Instance of
      * the widget properties
      * @param string $locale Code of the current locale
-     * @return ride\web\cms\text\Text
+     * @return \ride\web\cms\text\Text
      */
     public function getText(WidgetProperties $widgetProperties, $locale) {
         $model = $this->getModel();
@@ -119,7 +119,7 @@ class OrmTextIO implements TextIO {
 
     /**
      * Gets the text model
-     * @return ride\web\cms\orm\model\TextModel
+     * @return \ride\web\cms\orm\model\TextModel
      */
     protected function getModel() {
         return $this->orm->getTextModel();

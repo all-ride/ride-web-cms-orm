@@ -770,7 +770,7 @@ class ContentProperties {
 
 	/**
 	 * Read the properties of the content from the widget properties
-	 * @param zibo\library\widget\model\WidgetProperties $properties
+	 * @param \ride\library\widget\WidgetProperties $properties
 	 * @return null
 	 */
 	public function getFromWidgetProperties(WidgetProperties $properties, $locale) {
@@ -833,7 +833,7 @@ class ContentProperties {
 
 	/**
 	 * Write the properties of the content to the widget properties
-	 * @param zibo\library\widget\model\WidgetSettings $properties
+	 * @param \ride\library\widget\WidgetSettings $properties
 	 * @return null
 	 */
 	public function setToWidgetProperties(WidgetProperties $properties, $locale) {
@@ -889,11 +889,11 @@ class ContentProperties {
             }
 
             $properties->setWidgetProperty(self::PROPERTY_PARAMETERS, $parameters);
-            $properties->setWidgetProperty(self::PROPERTY_PARAMETERS_NONE, $this->parametersNone);
         } else {
             $properties->setWidgetProperty(self::PROPERTY_PARAMETERS, null);
-            $properties->setWidgetProperty(self::PROPERTY_PARAMETERS_NONE, null);
         }
+
+        $properties->setWidgetProperty(self::PROPERTY_PARAMETERS_NONE, $this->parametersNone);
 
         $filters = $this->filters;
         if (is_array($filters)) {

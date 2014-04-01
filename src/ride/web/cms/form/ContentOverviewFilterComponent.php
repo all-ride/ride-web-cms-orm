@@ -40,7 +40,7 @@ class ContentOverviewFilterComponent extends AbstractComponent {
 
     /**
      * Prepares the form by adding row definitions
-     * @param ride\library\form\FormBuilder $builder
+     * @param \ride\library\form\FormBuilder $builder
      * @param array $options
      * @return null
      */

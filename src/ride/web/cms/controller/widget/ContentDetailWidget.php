@@ -10,7 +10,6 @@ use ride\library\orm\OrmManager;
 use ride\library\router\Route;
 use ride\library\validation\exception\ValidationException;
 
-use ride\web\cms\controller\widget\AbstractWidget;
 use ride\web\cms\form\ContentDetailComponent;
 use ride\web\cms\orm\ContentProperties;
 use ride\web\cms\orm\FieldService;
@@ -20,7 +19,7 @@ use \Exception;
 /**
  * Widget to show the detail of a content type
  */
-class ContentDetailWidget extends AbstractWidget {
+class ContentDetailWidget extends AbstractWidget implements StyleWidget {
 
     /**
      * Machine name of this widget
@@ -130,11 +129,11 @@ class ContentDetailWidget extends AbstractWidget {
 
     /**
      * Gets the model query
-     * @param ride\web\cms\orm\ContentProperties $contentProperties
-     * @param ride\library\orm\model\Model $model
+     * @param \ride\web\cms\orm\ContentProperties $contentProperties
+     * @param \ride\library\orm\model\Model $model
      * @param string $locale Code of the locale
      * @param string $id The id of the record to fetch
-     * @return ride\library\orm\query\ModelQuery
+     * @return \ride\library\orm\query\ModelQuery
      */
     private function getModelQuery(ContentProperties $contentProperties, $locale, $id) {
         $includeUnlocalizedData = $contentProperties->getIncludeUnlocalized();
@@ -168,8 +167,8 @@ class ContentDetailWidget extends AbstractWidget {
 
     /**
      * Gets the result from the query
-     * @param ride\web\cms\orm\ContentProperties $properties
-     * @param ride\library\orm\query\ModelQuery $query
+     * @param \ride\web\cms\orm\ContentProperties $properties
+     * @param \ride\library\orm\query\ModelQuery $query
      * @return array Array with Content objects
      */
     private function getResult(ContentProperties $contentProperties, $query) {
@@ -236,9 +235,9 @@ class ContentDetailWidget extends AbstractWidget {
 
     /**
      * Gets the view
-     * @param ride\web\cms\orm\ContentProperties $properties
-     * @param ride\library\cms\content\Content $content
-     * @return ride\web\cms\view\widget\ContentView
+     * @param \ride\web\cms\orm\ContentProperties $properties
+     * @param \ride\library\cms\content\Content $content
+     * @return \ride\web\cms\view\widget\ContentView
      */
     private function getView(ContentProperties $contentProperties, $content) {
         $view = $contentProperties->getView();
@@ -345,13 +344,25 @@ class ContentDetailWidget extends AbstractWidget {
 
     /**
      * Gets the properties
-     * @return ride\web\cms\orm\ContentProperties
+     * @return \ride\web\cms\orm\ContentProperties
      */
     private function getContentProperties() {
         $contentProperties = new ContentProperties();
         $contentProperties->getFromWidgetProperties($this->properties, $this->locale);
 
         return $contentProperties;
+    }
+
+    /**
+     * Gets the options for the styles
+     * @return array Array with the name of the option as key and the
+     * translation key as value
+     */
+    public function getWidgetStyleOptions() {
+        return array(
+            'container' => 'label.widget.style.container',
+            'title' => 'label.widget.style.title',
+        );
     }
 
 }

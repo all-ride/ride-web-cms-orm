@@ -2,13 +2,7 @@
 
 namespace ride\web\cms\form;
 
-use ride\library\form\component\AbstractComponent;
 use ride\library\form\FormBuilder;
-use ride\library\i18n\translator\Translator;
-use ride\library\orm\definition\ModelTable;
-use ride\library\orm\OrmManager;
-
-use ride\web\cms\orm\ContentProperties;
 
 /**
  * Form to edit the properties of a content detail widget
@@ -47,7 +41,7 @@ class ContentDetailComponent extends AbstractContentComponent {
 
     /**
      * Prepares the form builder by adding row definitions
-     * @param ride\library\html\form\builder\Builder $builder
+     * @param \ride\library\form\FormBuilder $builder
      * @param array $options Extra options from the controller
      * @return null
      */

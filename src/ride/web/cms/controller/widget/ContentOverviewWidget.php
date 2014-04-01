@@ -13,9 +13,7 @@ use ride\library\router\Route;
 use ride\library\validation\exception\ValidationException;
 
 use ride\web\cms\content\mapper\OrmContentMapper;
-use ride\web\cms\controller\widget\AbstractWidget;
 use ride\web\cms\form\ContentOverviewComponent;
-use ride\web\cms\form\ContentOverviewFilterComponent;
 use ride\web\cms\orm\ContentProperties;
 use ride\web\cms\orm\FieldService;
 
@@ -24,7 +22,7 @@ use \Exception;
 /**
  * Widget to show a overview of a content type
  */
-class ContentOverviewWidget extends AbstractWidget {
+class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
 
     /**
      * Machine name of this widget
@@ -46,13 +44,13 @@ class ContentOverviewWidget extends AbstractWidget {
 
     /**
      * Instance of the model
-     * @var ride\library\orm\model\Model
+     * @var \ride\library\orm\model\Model
      */
     private $model;
 
     /**
      * Data formatter for ORM data
-     * @var ride\library\orm\model\data\format\DataFormatter
+     * @var \ride\library\orm\model\data\format\DataFormatter
      */
     private $dataFormatter;
 
@@ -78,9 +76,6 @@ class ContentOverviewWidget extends AbstractWidget {
      */
     public function getRoutes() {
         $contentProperties = $this->getContentProperties();
-        if (!$contentProperties->getParameters()) {
-            return null;
-        }
 
         $route = new Route('/', array($this, 'indexAction'), null, array('head', 'get'));
         $route->setIsDynamic(true);
@@ -210,10 +205,10 @@ class ContentOverviewWidget extends AbstractWidget {
     /**
      * Gets the view
      * @param array $result
-     * @param joppa\orm\model\ContentProperties $properties
+     * @param \ride\web\cms\orm\ContentProperties $properties
      * @param integer $pages
      * @param integer $page
-     * @return joppa\orm\view\ContentView
+     * @return \ride\library\mvc\view\View
      */
     private function getView(ContentProperties $contentProperties, array $result, $pages = 1, $page = 1) {
         $view = $contentProperties->getView();
@@ -262,9 +257,9 @@ class ContentOverviewWidget extends AbstractWidget {
 
     /**
      * Gets the result from the query
-     * @param zibo\library\orm\model\Model $model
-     * @param zibo\library\orm\query\ModelQuery $query
-     * @param joppa\orm\model\ContentProperties $properties
+     * @param \ride\library\orm\model\Model $model
+     * @param \ride\library\orm\query\ModelQuery $query
+     * @param \ride\library\orm\model\ContentProperties $properties
      * @return array Array with Content objects
      */
     private function getResult(ContentProperties $contentProperties, ModelQuery $query) {
@@ -342,12 +337,12 @@ class ContentOverviewWidget extends AbstractWidget {
 
     /**
      * Creates the model query from the provided properties
-     * @param zibo\library\orm\model\Model $model
-     * @param joppa\orm\model\ContentProperties $contentProperties
+     * @param \ride\library\orm\model\Model $model
+     * @param \ride\library\orm\model\ContentProperties $contentProperties
      * @param string $locale Code of the locale
      * @param integer $page Page number
      * @param array $arguments Arguments for the condition
-     * @return zibo\library\orm\query\ModelQuery
+     * @return \ride\library\orm\query\ModelQuery
      */
     public function getModelQuery(ContentProperties $contentProperties, $locale, $page = 1, array $arguments) {
         $includeUnlocalizedData = $contentProperties->getIncludeUnlocalized();
@@ -585,13 +580,25 @@ class ContentOverviewWidget extends AbstractWidget {
 
     /**
      * Gets the properties
-     * @return ride\web\cms\orm\ContentProperties
+     * @return \ride\web\cms\orm\ContentProperties
      */
     private function getContentProperties() {
         $contentProperties = new ContentProperties();
         $contentProperties->getFromWidgetProperties($this->properties, $this->locale);
 
         return $contentProperties;
+    }
+
+    /**
+     * Gets the options for the styles
+     * @return array Array with the name of the option as key and the
+     * translation key as value
+     */
+    public function getWidgetStyleOptions() {
+        return array(
+            'container' => 'label.widget.style.container',
+            'title' => 'label.widget.style.title',
+        );
     }
 
 }

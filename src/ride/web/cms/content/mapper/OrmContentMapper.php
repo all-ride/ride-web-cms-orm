@@ -17,13 +17,13 @@ class OrmContentMapper extends AbstractContentMapper {
 
 	/**
 	 * Model of the content to map
-	 * @var ride\library\orm\Model
+	 * @var \ride\library\orm\Model
 	 */
 	protected $model;
 
 	/**
 	 * Instance of the data formatter
-	 * @var ride\library\orm\model\data\format\DataFormatter
+	 * @var \ride\library\orm\model\data\format\DataFormatter
 	 */
 	protected $dataFormatter;
 
@@ -65,10 +65,10 @@ class OrmContentMapper extends AbstractContentMapper {
 
 	/**
      * Construct a new ORM content mapper
-     * @param ride\library\cms\node\NodeModel $nodeModel Instance of the node
+     * @param \ride\library\cms\node\NodeModel $nodeModel Instance of the node
      * model
-     * @param ride\library\orm\model\Model $model Model to map
-     * @param ride\library\orm\model\data\format\DataFormatter $dataFormatter
+     * @param \ride\library\orm\model\Model $model Model to map
+     * @param \ride\library\orm\model\data\format\DataFormatter $dataFormatter
      * @param integer $recursiveDepth Recursive depth for the queries
      * @param boolean|string $fetchUnlocalized Flag to see how unlocalized
      * data is fetched
@@ -90,7 +90,7 @@ class OrmContentMapper extends AbstractContentMapper {
     /**
      * Get a generic content object for the provided data
      * @param mixed $data data object of the model or the id of a data object
-     * @return ride\library\cms\content\Content Generic content object
+     * @return \ride\library\cms\content\Content Generic content object
      */
     public function getContent($site, $locale, $data) {
         if ($data === null) {
@@ -136,7 +136,7 @@ class OrmContentMapper extends AbstractContentMapper {
     /**
      * Creates a generic content object from the provided data
      * @param mixed $data
-     * @return joppa\model\content\Content
+     * @return \ride\library\cms\content\Content
      */
     protected function getContentFromData($data, $url = null, $titleFormat = null, $teaserFormat = null, $imageFormat = null, $dateFormat = null) {
         if (!$this->titleFormat) {

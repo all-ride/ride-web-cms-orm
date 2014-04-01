@@ -15,7 +15,7 @@ class SingleContentOverviewFilter implements ContentOverviewFilter {
     /**
      * Gets the available options for the filter
      * @param array $filters Filters to update
-     * @param ride\library\orm\model\Model $model
+     * @param \ride\library\orm\model\Model $model
      * @param string $field Name of the filter field
      * @param string $locale Code of the current locale
      * @param string $baseUrl Base URL
@@ -74,7 +74,7 @@ class SingleContentOverviewFilter implements ContentOverviewFilter {
 
     /**
      * Gets the available options for the filter
-     * @param ride\library\orm\model\Model $model
+     * @param \ride\library\orm\model\Model $model
      * @param string $field Name of the filter field
      * @return array Label as key, URL as value
     */
@@ -94,8 +94,8 @@ class SingleContentOverviewFilter implements ContentOverviewFilter {
 
     /**
      * Applies the filter to the provided query
-     * @param ride\library\orm\model\Model $model
-     * @param ride\library\orm\query\ModelQuery $query
+     * @param \ride\library\orm\model\Model $model
+     * @param \ride\library\orm\query\ModelQuery $query
      * @param string $fieldName Name of the filter field
      * @param string|array $value Submitted value
      * @return string|array Value of the filter

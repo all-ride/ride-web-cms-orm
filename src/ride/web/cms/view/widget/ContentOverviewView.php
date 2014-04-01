@@ -17,10 +17,10 @@ interface ContentOverviewView extends View {
      * @param string $locale Code of the current locale
      * @param integer $widgetId Id of the widget
      * @param array $result Array with Content objects
-     * @param ride\web\cms\orm\ContentProperties $contentProperties Properties
+     * @param \ride\web\cms\orm\ContentProperties $contentProperties Properties
      * for the view
      * @param array $filters Filters for the data
-     * @param ride\library\html\Pagination $pagination Properties for the
+     * @param \ride\library\html\Pagination $pagination Properties for the
      * pagination
      * @param string $moreUrl URL for the more link
      * @return null

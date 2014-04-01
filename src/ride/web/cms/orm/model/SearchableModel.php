@@ -17,7 +17,7 @@ interface SearchableModel extends Model {
      * @param string $queryTokens Full search query parsed in tokens
      * @param integer $page number of the result page (optional)
      * @param integer $pageItems number of items per page (optional)
-     * @return ride\library\cms\content\ContentResult
+     * @return \ride\library\cms\content\ContentResult
      */
     public function searchContent($site, $locale, $query, array $queryTokens, $page = null, $pageItems = null);
 
