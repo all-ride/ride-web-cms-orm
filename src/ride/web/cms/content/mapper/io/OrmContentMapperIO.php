@@ -24,13 +24,13 @@ class OrmContentMapperIO implements ContentMapperIO {
 
     /**
      * Instance of the ORM manager
-     * @var ride\library\orm\OrmManager
+     * @var \ride\library\orm\OrmManager
      */
     protected $orm;
 
     /**
      * Instance of the node model
-     * @var ride\library\cms\node\NodeModel
+     * @var \ride\library\cms\node\NodeModel
      */
     protected $nodeMode;
 
@@ -46,7 +46,7 @@ class OrmContentMapperIO implements ContentMapperIO {
 
     /**
      * Gets a content mapper
-     * @return ride\library\cms\content\mapper\ContentMapper|null
+     * @return \ride\library\cms\content\mapper\ContentMapper|null
      */
     public function getContentMapper($type) {
         $this->loadMappers();
@@ -61,7 +61,7 @@ class OrmContentMapperIO implements ContentMapperIO {
     /**
      * Gets the available mappers
      * @return array Array with ContentMapper objects
-     * @see ride\library\cms\content\mapper\ContentMapper
+     * @see \ride\library\cms\content\mapper\ContentMapper
      */
     public function getContentMappers() {
         $this->loadMappers();
@@ -71,7 +71,6 @@ class OrmContentMapperIO implements ContentMapperIO {
 
     /**
      * Loads the mappers for the detail widget instances
-     * @param zibo\core\Zibo $zibo Instance of Zibo
      * @return null
      */
     protected function loadMappers() {

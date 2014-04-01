@@ -39,7 +39,7 @@ abstract class AbstractContentOverviewView extends TemplateView implements Conte
 	 * @param string $locale Code of the current locale
 	 * @param integer $widgetId Id of the widget
 	 * @param array $result Array with Content objects
-	 * @param ride\web\cms\orm\ContentProperties $contentProperties Properties
+	 * @param \ride\web\cms\orm\ContentProperties $contentProperties Properties
 	 * for the view
 	 * @param array $filters Filters for the data
 	 * @param ride\library\html\\Pagination $pagination Properties for the

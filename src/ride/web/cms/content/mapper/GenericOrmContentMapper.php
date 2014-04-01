@@ -24,13 +24,13 @@ class GenericOrmContentMapper extends OrmContentMapper {
 
 	/**
 	 * Node containing the detail widget
-	 * @var ride\library\cms\node\Node
+	 * @var \ride\library\cms\node\Node
 	 */
 	protected $node;
 
 	/**
 	 * Widget properties of the detail widget
-	 * @var ride\library\widget\WidgetProperties
+	 * @var \ride\library\widget\WidgetProperties
 	 */
 	protected $properties;
 
@@ -42,10 +42,10 @@ class GenericOrmContentMapper extends OrmContentMapper {
 
 	/**
 	 * Constructs a new content mapper for a detail widget
-	 * @param ride\library\cms\node\NodeModel $nodeModel
-	 * @param ride\library\orm\model\Model $model
-	 * @param ride\library\cms\node\Node $node
-	 * @param ride\library\widget\WidgetProperties $properties
+	 * @param \ride\library\cms\node\NodeModel $nodeModel
+	 * @param \ride\library\orm\model\Model $model
+	 * @param \ride\library\cms\node\Node $node
+	 * @param \ride\library\widget\WidgetProperties $properties
 	 * @return null
 	 */
 	public function __construct(NodeModel $nodeModel, Node $node, Model $model, DataFormatter $dataFormatter, WidgetProperties $properties) {
@@ -60,7 +60,7 @@ class GenericOrmContentMapper extends OrmContentMapper {
 	/**
 	 * Get a generic content object for the provided data
 	 * @param mixed $data data object of the model or the id of a data object
-	 * @return ride\library\cms\content\Content Generic content object
+	 * @return \ride\library\cms\content\Content Generic content object
 	 */
 	public function getContent($site, $locale, $data) {
 	    if ($data === null) {

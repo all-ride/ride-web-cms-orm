@@ -5,7 +5,6 @@ namespace ride\web\cms\form;
 use ride\library\form\component\AbstractComponent;
 use ride\library\form\FormBuilder;
 use ride\library\i18n\translator\Translator;
-use ride\library\orm\OrmManager;
 
 use ride\web\cms\orm\ContentProperties;
 use ride\web\cms\orm\FieldService;
@@ -17,7 +16,7 @@ abstract class AbstractContentComponent extends AbstractComponent {
 
     /**
      * Instance of the field service
-     * @var ride\web\cms\orm\FieldService
+     * @var \ride\web\cms\orm\FieldService
      */
     protected $fieldService;
 
@@ -35,7 +34,7 @@ abstract class AbstractContentComponent extends AbstractComponent {
 
     /**
      * Constructs a new content properties form component
-     * @param ride\web\cms\orm\FieldService $fieldService
+     * @param \ride\web\cms\orm\FieldService $fieldService
      * @return null
      */
     public function __construct(FieldService $fieldService) {
@@ -123,7 +122,7 @@ abstract class AbstractContentComponent extends AbstractComponent {
 
 	/**
 	 * Prepares the form builder by adding row definitions
-	 * @param ride\library\html\form\builder\Builder $builder
+	 * @param \ride\library\form\FormBuilder $builder
 	 * @param array $options Extra options from the controller
 	 * @return null
 	 */
@@ -219,7 +218,7 @@ abstract class AbstractContentComponent extends AbstractComponent {
 
 	/**
 	 * Gets the options for the view type
-	 * @param ride\library\i18n\translator\Translator $translator
+	 * @param \ride\library\i18n\translator\Translator $translator
 	 * @return array
 	 */
 	protected function getViewOptions(Translator $translator) {
@@ -249,7 +248,7 @@ abstract class AbstractContentComponent extends AbstractComponent {
 
 	/**
 	 * Gets the options for the parameters type
-	 * @param ride\library\i18n\translator\Translator $translator
+	 * @param \ride\library\i18n\translator\Translator $translator
 	 * @return array
 	 */
 	protected function getParametersNoneOptions(Translator $translator) {

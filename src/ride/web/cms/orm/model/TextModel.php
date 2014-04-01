@@ -14,7 +14,7 @@ class TextModel extends GenericModel {
 	 * @param integer|TextData $text Primary key of the text or an already loaded text
 	 * @param integer $version The version to lookup
 	 * @param string $locale The locale of the text
-	 * @return joppa\text\model\data\TextData|null The text in the provided version if found, null otherwise
+	 * @return \ride\web\cms\orm\model\TextData |null The text in the provided version if found, null otherwise
 	 */
 	public function getTextVersion($text, $version, $locale = null) {
 		$id = $this->getPrimaryKey($text);

@@ -12,7 +12,7 @@ class FieldServiceController extends AbstractController {
 
 	/**
 	 * Action to get the select field options of the provided model
-	 * @param ride\web\cms\orm\FieldService $fieldService
+	 * @param \ride\web\cms\orm\FieldService $fieldService
 	 * @param string $model Name of the model
 	 * @return null
 	 */
@@ -28,7 +28,7 @@ class FieldServiceController extends AbstractController {
 
     /**
      * Action to get the order field option of the provided model
-	 * @param ride\web\cms\orm\FieldService $fieldService
+	 * @param \ride\web\cms\orm\FieldService $fieldService
      * @param string $model Name of the model
      * @param integer $recursiveDepth Recursive depth
      * @return null
@@ -45,7 +45,7 @@ class FieldServiceController extends AbstractController {
 
 	/**
 	 * Action to get the unique field options of the provided model
-	 * @param ride\web\cms\orm\FieldService $fieldService
+	 * @param \ride\web\cms\orm\FieldService $fieldService
 	 * @param string $model Name of the model
 	 * @return null
 	 */
@@ -61,7 +61,7 @@ class FieldServiceController extends AbstractController {
 
 	/**
 	 * Action to get the relation field options of the provided model
-	 * @param ride\web\cms\orm\FieldService $fieldService
+	 * @param \ride\web\cms\orm\FieldService $fieldService
 	 * @param string $model Name of the model
 	 * @return null
 	 */

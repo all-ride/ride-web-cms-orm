@@ -16,7 +16,7 @@ class FieldService {
 
     /**
      * Constructs a new field service
-     * @param ride\library\orm\OrmManager $orm
+     * @param \ride\library\orm\OrmManager $orm
      */
     public function __construct(OrmManager $orm) {
         $this->orm = $orm;
@@ -24,7 +24,7 @@ class FieldService {
 
     /**
      * Gets the ORM
-     * @return ride\library\orm\OrmManager
+     * @return \ride\library\orm\OrmManager
      */
     public function getOrm() {
         return $this->orm;

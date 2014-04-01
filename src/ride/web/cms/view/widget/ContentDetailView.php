@@ -16,8 +16,8 @@ interface ContentDetailView extends View {
      * Sets the content
      * @param string $locale Code of the current locale
      * @param integer $widgetId Id of the widget
-     * @param ride\library\cms\content\Content $content
-     * @param joppa\orm\model\ContentProperties $contentProperties Properties
+     * @param \ride\library\cms\content\Content $content
+     * @param \ride\web\cms\orm\ContentProperties $contentProperties Properties
      * for the view
      * @return null
      */
