@@ -78,9 +78,6 @@ class ContentOverviewWidget extends AbstractWidget {
      */
     public function getRoutes() {
         $contentProperties = $this->getContentProperties();
-        if (!$contentProperties->getParameters()) {
-            return null;
-        }
 
         $route = new Route('/', array($this, 'indexAction'), null, array('head', 'get'));
         $route->setIsDynamic(true);

@@ -889,11 +889,11 @@ class ContentProperties {
             }
 
             $properties->setWidgetProperty(self::PROPERTY_PARAMETERS, $parameters);
-            $properties->setWidgetProperty(self::PROPERTY_PARAMETERS_NONE, $this->parametersNone);
         } else {
             $properties->setWidgetProperty(self::PROPERTY_PARAMETERS, null);
-            $properties->setWidgetProperty(self::PROPERTY_PARAMETERS_NONE, null);
         }
+
+        $properties->setWidgetProperty(self::PROPERTY_PARAMETERS_NONE, $this->parametersNone);
 
         $filters = $this->filters;
         if (is_array($filters)) {
