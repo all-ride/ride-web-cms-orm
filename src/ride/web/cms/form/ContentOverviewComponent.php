@@ -6,6 +6,8 @@ use ride\library\database\manipulation\expression\OrderExpression;
 use ride\library\form\FormBuilder;
 use ride\library\i18n\translator\Translator;
 
+use ride\web\cms\orm\ContentProperties;
+
 /**
  * Form to edit the properties of a content overview widget
  */
@@ -263,5 +265,18 @@ class ContentOverviewComponent extends AbstractContentComponent {
 	        self::PARAMETERS_TYPE_NAMED => $translator->translate('label.parameters.type.named'),
 	    );
 	}
+
+    /**
+     * Gets the options for the parameters type
+     * @param \ride\library\i18n\translator\Translator $translator
+     * @return array
+     */
+    protected function getParametersNoneOptions(Translator $translator) {
+        return array(
+            '' => $translator->translate('label.parameters.none.render'),
+            ContentProperties::NONE_404 => $translator->translate('label.parameters.none.404'),
+            ContentProperties::NONE_IGNORE => $translator->translate('label.parameters.none.ignore'),
+        );
+    }
 
 }
