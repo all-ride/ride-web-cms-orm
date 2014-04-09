@@ -7,6 +7,7 @@ use ride\library\i18n\translator\Translator;
 use ride\library\orm\OrmManager;
 use ride\library\widget\WidgetProperties;
 
+use ride\web\cms\controller\widget\TextWidget;
 use ride\web\cms\text\TextData;
 use ride\web\cms\text\TextModel;
 use ride\web\cms\text\Text;
@@ -14,13 +15,13 @@ use ride\web\cms\text\Text;
 /**
  * ORM model implementation for input/output of the text widget
  */
-class OrmTextIO implements TextIO {
+class OrmTextIO extends AbstractTextIO {
 
     /**
-     * Name of the text property
+     * Machine name of this IO
      * @var string
      */
-    const PROPERTY_TEXT = 'text';
+    const NAME = 'orm';
 
     /**
      * Instance of the orm manager
@@ -36,7 +37,6 @@ class OrmTextIO implements TextIO {
     public function __construct(OrmManager $orm) {
         $this->orm = $orm;
     }
-
 
     /**
      * Processes the properties form to update the editor for this io
@@ -63,10 +63,16 @@ class OrmTextIO implements TextIO {
      * @param array $data Submitted data
      * @return null
      */
-    public function setText(WidgetProperties $widgetProperties, $locale, Text $text, array $submittedData) {
-        $locale = (array) $locale;
+    public function setText(WidgetProperties $widgetProperties, $locales, Text $text, array $submittedData) {
+        $locales = (array) $locales;
 
-        foreach ($locale as $l) {
+        if (isset($submittedData['version'])) {
+            $version = $submittedData['version'];
+        } else {
+            $version = 0;
+        }
+
+        foreach ($locales as $locale) {
             if (!$text instanceof TextData) {
                 $data = $this->getModel()->createData();
                 $data->setFormat($text->getFormat());
@@ -75,16 +81,15 @@ class OrmTextIO implements TextIO {
                 $text = $data;
             }
 
-            if (isset($submittedData['version'])) {
-                $text->setVersion($submittedData['version']);
-            }
-
-            $text->id = (integer) $widgetProperties->getWidgetProperty(self::PROPERTY_TEXT);
-            $text->dataLocale = $l;
+            $text->id = (integer) $widgetProperties->getWidgetProperty(TextWidget::PROPERTY_TEXT);
+            $text->dataLocale = $locale;
+            $text->setVersion($version);
 
             $this->getModel()->save($text);
 
-            $widgetProperties->setWidgetProperty(self::PROPERTY_TEXT, $text->id);
+            $widgetProperties->setWidgetProperty(TextWidget::PROPERTY_TEXT, $text->id);
+
+            $version = $text->getVersion();
         }
     }
 
@@ -100,7 +105,7 @@ class OrmTextIO implements TextIO {
 
         $text = null;
 
-        $textId = $widgetProperties->getWidgetProperty(self::PROPERTY_TEXT);
+        $textId = $widgetProperties->getWidgetProperty(TextWidget::PROPERTY_TEXT);
         if ($textId) {
             $query = $model->createQuery($locale);
             $query->setRecursiveDepth(0);

@@ -75,7 +75,11 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
      * as value
      */
     public function getRoutes() {
-        $contentProperties = $this->getContentProperties();
+        $node = $this->properties->getNode();
+        if ($node->getRoute($this->locale) === '/') {
+            // never make the root of your site dynamic, it can mess up other resources
+            return null;
+        }
 
         $route = new Route('/', array($this, 'indexAction'), null, array('head', 'get'));
         $route->setIsDynamic(true);
@@ -125,7 +129,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
         if ($parameters) {
             if (is_array($parameters)) {
                 if (count($arguments) != (count($parameters) * 2)) {
-                    $this->response->setStatusCode(404);
+                    $this->response->setStatusCode(Response::STATUS_CODE_NOT_FOUND);
 
                     return;
                 }
@@ -133,7 +137,8 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
                 $arguments = $this->parseArguments($arguments);
             } else {
                 if (count($arguments) != $parameters) {
-                    $this->response->setStatusCode(404);
+                    $this->response->setStatusCode(Response::STATUS_CODE_NOT_FOUND);
+
                     return;
                 }
 
@@ -143,7 +148,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             }
         } elseif ($arguments) {
             $action = $contentProperties->getNoParametersAction();
-            if (!$action || $action == ContentProperties::NONE_404 || $action == ContentProperties::NONE_IGNORE) {
+            if ($action == ContentProperties::NONE_404 || $action == ContentProperties::NONE_IGNORE) {
                 if ($action != ContentProperties::NONE_IGNORE) {
                     $this->response->setStatusCode(Response::STATUS_CODE_NOT_FOUND);
                 }
