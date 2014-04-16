@@ -1,0 +1,194 @@
+<?php
+
+namespace ride\web\cms\controller\backend;
+
+use ride\library\cms\node\NodeModel;
+use ride\library\i18n\I18n;
+use ride\library\orm\OrmManager;
+use ride\library\validation\exception\ValidationException;
+
+class EntryController extends AbstractNodeTypeController {
+
+    public function formAction(I18n $i18n, $locale, NodeModel $nodeModel, OrmManager $orm, $site, $node = null) {
+        $locales = $i18n->getLocaleCodeList();
+        $translator = $i18n->getTranslator();
+
+        if ($node) {
+            if (!$this->resolveNode($nodeModel, $site, $node, 'entry')) {
+                return;
+            }
+
+            $this->setLastAction('edit');
+        } else {
+            if (!$this->resolveNode($nodeModel, $site)) {
+                return;
+            }
+
+            $node = $nodeModel->createNode('entry');
+            $node->setParentNode($site);
+        }
+
+        // gather data
+        $data = array(
+            'name' => $node->getName($locale),
+            'model' => $node->getEntryModel(),
+            'entry' => $node->getEntryId(),
+            'route' => $node->getRoute($locale, false),
+            'availableLocales' => $this->getLocalesValueFromNode($node),
+        );
+
+        $entryOptions = array('' => '---');
+        if ($data['model']) {
+            $model = $orm->getModel($data['model']);
+            $entryOptions += $model->getDataList($locale);
+        }
+
+        // build form
+        $form = $this->createFormBuilder($data);
+        $form->addRow('model', 'select', array(
+            'label' => $translator->translate('label.model'),
+            'description' => $translator->translate('label.model.description'),
+            'options' => $this->getModelOptions($orm),
+            'validators' => array(
+                'required' => array(),
+            ),
+        ));
+        $form->addRow('entry', 'select', array(
+            'label' => $translator->translate('label.entry'),
+            'description' => $translator->translate('label.entry.description'),
+            'options' => $entryOptions,
+            'validators' => array(
+                'required' => array(),
+            ),
+        ));
+        $form->addRow('name', 'string', array(
+            'label' => $translator->translate('label.name'),
+            'description' => $translator->translate('label.entry.name.description'),
+            'filters' => array(
+                'trim' => array(),
+            ),
+        ));
+        $form->addRow('route', 'string', array(
+            'label' => $translator->translate('label.route'),
+            'description' => $translator->translate('label.route.description'),
+            'filters' => array(
+                'trim' => array(),
+            ),
+        ));
+        $form->addRow('availableLocales', 'select', array(
+            'label' => $translator->translate('label.locales'),
+            'description' => $translator->translate('label.locales.available.description'),
+            'options' => $this->getLocalesOptions($node, $translator, $locales),
+            'multiple' => true,
+            'validators' => array(
+                'required' => array(),
+            ),
+        ));
+        $form->setRequest($this->request);
+
+        // process form
+        $form = $form->build();
+        if ($form->isSubmitted()) {
+            try {
+                $form->validate();
+
+                $data = $form->getData();
+
+                if (!$data['name']) {
+                    $data['name'] = $entryOptions[$data['entry']];
+                }
+
+                $node->setName($locale, $data['name']);
+                $node->setRoute($locale, $data['route']);
+                $node->setAvailableLocales($this->getOptionValueFromForm($data['availableLocales']));
+                $node->setEntry($data['model'], $data['entry']);
+
+                $nodeModel->setNode($node, (!$node->getId() ? 'Created new entry ' : 'Updated entry ') . $node->getName());
+
+                $this->addSuccess('success.node.saved', array(
+                    'node' => $node->getName($locale),
+                ));
+
+                $this->response->setRedirect($this->getUrl(
+                    'cms.entry.edit', array(
+                        'locale' => $locale,
+                        'site' => $site->getId(),
+                        'node' => $node->getId(),
+                    )
+                ));
+
+                return;
+            } catch (ValidationException $validationException) {
+                $this->setValidationException($validationException, $form);
+            }
+        }
+
+        $referer = $this->request->getQueryParameter('referer');
+        if (!$referer) {
+            $referer = $this->getUrl('cms.site.detail.locale', array(
+                'site' => $site->getId(),
+                'locale' => $locale,
+            ));
+        }
+
+        // show view
+        $view = $this->setTemplateView('cms/backend/entry.form', array(
+            'site' => $site,
+            'node' => $node,
+            'referer' => $referer,
+            'form' => $form->getView(),
+            'locale' => $locale,
+            'locales' => $locales,
+        ));
+        $view->addJavascript('js/cms/orm.js');
+        $view->addInlineJavascript('initializeNodeEntryForm("' . $this->getUrl('cms.ajax.orm.entries', array('model' => '%model%')) . '");');
+    }
+
+    /**
+     * Sets a json response of the model data list
+     * @param \ride\library\orm\OrmManager $orm Instance of the ORM manager
+     * @param string $model Name of the model
+     * @return null
+     */
+    public function modelEntriesAction(OrmManager $orm, $model) {
+        try {
+            $model = $orm->getModel($model);
+        } catch (OrmException $exception) {
+            $this->response->setStatusCode(Response::STATUS_CODE_NOT_FOUND);
+
+            return;
+        }
+
+        $this->setJsonView($model->getDataList());
+    }
+
+    /**
+     * Gets the options for the model field
+     * @param \ride\library\orm\OrmManager $orm Instance of the ORM manager
+     * @return array Array with the model names which are flagged to be a node
+     */
+    protected function getModelOptions(OrmManager $orm) {
+        $translator = $this->getTranslator();
+        $options = array('' => '---');
+
+        $models = $orm->getModels(true);
+        foreach ($models as $modelName => $model) {
+            $meta = $model->getMeta();
+            if (!$meta->getOption('cms.node')) {
+                continue;
+            }
+
+            $title = $meta->getOption('scaffold.title');
+            if ($title) {
+                $title = $translator->translate($title);
+            } else {
+                $title = $modelName;
+            }
+
+            $options[$modelName] = $title;
+        }
+
+        return $options;
+    }
+
+}

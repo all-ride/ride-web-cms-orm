@@ -4,27 +4,27 @@
             "interfaces": "ride\\web\\cms\\text\\io\\TextIO",
             "class": "ride\\web\\cms\\text\\io\\OrmTextIO",
             "id": "orm"
-        },    
+        },
         {
             "interfaces": "ride\\library\\cms\\widget\\Widget",
             "class": "ride\\web\\cms\\controller\\widget\\ContentOverviewWidget",
             "id": "orm.overview"
-        },    
+        },
         {
             "interfaces": "ride\\library\\cms\\widget\\Widget",
             "class": "ride\\web\\cms\\controller\\widget\\ContentDetailWidget",
             "id": "orm.detail"
-        },    
+        },
         {
             "interfaces": "ride\\web\\cms\\view\\widget\\ContentOverviewView",
             "class": "ride\\web\\cms\\view\\widget\\predefined\\ContentBlockView",
             "id": "block"
-        },    
+        },
         {
             "interfaces": "ride\\web\\cms\\view\\widget\\ContentOverviewView",
             "class": "ride\\web\\cms\\view\\widget\\predefined\\ContentListView",
             "id": "list"
-        },    
+        },
         {
             "interfaces": "ride\\web\\cms\\view\\widget\\ContentDetailView",
             "class": "ride\\web\\cms\\view\\widget\\predefined\\ContentDetailView",
@@ -48,6 +48,51 @@
                             "type": "dependency",
                             "properties": {
                                 "interface": "ride\\web\\cms\\content\\mapper\\io\\OrmContentMapperIO"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "interfaces": "ride\\library\\cms\\content\\text\\variable\\VariableParser",
+            "class": "ride\\web\\cms\\content\\text\\variable\\EntryVariableParser",
+            "id": "entry"
+        },
+        {
+            "interfaces": "ride\\library\\cms\\content\\text\\TextParser",
+            "class": "ride\\library\\cms\\content\\text\\VariablesTextParser",
+            "extends": "variables",
+            "id": "variables",
+            "calls": [
+                {
+                    "method": "addVariableParser",
+                    "arguments": [
+                        {
+                            "name": "variableParser",
+                            "type": "dependency",
+                            "properties": {
+                                "interface": "ride\\library\\cms\\content\\text\\variable\\VariableParser",
+                                "id": "entry"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "class": "ride\\library\\cms\\node\\type\\NodeTypeManager",
+            "extends": "generic",
+            "id": "generic",
+            "calls": [
+                {
+                    "method": "addNodeType",
+                    "arguments": [
+                        {
+                            "name": "nodeType",
+                            "type": "dependency",
+                            "properties": {
+                                "interface": "ride\\web\\cms\\node\\type\\EntryNodeType"
                             }
                         }
                     ]

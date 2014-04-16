@@ -4,25 +4,43 @@
             "path": "/ajax/cms/orm/fields/select/%model%",
             "controller": "ride\\web\\cms\\controller\\FieldServiceController",
             "action": "selectFieldsAction",
-            "id": "cms.ajax.orm.fields.select" 
+            "id": "cms.ajax.orm.fields.select"
         },
         {
             "path": "/ajax/cms/orm/fields/select/%model%/%recursiveDepth%",
             "controller": "ride\\web\\cms\\controller\\FieldServiceController",
             "action": "orderFieldsAction",
-            "id": "cms.ajax.orm.fields.order" 
+            "id": "cms.ajax.orm.fields.order"
         },
         {
             "path": "/ajax/cms/orm/fields/unique/%model%",
             "controller": "ride\\web\\cms\\controller\\FieldServiceController",
             "action": "uniqueFieldsAction",
-            "id": "cms.ajax.orm.fields.unique" 
+            "id": "cms.ajax.orm.fields.unique"
         },
         {
             "path": "/ajax/cms/orm/fields/relation/%model%",
             "controller": "ride\\web\\cms\\controller\\FieldServiceController",
             "action": "relationFieldsAction",
-            "id": "cms.ajax.orm.fields.relation" 
+            "id": "cms.ajax.orm.fields.relation"
+        },
+        {
+            "path": "/ajax/cms/orm/entries/%model%",
+            "controller": "ride\\web\\cms\\controller\\backend\\EntryController",
+            "action": "modelEntriesAction",
+            "id": "cms.ajax.orm.entries"
+        },
+        {
+            "path": "/sites/%site%/%locale%/add/entry",
+            "controller": "ride\\web\\cms\\controller\\backend\\EntryController",
+            "action": "formAction",
+            "id": "cms.entry.add"
+        },
+        {
+            "path": "/sites/%site%/%locale%/entries/%node%/edit",
+            "controller": "ride\\web\\cms\\controller\\backend\\EntryController",
+            "action": "formAction",
+            "id": "cms.entry.edit"
         }
     ]
 }
