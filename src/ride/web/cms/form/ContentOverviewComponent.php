@@ -273,9 +273,9 @@ class ContentOverviewComponent extends AbstractContentComponent {
      */
     protected function getParametersNoneOptions(Translator $translator) {
         return array(
-            '' => $translator->translate('label.parameters.none.render'),
             ContentProperties::NONE_404 => $translator->translate('label.parameters.none.404'),
             ContentProperties::NONE_IGNORE => $translator->translate('label.parameters.none.ignore'),
+            '' => $translator->translate('label.parameters.none.render'),
         );
     }
 
