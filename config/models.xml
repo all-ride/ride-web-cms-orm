@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <models>
     <model name="Text" modelClass="ride\web\cms\orm\model\TextModel" dataClass="ride\web\cms\orm\model\TextData">
-        <field name="text" type="text" localized="true" />
-        <field name="format" type="string" localized="true" />
+        <field name="text" type="wysiwyg" localized="true" />
+        <field name="format" type="string" localized="true" default="wysiwyg">
+            <option name="scaffold.form.omit" value="1" />
+        </field>
         <field name="dateAdded" type="datetime">
             <option name="scaffold.form.omit" value="1" />
         </field>
@@ -13,11 +15,13 @@
             <option name="scaffold.form.omit" value="1" />
         </field>
 
-        <format name="title">{text|htmlentities|truncate:160}</format>
-        <format name="teaser">{format}</format>
+        <format name="title">{text|striptags|truncate:30}</format>
+        <format name="teaser">{text|striptags|truncate:120}</format>
 
         <option name="behaviour.date" value="true" />
         <option name="behaviour.log" value="true" />
         <option name="behaviour.version" value="true" />
-    </model>    
+        <option name="scaffold.expose" value="true" />
+        <option name="scaffold.title" value="title.texts" />
+    </model>
 </models>
