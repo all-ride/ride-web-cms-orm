@@ -40,7 +40,7 @@ class EntryController extends AbstractNodeTypeController {
         $entryOptions = array('' => '---');
         if ($data['model']) {
             $model = $orm->getModel($data['model']);
-            $entryOptions += $model->getDataList($locale);
+            $entryOptions += $model->getDataList(array('locale' => $locale));
         }
 
         // build form
@@ -141,25 +141,7 @@ class EntryController extends AbstractNodeTypeController {
             'locales' => $locales,
         ));
         $view->addJavascript('js/cms/orm.js');
-        $view->addInlineJavascript('initializeNodeEntryForm("' . $this->getUrl('cms.ajax.orm.entries', array('model' => '%model%')) . '");');
-    }
-
-    /**
-     * Sets a json response of the model data list
-     * @param \ride\library\orm\OrmManager $orm Instance of the ORM manager
-     * @param string $model Name of the model
-     * @return null
-     */
-    public function modelEntriesAction(OrmManager $orm, $model) {
-        try {
-            $model = $orm->getModel($model);
-        } catch (OrmException $exception) {
-            $this->response->setStatusCode(Response::STATUS_CODE_NOT_FOUND);
-
-            return;
-        }
-
-        $this->setJsonView($model->getDataList());
+        $view->addInlineJavascript('initializeNodeEntryForm("' . $this->getUrl('api.orm.list', array('model' => '%model%')) . '");');
     }
 
     /**

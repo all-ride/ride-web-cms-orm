@@ -25,7 +25,7 @@ class SingleContentOverviewFilter implements ContentOverviewFilter {
         $relationModel = $model->getMeta()->getRelationModelName($field);
         $relationModel = $model->getOrmManager()->getModel($relationModel);
 
-        $data = $relationModel->getDataList($locale);
+        $data = $relationModel->getDataList(array('locale' => $locale));
 
         $filters[$field]['options'] = $data;
         $filters[$field]['urls'] = array();
@@ -84,7 +84,7 @@ class SingleContentOverviewFilter implements ContentOverviewFilter {
 
         $result = array();
 
-        $data = $relationModel->getDataList($locale);
+        $data = $relationModel->getDataList(array('locale' => $locale));
         foreach ($data as $id => $label) {
             $result[$label] = $id;
         }
