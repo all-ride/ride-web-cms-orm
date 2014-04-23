@@ -122,6 +122,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             return;
         }
 
+        $action = $contentProperties->getNoParametersAction();
         $parameters = $contentProperties->getParameters();
         $arguments = func_get_args();
         array_shift($arguments); // remove $orm
@@ -129,7 +130,9 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
         if ($parameters) {
             if (is_array($parameters)) {
                 if (count($arguments) != (count($parameters) * 2)) {
-                    $this->response->setStatusCode(Response::STATUS_CODE_NOT_FOUND);
+                    if ($action != ContentProperties::NONE_IGNORE) {
+                        $this->response->setStatusCode(Response::STATUS_CODE_NOT_FOUND);
+                    }
 
                     return;
                 }
@@ -137,7 +140,9 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
                 $arguments = $this->parseArguments($arguments);
             } else {
                 if (count($arguments) != $parameters) {
-                    $this->response->setStatusCode(Response::STATUS_CODE_NOT_FOUND);
+                    if ($action != ContentProperties::NONE_IGNORE) {
+                        $this->response->setStatusCode(Response::STATUS_CODE_NOT_FOUND);
+                    }
 
                     return;
                 }
@@ -147,7 +152,6 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
                 }
             }
         } elseif ($arguments) {
-            $action = $contentProperties->getNoParametersAction();
             if ($action == ContentProperties::NONE_404 || $action == ContentProperties::NONE_IGNORE) {
                 if ($action != ContentProperties::NONE_IGNORE) {
                     $this->response->setStatusCode(Response::STATUS_CODE_NOT_FOUND);

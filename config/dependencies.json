@@ -26,6 +26,11 @@
             "id": "list"
         },
         {
+            "interfaces": "ride\\web\\cms\\view\\widget\\ContentOverviewView",
+            "class": "ride\\web\\cms\\view\\widget\\predefined\\ContentCloudView",
+            "id": "cloud"
+        },
+        {
             "interfaces": "ride\\web\\cms\\view\\widget\\ContentDetailView",
             "class": "ride\\web\\cms\\view\\widget\\predefined\\ContentDetailView",
             "id": "detail"
