@@ -62,6 +62,16 @@ abstract class AbstractContentOverviewView extends TemplateView implements Conte
 	    } else {
     	    $this->template->set('moreUrl', null);
 	    }
+
+	    $this->processContent();
+	}
+
+	/**
+	 * Hook to process the content set to this view
+	 * @return null
+	 */
+	protected function processContent() {
+
 	}
 
 }
