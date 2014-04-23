@@ -5,6 +5,7 @@ namespace ride\web\cms\view\widget\predefined;
 use ride\library\orm\OrmManager;
 
 use ride\web\cms\view\widget\AbstractContentOverviewView;
+use ride\web\orm\taxonomy\TaxonomyTerm;
 
 /**
  * View for a taxonomy term cloud
@@ -40,7 +41,13 @@ class ContentCloudView extends AbstractContentOverviewView {
         $maxWeight = -1;
 
         $result = $this->template->get('result');
-        foreach ($result as $content) {
+        foreach ($result as $index => $content) {
+            if (!$content->data instanceof TaxonomyTerm) {
+                unset($result[$index]);
+
+                continue;
+            }
+
             $content->data->weight = $model->calculateCloudWeight($content->data);
 
             $minWeight = min($minWeight, $content->data->weight);
@@ -50,6 +57,8 @@ class ContentCloudView extends AbstractContentOverviewView {
         foreach ($result as $content) {
             $content->data->weightClass = $this->calculateWeightClass($content->data->weight, $minWeight, $maxWeight);
         }
+
+        $this->template->set('result', $result);
     }
 
     /**
