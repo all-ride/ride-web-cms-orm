@@ -68,6 +68,7 @@
     "label.parameters.number.description": "Number of parameters to expect",
     "label.properties.unset": "No properties have been set for this widget.",
     "label.text.existing": "Existing text",
+    "label.text.existing.new": "Create a new text based on the existing text",
     "label.title": "Title",
     "label.title.update.description": "Use the title of the content as page title",
     "label.title.description": "You can add a title before the query result",
@@ -90,6 +91,7 @@
     "title.query": "Query",
     "title.texts": "Texts",
     "title.view": "View",
+    "warning.cms.text.used": "This text is also used in one or more other text blocks. Changing this text will affect those blocks as well.",
     "widget.orm.detail": "Content Detail",
     "widget.orm.overview": "Content Overview"
 }
