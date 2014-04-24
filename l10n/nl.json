@@ -68,6 +68,7 @@
     "label.parameters.number.description": "Verwacht aantal parameters",
     "label.properties.unset": "Deze widget is nog niet ingesteld.",
     "label.text.existing": "Bestaande tekst",
+    "label.text.existing.new": "Maak een nieuwe tekst gebasseerd op de geselecteerde tekst",
     "label.title": "Titel",
     "label.title.update.description": "Gebruikt de titel van de data als pagina titel",
     "label.title.description": "Toon een titel voor de data",
@@ -90,6 +91,7 @@
     "title.query": "Query",
     "title.texts": "Teksten",
     "title.view": "Beeld",
+    "warning.cms.text.used": "Deze tekst wordt ook gebruikt in andere tekst blokken. Het wijzigen van deze tekst zal ook die blokken treffen.",
     "widget.orm.detail": "Data detail",
     "widget.orm.overview": "Data overzicht"
 }

@@ -2,14 +2,17 @@
 
 namespace ride\web\cms\text\io;
 
+use ride\library\cms\node\NodeModel;
 use ride\library\form\FormBuilder;
 use ride\library\i18n\translator\Translator;
+use ride\library\mvc\message\Message;
+use ride\library\mvc\Response;
 use ride\library\orm\OrmManager;
 use ride\library\widget\WidgetProperties;
 
 use ride\web\cms\controller\widget\TextWidget;
-use ride\web\cms\text\TextData;
-use ride\web\cms\text\TextModel;
+use ride\web\cms\orm\model\TextData;
+use ride\web\cms\orm\model\TextModel;
 use ride\web\cms\text\Text;
 
 /**
@@ -30,31 +33,55 @@ class OrmTextIO extends AbstractTextIO {
     protected $orm;
 
     /**
+     * Instance of the node model
+     * @var \ride\library\cms\node\NodeModel
+     */
+    protected $nodeModel;
+
+    /**
+     * Instance of the response
+     * @var \ride\library\mvc\Response
+     */
+    protected $response;
+
+    /**
      * Constructs a new text IO
      * @param \ride\library\orm\OrmManager $orm
+     * @param \ride\library\cms\node\NodeModel $nodeModel
+     * @param \ride\library\mvc\Response $response
      * @return null
      */
-    public function __construct(OrmManager $orm) {
+    public function __construct(OrmManager $orm, NodeModel $nodeModel, Response $response) {
         $this->orm = $orm;
+        $this->nodeModel = $nodeModel;
+        $this->response = $response;
     }
 
     /**
-     * Processes the properties form to update the editor for this io
-     * @param \ride\library\form\FormBuilder $formBuilder Form builder for the
-     * text properties
+     * Processes the properties form to update the editor for this IO
+     * @param \ride\library\widget\WidgetProperties $widgetProperties Instance
+     * of the widget properties
+     * @param string $locale Current locale
      * @param \ride\library\i18n\translator\Translator $translator Instance of
      * the translator
-     * @param string $locale Current locale
-     * @param \ride\web\cms\text\Text $text
+     * @param \ride\web\cms\text\Text $text Instance of the text
+     * @param \ride\library\form\FormBuilder $formBuilder Form builder for the
+     * text properties
      * @return null
      */
-    public function processForm(FormBuilder $formBuilder, Translator $translator, $locale, Text $text) {
+    public function processForm(WidgetProperties $widgetProperties, $locale, Translator $translator, Text $text, FormBuilder $formBuilder) {
         $model = $this->getModel();
+
+        $this->warnAboutUsedText($widgetProperties, $model, $text, $translator->translate('warning.cms.text.used'));
 
         $formBuilder->addRow('existing', 'select', array(
             'label' => $translator->translate('label.text.existing'),
             'options' => array('' => '---') + $model->getDataList(array('locale' => $locale)),
             'default' => $text->id,
+        ));
+        $formBuilder->addRow('existing-new', 'option', array(
+            'label' => '',
+            'description' => $translator->translate('label.text.existing.new'),
         ));
         $formBuilder->addRow('version', 'hidden', array(
             'default' => $text->getVersion(),
@@ -79,30 +106,35 @@ class OrmTextIO extends AbstractTextIO {
             $version = 0;
         }
 
-        if (isset($submittedData['existing']) && $submittedData['existing'] && $submittedData['existing'] != $text->id) {
-            $widgetProperties->setWidgetProperty(TextWidget::PROPERTY_TEXT, $submittedData['existing']);
-        } else {
-            foreach ($locales as $locale) {
-                if (!$text instanceof TextData) {
-                    $data = $this->getModel()->createData();
-                    $data->setFormat($text->getFormat());
-                    $data->setText($text->getText());
+        if (!$text instanceof TextData) {
+            $data = $this->getModel()->createData();
+            $data->setFormat($text->getFormat());
+            $data->setText($text->getText());
 
-                    $text = $data;
-                }
-
-                $text->id = (integer) $widgetProperties->getWidgetProperty(TextWidget::PROPERTY_TEXT);
-                $text->dataLocale = $locale;
-                $text->setVersion($version);
-
-                $this->getModel()->save($text);
-
-
-                $version = $text->getVersion();
-            }
-
-            $widgetProperties->setWidgetProperty(TextWidget::PROPERTY_TEXT, $text->id);
+            $text = $data;
         }
+
+        if (isset($submittedData['existing']) && $submittedData['existing'] && $submittedData['existing'] != $text->id) {
+            if ($submittedData['existing-new']) {
+                $widgetProperties->setWidgetProperty(TextWidget::PROPERTY_TEXT, 0);
+                $version = 0;
+            } else {
+                $widgetProperties->setWidgetProperty(TextWidget::PROPERTY_TEXT, $submittedData['existing']);
+            }
+        }
+
+        $text->id = (integer) $widgetProperties->getWidgetProperty(TextWidget::PROPERTY_TEXT);
+
+        foreach ($locales as $locale) {
+            $text->dataLocale = $locale;
+            $text->setVersion($version);
+
+            $this->getModel()->save($text);
+
+            $version = $text->getVersion();
+        }
+
+        $widgetProperties->setWidgetProperty(TextWidget::PROPERTY_TEXT, $text->id);
     }
 
     /**
@@ -132,6 +164,49 @@ class OrmTextIO extends AbstractTextIO {
         }
 
         return $text;
+    }
+
+    /**
+     * Adds a warning to the response if the provided text is used in another
+     * widget instance
+     * @param \ride\library\widget\WidgetProperties $widgetProperties
+     * @param \ride\web\cms\orm\model\TextModel $textModel
+     * @param \ride\web\cms\text\Text $text Instance of the text
+     * @param string $warning
+     * @return null
+     */
+    protected function warnAboutUsedText(WidgetProperties $widgetProperties, TextModel $model, Text $text, $warning) {
+        if (!isset($text->id) || !$text->id) {
+            return;
+        }
+
+        $widgetId = $widgetProperties->getWidgetId();
+        $node = $widgetProperties->getNode();
+        $rootNode = $node->getRootNode();
+
+        $nodes = $this->nodeModel->getNodesForWidget(TextWidget::NAME, $rootNode->getId());
+        foreach ($nodes as $node) {
+            $nodeWidgetId = $node->getWidgetId();
+            if ($nodeWidgetId == $widgetId) {
+                continue;
+            }
+
+            $nodeWidgetProperties = $node->getWidgetProperties($nodeWidgetId);
+
+            if ($nodeWidgetProperties->getWidgetProperty('io') !== self::NAME) {
+                continue;
+            }
+
+            if ($nodeWidgetProperties->getWidgetProperty('text') !== $text->id) {
+                continue;
+            }
+
+            $message = new Message($warning, Message::TYPE_WARNING);
+
+            $this->response->addMessage($message);
+
+            break;
+        }
     }
 
     /**
