@@ -67,6 +67,7 @@
     "label.parameters.number": "Number",
     "label.parameters.number.description": "Number of parameters to expect",
     "label.properties.unset": "No properties have been set for this widget.",
+    "label.text.existing": "Existing text",
     "label.title": "Title",
     "label.title.update.description": "Use the title of the content as page title",
     "label.title.description": "You can add a title before the query result",

@@ -49,6 +49,13 @@ class OrmTextIO extends AbstractTextIO {
      * @return null
      */
     public function processForm(FormBuilder $formBuilder, Translator $translator, $locale, Text $text) {
+        $model = $this->getModel();
+
+        $formBuilder->addRow('existing', 'select', array(
+            'label' => $translator->translate('label.text.existing'),
+            'options' => array('' => '---') + $model->getDataList(array('locale' => $locale)),
+            'default' => $text->id,
+        ));
         $formBuilder->addRow('version', 'hidden', array(
             'default' => $text->getVersion(),
         ));
@@ -72,24 +79,29 @@ class OrmTextIO extends AbstractTextIO {
             $version = 0;
         }
 
-        foreach ($locales as $locale) {
-            if (!$text instanceof TextData) {
-                $data = $this->getModel()->createData();
-                $data->setFormat($text->getFormat());
-                $data->setText($text->getText());
+        if (isset($submittedData['existing']) && $submittedData['existing'] && $submittedData['existing'] != $text->id) {
+            $widgetProperties->setWidgetProperty(TextWidget::PROPERTY_TEXT, $submittedData['existing']);
+        } else {
+            foreach ($locales as $locale) {
+                if (!$text instanceof TextData) {
+                    $data = $this->getModel()->createData();
+                    $data->setFormat($text->getFormat());
+                    $data->setText($text->getText());
 
-                $text = $data;
+                    $text = $data;
+                }
+
+                $text->id = (integer) $widgetProperties->getWidgetProperty(TextWidget::PROPERTY_TEXT);
+                $text->dataLocale = $locale;
+                $text->setVersion($version);
+
+                $this->getModel()->save($text);
+
+
+                $version = $text->getVersion();
             }
 
-            $text->id = (integer) $widgetProperties->getWidgetProperty(TextWidget::PROPERTY_TEXT);
-            $text->dataLocale = $locale;
-            $text->setVersion($version);
-
-            $this->getModel()->save($text);
-
             $widgetProperties->setWidgetProperty(TextWidget::PROPERTY_TEXT, $text->id);
-
-            $version = $text->getVersion();
         }
     }
 

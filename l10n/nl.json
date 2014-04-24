@@ -67,6 +67,7 @@
     "label.parameters.number": "Aantal",
     "label.parameters.number.description": "Verwacht aantal parameters",
     "label.properties.unset": "Deze widget is nog niet ingesteld.",
+    "label.text.existing": "Bestaande tekst",
     "label.title": "Titel",
     "label.title.update.description": "Gebruikt de titel van de data als pagina titel",
     "label.title.description": "Toon een titel voor de data",
