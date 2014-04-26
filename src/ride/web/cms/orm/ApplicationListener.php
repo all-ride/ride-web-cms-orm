@@ -5,7 +5,7 @@ namespace ride\web\cms\orm;
 use ride\library\event\Event;
 use ride\library\orm\OrmManager;
 
-use ride\web\base\view\MenuItem;
+use ride\web\base\menu\MenuItem;
 
 class ApplicationListener {
 
