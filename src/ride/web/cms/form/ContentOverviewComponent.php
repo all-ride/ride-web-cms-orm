@@ -212,7 +212,7 @@ class ContentOverviewComponent extends AbstractContentComponent {
 	    ));
 	    $builder->addRow('title', 'string', array(
 	        'label' => $translator->translate('label.title'),
-	        'description' => $translator->translate('label.title.description'),
+	        'description' => $translator->translate('label.title.query.description'),
 	    ));
 	    $builder->addRow('filters', 'collection', array(
 	        'type' => 'component',
