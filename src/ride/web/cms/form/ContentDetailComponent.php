@@ -63,7 +63,7 @@ class ContentDetailComponent extends AbstractContentComponent {
         ));
         $builder->addRow('title', 'boolean', array(
             'label' => $translator->translate('label.title'),
-            'description' => $translator->translate('label.title.update.description'),
+            'description' => $translator->translate('label.title.content.description'),
         ));
     }
 
