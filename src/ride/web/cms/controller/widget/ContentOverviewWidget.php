@@ -189,7 +189,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
 //         try {
             $result = $this->getResult($contentProperties, $query);
 
-            $view = $this->getView($contentProperties, $result, $pages, $page);
+            $view = $this->getView($contentProperties, $result, $pages, $page, $arguments);
 //         } catch (Exception $exception) {
 //             $log = $this->zibo->getLog();
 //             if ($log) {
@@ -217,9 +217,10 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
      * @param \ride\web\cms\orm\ContentProperties $properties
      * @param integer $pages
      * @param integer $page
+     * @param array $arguments
      * @return \ride\library\mvc\view\View
      */
-    private function getView(ContentProperties $contentProperties, array $result, $pages = 1, $page = 1) {
+    private function getView(ContentProperties $contentProperties, array $result, $pages = 1, $page = 1, array $arguments = array()) {
         $view = $contentProperties->getView();
 
         $view = $this->dependencyInjector->get('ride\\web\\cms\\view\\widget\\ContentOverviewView', $view);
@@ -259,7 +260,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             $filter['filter']->setVariables($this->filters, $this->model, $filterName, $this->locale, $baseUrl);
         }
 
-        $view->setContent($this->locale, $this->id, $result, $contentProperties, $this->filters, $pagination, $moreUrl);
+        $view->setContent($this->locale, $this->id, $result, $contentProperties, $this->filters, $arguments, $pagination, $moreUrl);
 
         return $view;
     }

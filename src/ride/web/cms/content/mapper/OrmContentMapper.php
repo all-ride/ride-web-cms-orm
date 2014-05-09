@@ -113,14 +113,17 @@ class OrmContentMapper extends AbstractContentMapper {
      * @return mixed
 	 */
     protected function getData($site, $locale, $recursiveDepth, $fetchUnlocalized, $data, $idField = null) {
-        if (!is_scalar($data)) {
+        $isScalar = is_scalar($data);
+        if (!$isScalar && ($data->dataLocale && $data->dataLocale == $locale)) {
             return $data;
-        }
-
-        $id = $data;
-
-        if (!$idField) {
+        } elseif (!$isScalar) {
             $idField = ModelTable::PRIMARY_KEY;
+            $id = $this->model->getReflectionHelper()->getProperty($data, $idField);
+        } else {
+            if (!$idField) {
+                $idField = ModelTable::PRIMARY_KEY;
+            }
+            $id = $data;
         }
 
         $query = $this->model->createQuery($locale);
