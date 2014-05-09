@@ -117,7 +117,7 @@ class GenericOrmContentMapper extends OrmContentMapper {
             ContentProperties::PROPERTY_FORMAT_TEASER => $properties->getContentTeaserFormat(),
             ContentProperties::PROPERTY_FORMAT_IMAGE => $properties->getContentImageFormat(),
             ContentProperties::PROPERTY_FORMAT_DATE => $properties->getContentDateFormat(),
-            self::PROPERTY_URL => rtrim($this->baseScript . $this->node->getRoute($locale), '/') . '/',
+            self::PROPERTY_URL => rtrim($this->node->getUrl($locale, $this->baseScript), '/') . '/',
         );
 	}
 

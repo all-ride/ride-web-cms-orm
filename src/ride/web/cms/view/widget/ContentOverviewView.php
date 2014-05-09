@@ -20,11 +20,12 @@ interface ContentOverviewView extends View {
      * @param \ride\web\cms\orm\ContentProperties $contentProperties Properties
      * for the view
      * @param array $filters Filters for the data
+     * @param array $arguments Used arguments
      * @param \ride\library\html\Pagination $pagination Properties for the
      * pagination
      * @param string $moreUrl URL for the more link
      * @return null
      */
-	public function setContent($locale, $widgetId, array $result, ContentProperties $contentProperties, array $filters, Pagination $pagination = null, $moreUrl = null);
+	public function setContent($locale, $widgetId, array $result, ContentProperties $contentProperties, array $filters, array $arguments = array(), Pagination $pagination = null, $moreUrl = null);
 
 }
