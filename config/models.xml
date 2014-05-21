@@ -1,7 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <models>
     <model name="Text" modelClass="ride\web\cms\orm\model\TextModel" dataClass="ride\web\cms\orm\model\TextData">
-        <field name="text" type="wysiwyg" localized="true" />
+        <field name="name" type="string">
+            <validation name="required" />
+            <option name="scaffold.form.omit" value="1" />
+            <option name="scaffold.search" value="1" />
+            <option name="scaffold.order" value="1" />
+        </field>
+        <field name="title" type="string" localized="true">
+            <option name="label" value="label.title" />
+            <option name="scaffold.search" value="1" />
+        </field>
+        <field name="body" type="wysiwyg" localized="true">
+            <option name="label" value="label.text" />
+            <option name="scaffold.search" value="1" />
+        </field>
+        <field name="image" type="image" localized="true">
+            <option name="label" value="label.image" />
+        </field>
+        <field name="imageAlignment" type="string" localized="true">
+            <option name="label" value="label.alignment.image" />
+            <option name="scaffold.form.control" value="select" />
+            <option name="scaffold.form.select.options" value="{&quot;left&quot;:&quot;Left&quot;,&quot;right&quot;:&quot;Right&quot;}" />
+        </field>
         <field name="format" type="string" localized="true" default="wysiwyg">
             <option name="scaffold.form.omit" value="1" />
         </field>
@@ -15,12 +36,14 @@
             <option name="scaffold.form.omit" value="1" />
         </field>
 
-        <format name="title">{text|striptags|truncate:30}</format>
-        <format name="teaser">{text|striptags|truncate:120}</format>
+        <format name="title">{name}</format>
+        <format name="teaser">{body|striptags|truncate:120}</format>
+        <format name="image">{image}</format>
 
         <option name="behaviour.date" value="true" />
         <option name="behaviour.log" value="true" />
         <option name="behaviour.version" value="true" />
+        <option name="data.list.order.field" value="name" />
         <option name="rest.expose" value="true" />
         <option name="scaffold.expose" value="true" />
         <option name="scaffold.title" value="title.texts" />

@@ -3,6 +3,7 @@
 namespace ride\web\cms\orm\model;
 
 use ride\library\orm\model\GenericModel;
+use ride\library\StringHelper;
 
 /**
  * Model for the texts of the text widget
@@ -44,6 +45,34 @@ class TextModel extends GenericModel {
 		}
 
 		return $logs;
+	}
+
+	/**
+	 * Saves the data in the model
+	 * @param mixed $data
+	 * @return nulls
+	 */
+	public function saveData($data) {
+		// generate a name for the text
+		if ($data->getTitle()) {
+			$data->name = $data->getTitle();
+		} elseif ($data->getBody()) {
+			$strippedBody = strip_tags($data->getBody());
+			if ($strippedBody) {
+				$body = $strippedBody;
+			} else {
+				$body = $data->getBody();
+			}
+
+			$data->name = StringHelper::truncate($body, 30);
+		} elseif ($data->image) {
+			$data->name = $data->getImage();
+		} else {
+			$data->name = 'Text';
+		}
+
+		// perform the actual saving
+		return parent::saveData($data);
 	}
 
 }

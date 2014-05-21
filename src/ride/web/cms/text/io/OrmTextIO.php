@@ -109,7 +109,10 @@ class OrmTextIO extends AbstractTextIO {
         if (!$text instanceof TextData) {
             $data = $this->getModel()->createData();
             $data->setFormat($text->getFormat());
-            $data->setText($text->getText());
+            $data->setTitle($text->getTitle());
+            $data->setBody($text->getBody());
+            $data->setImage($text->getImage());
+            $data->setImageAlignment($text->getImageAlignment());
 
             $text = $data;
         }
@@ -117,6 +120,7 @@ class OrmTextIO extends AbstractTextIO {
         if (isset($submittedData['existing']) && $submittedData['existing'] && $submittedData['existing'] != $text->id) {
             if ($submittedData['existing-new']) {
                 $widgetProperties->setWidgetProperty(TextWidget::PROPERTY_TEXT, 0);
+
                 $version = 0;
             } else {
                 $widgetProperties->setWidgetProperty(TextWidget::PROPERTY_TEXT, $submittedData['existing']);
@@ -193,11 +197,11 @@ class OrmTextIO extends AbstractTextIO {
 
             $nodeWidgetProperties = $node->getWidgetProperties($nodeWidgetId);
 
-            if ($nodeWidgetProperties->getWidgetProperty('io') !== self::NAME) {
+            if ($nodeWidgetProperties->getWidgetProperty(TextWidget::PROPERTY_IO) !== self::NAME) {
                 continue;
             }
 
-            if ($nodeWidgetProperties->getWidgetProperty('text') !== $text->id) {
+            if ($nodeWidgetProperties->getWidgetProperty(TextWidget::PROPERTY_TEXT) !== $text->id) {
                 continue;
             }
 
