@@ -65,7 +65,7 @@ class TextModel extends GenericModel {
 			}
 
 			$data->name = StringHelper::truncate($body, 30);
-		} elseif ($data->image) {
+		} elseif ($data->getImage()) {
 			$data->name = $data->getImage();
 		} else {
 			$data->name = 'Text';
