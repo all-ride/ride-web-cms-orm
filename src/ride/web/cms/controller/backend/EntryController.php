@@ -2,16 +2,21 @@
 
 namespace ride\web\cms\controller\backend;
 
+use ride\library\cms\layout\LayoutModel;
 use ride\library\cms\node\NodeModel;
+use ride\library\cms\theme\ThemeModel;
 use ride\library\i18n\I18n;
+use ride\library\image\ImageUrlGenerator;
 use ride\library\orm\OrmManager;
 use ride\library\validation\exception\ValidationException;
 
 class EntryController extends AbstractNodeTypeController {
 
-    public function formAction(I18n $i18n, $locale, NodeModel $nodeModel, OrmManager $orm, $site, $node = null) {
+    public function formAction(I18n $i18n, $locale, ImageUrlGenerator $imageUrlGenerator, LayoutModel $layoutModel, ThemeModel $themeModel, NodeModel $nodeModel, OrmManager $orm, $site, $node = null) {
         $locales = $i18n->getLocaleCodeList();
         $translator = $i18n->getTranslator();
+        $themes = $themeModel->getThemes();
+        $layouts = $layoutModel->getLayouts();
 
         if ($node) {
             if (!$this->resolveNode($nodeModel, $site, $node, 'entry')) {
@@ -34,6 +39,8 @@ class EntryController extends AbstractNodeTypeController {
             'model' => $node->getEntryModel(),
             'entry' => $node->getEntryId(),
             'route' => $node->getRoute($locale, false),
+            'layout' => $node->getLayout($locale),
+            'theme' => $this->getThemeValueFromNode($node),
             'availableLocales' => $this->getLocalesValueFromNode($node),
         );
 
@@ -75,6 +82,19 @@ class EntryController extends AbstractNodeTypeController {
                 'trim' => array(),
             ),
         ));
+        $form->addRow('theme', 'select', array(
+            'label' => $translator->translate('label.theme'),
+            'description' => $translator->translate('label.theme.description'),
+            'options' => $this->getThemeOptions($node, $translator, $themes),
+        ));
+        $form->addRow('layout', 'option', array(
+            'label' => $translator->translate('label.layout'),
+            'description' => $translator->translate('label.layout.description'),
+            'options' => $this->getLayoutOptions($imageUrlGenerator, $translator, $layouts),
+            'validators' => array(
+                'required' => array(),
+            )
+        ));
         $form->addRow('availableLocales', 'select', array(
             'label' => $translator->translate('label.locales'),
             'description' => $translator->translate('label.locales.available.description'),
@@ -100,6 +120,8 @@ class EntryController extends AbstractNodeTypeController {
 
                 $node->setName($locale, $data['name']);
                 $node->setRoute($locale, $data['route']);
+                $node->setLayout($locale, $data['layout']);
+                $node->setTheme($this->getOptionValueFromForm($data['theme']));
                 $node->setAvailableLocales($this->getOptionValueFromForm($data['availableLocales']));
                 $node->setEntry($data['model'], $data['entry']);
 
