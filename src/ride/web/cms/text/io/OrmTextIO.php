@@ -157,6 +157,7 @@ class OrmTextIO extends AbstractTextIO {
         if ($textId) {
             $query = $model->createQuery($locale);
             $query->setRecursiveDepth(0);
+            $query->setIncludeUnlocalizedData(true);
             $query->addCondition('{id} = %1%', $textId);
 
             $text = $query->queryFirst();
