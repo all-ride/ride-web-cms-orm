@@ -38,7 +38,7 @@ class ContentProperties {
      * Name of the condition setting
      * @var string
      */
-    const PROPERTY_CONDITION = 'condition';
+    const PROPERTY_CONDITION = 'condition.';
 
     /**
      * Name of the order setting
@@ -772,6 +772,7 @@ class ContentProperties {
 	 * Read the properties of the content from the widget properties
 	 * @param \ride\library\widget\WidgetProperties $properties
 	 * @return null
+     * @todo remove default value for condition
 	 */
 	public function getFromWidgetProperties(WidgetProperties $properties, $locale) {
 		$this->modelName = $properties->getWidgetProperty(self::PROPERTY_MODEL_NAME);
@@ -780,7 +781,7 @@ class ContentProperties {
 		$this->isPaginationEnabled = $properties->getWidgetProperty(self::PROPERTY_PAGINATION_ENABLE);
 		$this->paginationRows = $properties->getWidgetProperty(self::PROPERTY_PAGINATION_ROWS);
 		$this->paginationOffset = $properties->getWidgetProperty(self::PROPERTY_PAGINATION_OFFSET);
-		$this->condition = $properties->getWidgetProperty(self::PROPERTY_CONDITION);
+		$this->condition = $properties->getWidgetProperty(self::PROPERTY_CONDITION . $locale, $properties->getWidgetProperty('condition'));
 		$this->order = $properties->getWidgetProperty(self::PROPERTY_ORDER);
 		$this->parameters = $properties->getWidgetProperty(self::PROPERTY_PARAMETERS);
 		$this->parametersNone = $properties->getWidgetProperty(self::PROPERTY_PARAMETERS_NONE);
@@ -846,7 +847,7 @@ class ContentProperties {
         $properties->setWidgetProperty(self::PROPERTY_MODEL_FIELDS, $fields);
         $properties->setWidgetProperty(self::PROPERTY_RECURSIVE_DEPTH, $this->recursiveDepth);
         $properties->setWidgetProperty(self::PROPERTY_INCLUDE_UNLOCALIZED, $this->includeUnlocalized);
-        $properties->setWidgetProperty(self::PROPERTY_CONDITION, $this->condition);
+        $properties->setWidgetProperty(self::PROPERTY_CONDITION . $locale, $this->condition);
         $properties->setWidgetProperty(self::PROPERTY_ORDER, $this->order);
         $properties->setWidgetProperty(self::PROPERTY_PAGINATION_ENABLE, $this->isPaginationEnabled);
         if ($this->isPaginationEnabled) {

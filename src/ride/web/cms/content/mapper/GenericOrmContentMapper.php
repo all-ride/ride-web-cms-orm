@@ -5,7 +5,7 @@ namespace ride\web\cms\content\mapper;
 use ride\library\cms\exception\CmsException;
 use ride\library\cms\node\NodeModel;
 use ride\library\cms\node\Node;
-use ride\library\orm\model\data\format\DataFormatter;
+use ride\library\orm\entry\format\EntryFormatter;
 use ride\library\orm\model\Model;
 use ride\library\widget\WidgetProperties;
 
@@ -43,13 +43,14 @@ class GenericOrmContentMapper extends OrmContentMapper {
 	/**
 	 * Constructs a new content mapper for a detail widget
 	 * @param \ride\library\cms\node\NodeModel $nodeModel
-	 * @param \ride\library\orm\model\Model $model
 	 * @param \ride\library\cms\node\Node $node
+	 * @param \ride\library\orm\model\Model $model
+	 * @param \ride\library\orm\entry\format\EntryFormatter $entryFormatter
 	 * @param \ride\library\widget\WidgetProperties $properties
 	 * @return null
 	 */
-	public function __construct(NodeModel $nodeModel, Node $node, Model $model, DataFormatter $dataFormatter, WidgetProperties $properties) {
-	    parent::__construct($nodeModel, $model, $dataFormatter);
+	public function __construct(NodeModel $nodeModel, Node $node, Model $model, EntryFormatter $entryFormatter, WidgetProperties $properties) {
+	    parent::__construct($nodeModel, $model, $entryFormatter);
 
 	    $this->node = $node;
 	    $this->properties = $properties;
@@ -76,12 +77,12 @@ class GenericOrmContentMapper extends OrmContentMapper {
 	    $includeUnlocalized = $this->arguments[$index][ContentProperties::PROPERTY_INCLUDE_UNLOCALIZED];
 	    $idField = $this->arguments[$index][ContentProperties::PROPERTY_ID_FIELD];
 
-	    $data = $this->getData($site, $locale, $recursiveDepth, $includeUnlocalized, $data, $idField);
-	    if (!$data) {
+	    $entry = $this->getEntry($site, $locale, $recursiveDepth, $includeUnlocalized, $data, $idField);
+	    if (!$entry) {
 	        return null;
 	    }
 
-        $id = $this->reflectionHelper->getProperty($data, $idField);
+        $id = $this->reflectionHelper->getProperty($entry, $idField);
 	    if ($id) {
 	        $url = $this->arguments[$index][self::PROPERTY_URL] . $id;
 	    } else {
@@ -93,7 +94,7 @@ class GenericOrmContentMapper extends OrmContentMapper {
 	    $imageFormat = $this->arguments[$index][ContentProperties::PROPERTY_FORMAT_IMAGE];
 	    $dateFormat = $this->arguments[$index][ContentProperties::PROPERTY_FORMAT_DATE];
 
-	    return $this->getContentFromData($data, $url, $titleFormat, $teaserFormat, $imageFormat, $dateFormat);
+	    return $this->getContentFromEntry($entry, $url, $titleFormat, $teaserFormat, $imageFormat, $dateFormat);
 	}
 
 	/**

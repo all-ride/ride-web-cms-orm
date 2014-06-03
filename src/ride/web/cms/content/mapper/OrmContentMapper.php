@@ -7,7 +7,7 @@ use ride\library\cms\content\Content;
 use ride\library\cms\exception\CmsException;
 use ride\library\cms\node\NodeModel;
 use ride\library\orm\definition\ModelTable;
-use ride\library\orm\model\data\format\DataFormatter;
+use ride\library\orm\entry\format\EntryFormatter;
 use ride\library\orm\model\Model;
 
 /**
@@ -23,9 +23,9 @@ class OrmContentMapper extends AbstractContentMapper {
 
 	/**
 	 * Instance of the data formatter
-	 * @var \ride\library\orm\model\data\format\DataFormatter
+	 * @var \ride\library\orm\entry\format\EntryFormatter
 	 */
-	protected $dataFormatter;
+	protected $entryFormatter;
 
 	/**
 	 * Recursive depth of the query
@@ -68,13 +68,13 @@ class OrmContentMapper extends AbstractContentMapper {
      * @param \ride\library\cms\node\NodeModel $nodeModel Instance of the node
      * model
      * @param \ride\library\orm\model\Model $model Model to map
-     * @param \ride\library\orm\model\data\format\DataFormatter $dataFormatter
+     * @param \ride\library\orm\entry\format\EntryFormatter $entryFormatter
      * @param integer $recursiveDepth Recursive depth for the queries
      * @param boolean|string $fetchUnlocalized Flag to see how unlocalized
      * data is fetched
      * @return null
 	 */
-	public function __construct(NodeModel $nodeModel, Model $model, DataFormatter $dataFormatter, $recursiveDepth = 1, $fetchUnlocalized = null) {
+	public function __construct(NodeModel $nodeModel, Model $model, EntryFormatter $entryFormatter, $recursiveDepth = 1, $fetchUnlocalized = null) {
 	    parent::__construct($nodeModel);
 
         if ($fetchUnlocalized === null) {
@@ -82,7 +82,7 @@ class OrmContentMapper extends AbstractContentMapper {
         }
 
         $this->model = $model;
-        $this->dataFormatter = $dataFormatter;
+        $this->entryFormatter = $entryFormatter;
         $this->recursiveDepth = $recursiveDepth;
         $this->fetchUnlocalized = $fetchUnlocalized;
 	}
@@ -97,51 +97,64 @@ class OrmContentMapper extends AbstractContentMapper {
             throw new CmsException('Could not get the content: provided data is empty');
         }
 
-        $data = $this->getData($site, $locale, $this->recursiveDepth, $this->fetchUnlocalized, $data);
-        if (!$data) {
+        $entry = $this->getEntry($site, $locale, $this->recursiveDepth, $this->fetchUnlocalized, $data);
+        if (!$entry) {
             return null;
         }
 
-        return $this->getContentFromData($data);
+        return $this->getContentFromEntry($entry);
     }
 
 	/**
-     * Get a data object from the model
-     * @param integer|object $data When an object is provided, the object will
-     * be returned. When a primary key is provided,
-     * the data object will be looked up in the model
+     * Get an entry from the model
+     * @param integer|object $entry
      * @return mixed
 	 */
-    protected function getData($site, $locale, $recursiveDepth, $fetchUnlocalized, $data, $idField = null) {
-        $isScalar = is_scalar($data);
-        if (!$isScalar && ($data->dataLocale && $data->dataLocale == $locale)) {
-            return $data;
-        } elseif (!$isScalar) {
+    protected function getEntry($site, $locale, $recursiveDepth, $fetchUnlocalized, $entry, $idField = null) {
+        $entryLocale = null;
+        if ($entry instanceof LocalizedEntry) {
+            $entryLocale = $entry->getLocale();
+            $isObject = true;
+        } elseif (is_object($entry)) {
+            $isObject = true;
+        } else {
+            $isObject = false;
+        }
+
+        if ($isObject && ($entryLocale && $entryLocale == $locale)) {
+            return $entry;
+        } elseif ($isObject) {
             $idField = ModelTable::PRIMARY_KEY;
-            $id = $this->model->getReflectionHelper()->getProperty($data, $idField);
+
+            $id = $this->model->getReflectionHelper()->getProperty($entry, $idField);
         } else {
             if (!$idField) {
                 $idField = ModelTable::PRIMARY_KEY;
             }
-            $id = $data;
+
+            $id = $entry;
+        }
+
+        if ($idField == ModelTable::PRIMARY_KEY) {
+            return $this->model->createProxy($id, $locale);
         }
 
         $query = $this->model->createQuery($locale);
         $query->setRecursiveDepth($recursiveDepth);
         $query->addCondition('{' . $idField . '} = %1%', $id);
         if ($fetchUnlocalized) {
-            $query->setFetchUnlocalizedData(true);
+            $query->setFetchUnlocalized(true);
         }
 
         return $query->queryFirst();
     }
 
     /**
-     * Creates a generic content object from the provided data
-     * @param mixed $data
+     * Creates a generic content object from the provided entry
+     * @param mixed $entry
      * @return \ride\library\cms\content\Content
      */
-    protected function getContentFromData($data, $url = null, $titleFormat = null, $teaserFormat = null, $imageFormat = null, $dateFormat = null) {
+    protected function getContentFromEntry($entry, $url = null, $titleFormat = null, $teaserFormat = null, $imageFormat = null, $dateFormat = null) {
         if (!$this->titleFormat) {
         	$this->initDataFormats();
         }
@@ -151,30 +164,30 @@ class OrmContentMapper extends AbstractContentMapper {
         $date = null;
 
         if ($titleFormat) {
-            $title = $this->dataFormatter->formatData($data, $titleFormat);
+            $title = $this->entryFormatter->formatEntry($entry, $titleFormat);
         } else {
-            $title = $this->dataFormatter->formatData($data, $this->titleFormat);
+            $title = $this->entryFormatter->formatEntry($entry, $this->titleFormat);
         }
 
         if ($teaserFormat) {
-            $teaser = $this->dataFormatter->formatData($data, $teaserFormat);
+            $teaser = $this->entryFormatter->formatEntry($entry, $teaserFormat);
         } elseif ($this->teaserFormat) {
-            $teaser = $this->dataFormatter->formatData($data, $this->teaserFormat);
+            $teaser = $this->entryFormatter->formatEntry($entry, $this->teaserFormat);
         }
 
         if ($imageFormat) {
-            $image = $this->dataFormatter->formatData($data, $imageFormat);
+            $image = $this->entryFormatter->formatEntry($entry, $imageFormat);
         } elseif ($this->imageFormat) {
-            $image = $this->dataFormatter->formatData($data, $this->imageFormat);
+            $image = $this->entryFormatter->formatEntry($entry, $this->imageFormat);
         }
 
         if ($dateFormat) {
-            $date = $this->dataFormatter->formatData($data, $dateFormat);
+            $date = $this->entryFormatter->formatEntry($entry, $dateFormat);
         } elseif ($this->dateFormat) {
-            $date = $this->dataFormatter->formatData($data, $this->dateFormat);
+            $date = $this->entryFormatter->formatEntry($entry, $this->dateFormat);
         }
 
-        return new Content($this->model->getName(), $title, $url, $teaser, $image, $date, $data);
+        return new Content($this->model->getName(), $title, $url, $teaser, $image, $date, $entry);
     }
 
     /**
@@ -183,12 +196,11 @@ class OrmContentMapper extends AbstractContentMapper {
      */
     protected function initDataFormats() {
         $meta = $this->model->getMeta();
-        $modelTable = $meta->getModelTable();
 
-        $this->titleFormat = $modelTable->getDataFormat(DataFormatter::FORMAT_TITLE);
-        $this->teaserFormat = $modelTable->getDataFormat(DataFormatter::FORMAT_TEASER, false);
-        $this->imageFormat = $modelTable->getDataFormat(DataFormatter::FORMAT_IMAGE, false);
-        $this->dateFormat = $modelTable->getDataFormat(DataFormatter::FORMAT_DATE, false);
+        $this->titleFormat = $meta->getFormat(EntryFormatter::FORMAT_TITLE);
+        $this->teaserFormat = $meta->getFormat(EntryFormatter::FORMAT_TEASER);
+        $this->imageFormat = $meta->getFormat(EntryFormatter::FORMAT_IMAGE);
+        $this->dateFormat = $meta->getFormat(EntryFormatter::FORMAT_DATE);
     }
 
 }

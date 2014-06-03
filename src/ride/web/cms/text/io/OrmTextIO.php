@@ -72,11 +72,14 @@ class OrmTextIO extends AbstractTextIO {
     public function processForm(WidgetProperties $widgetProperties, $locale, Translator $translator, Text $text, FormBuilder $formBuilder) {
         $model = $this->getModel();
 
+        $texts = $model->find(null, $locale);
+        $existingOptions = array('' => '---') + $model->getOptionsFromEntries($texts);
+
         $this->warnAboutUsedText($widgetProperties, $model, $text, $translator->translate('warning.cms.text.used'));
 
         $formBuilder->addRow('existing', 'select', array(
             'label' => $translator->translate('label.text.existing'),
-            'options' => array('' => '---') + $model->getDataList(array('locale' => $locale)),
+            'options' => $existingOptions,
             'default' => $text->id,
         ));
         $formBuilder->addRow('existing-new', 'option', array(
@@ -107,7 +110,7 @@ class OrmTextIO extends AbstractTextIO {
         }
 
         if (!$text instanceof TextData) {
-            $data = $this->getModel()->createData();
+            $data = $this->getModel()->createEntry();
             $data->setFormat($text->getFormat());
             $data->setTitle($text->getTitle());
             $data->setBody($text->getBody());
@@ -130,7 +133,7 @@ class OrmTextIO extends AbstractTextIO {
         $text->id = (integer) $widgetProperties->getWidgetProperty(TextWidget::PROPERTY_TEXT);
 
         foreach ($locales as $locale) {
-            $text->dataLocale = $locale;
+            $text->setLocale($locale);
             $text->setVersion($version);
 
             $this->getModel()->save($text);
@@ -156,16 +159,15 @@ class OrmTextIO extends AbstractTextIO {
         $textId = $widgetProperties->getWidgetProperty(TextWidget::PROPERTY_TEXT);
         if ($textId) {
             $query = $model->createQuery($locale);
-            $query->setRecursiveDepth(0);
-            $query->setIncludeUnlocalizedData(true);
+            $query->setIncludeUnlocalized(true);
             $query->addCondition('{id} = %1%', $textId);
 
             $text = $query->queryFirst();
         }
 
         if (!$text) {
-            $text = $model->createData();
-            $text->dataLocale = $locale;
+            $text = $model->createEntry();
+            $text->setLocale($locale);
         }
 
         return $text;
@@ -181,7 +183,7 @@ class OrmTextIO extends AbstractTextIO {
      * @return null
      */
     protected function warnAboutUsedText(WidgetProperties $widgetProperties, TextModel $model, Text $text, $warning) {
-        if (!isset($text->id) || !$text->id) {
+        if (!$text->id) {
             return;
         }
 

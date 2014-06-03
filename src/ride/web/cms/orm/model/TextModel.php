@@ -22,7 +22,7 @@ class TextModel extends GenericModel {
 
 		$logModel = $this->getLogModel();
 
-		return $logModel->getDataByVersion(self::NAME, $id, $version, $locale);
+		return $logModel->getEntryByVersion(self::NAME, $id, $version, $locale);
 	}
 
 	/**
@@ -49,30 +49,30 @@ class TextModel extends GenericModel {
 
 	/**
 	 * Saves the data in the model
-	 * @param mixed $data
+	 * @param mixed $entry
 	 * @return nulls
 	 */
-	public function saveData($data) {
+	public function saveEntry($entry) {
 		// generate a name for the text
-		if ($data->getTitle()) {
-			$data->name = $data->getTitle();
-		} elseif ($data->getBody()) {
-			$strippedBody = strip_tags($data->getBody());
+		if ($entry->getTitle()) {
+			$entry->name = $entry->getTitle();
+		} elseif ($entry->getBody()) {
+			$strippedBody = strip_tags($entry->getBody());
 			if ($strippedBody) {
 				$body = $strippedBody;
 			} else {
-				$body = $data->getBody();
+				$body = $entry->getBody();
 			}
 
-			$data->name = StringHelper::truncate($body, 30);
-		} elseif ($data->getImage()) {
-			$data->name = $data->getImage();
+			$entry->name = StringHelper::truncate($body, 30);
+		} elseif ($entry->getImage()) {
+			$entry->name = $entry->getImage();
 		} else {
-			$data->name = 'Text';
+			$entry->name = 'Text';
 		}
 
 		// perform the actual saving
-		return parent::saveData($data);
+		return parent::saveEntry($entry);
 	}
 
 }
