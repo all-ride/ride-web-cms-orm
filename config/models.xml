@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <models>
-    <model name="Text" modelClass="ride\web\cms\orm\model\TextModel" dataClass="ride\web\cms\orm\model\TextData">
+    <model name="Text" modelClass="ride\web\cms\orm\model\TextModel" entryClass="ride\web\cms\orm\entry\TextEntry">
         <field name="name" type="string">
             <validation name="required" />
             <option name="scaffold.form.omit" value="1" />
@@ -26,15 +26,6 @@
         <field name="format" type="string" localized="true" default="wysiwyg">
             <option name="scaffold.form.omit" value="1" />
         </field>
-        <field name="dateAdded" type="datetime">
-            <option name="scaffold.form.omit" value="1" />
-        </field>
-        <field name="dateModified" type="datetime">
-            <option name="scaffold.form.omit" value="1" />
-        </field>
-        <field name="version" type="integer">
-            <option name="scaffold.form.omit" value="1" />
-        </field>
 
         <format name="title">{name}</format>
         <format name="teaser">{body|striptags|truncate:120}</format>
@@ -43,7 +34,7 @@
         <option name="behaviour.date" value="true" />
         <option name="behaviour.log" value="true" />
         <option name="behaviour.version" value="true" />
-        <option name="data.list.order.field" value="name" />
+        <option name="order.field" value="name" />
         <option name="rest.expose" value="true" />
         <option name="scaffold.expose" value="true" />
         <option name="scaffold.title" value="title.texts" />

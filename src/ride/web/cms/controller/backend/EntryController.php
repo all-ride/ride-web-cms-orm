@@ -47,7 +47,9 @@ class EntryController extends AbstractNodeTypeController {
         $entryOptions = array('' => '---');
         if ($data['model']) {
             $model = $orm->getModel($data['model']);
-            $entryOptions += $model->getDataList(array('locale' => $locale));
+
+            $entries = $model->find(null, $locale);
+            $entryOptions += $model->getOptionsFromEntries($entries);
         }
 
         // build form

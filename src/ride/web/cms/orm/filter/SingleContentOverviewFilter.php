@@ -25,14 +25,15 @@ class SingleContentOverviewFilter implements ContentOverviewFilter {
         $relationModel = $model->getMeta()->getRelationModelName($field);
         $relationModel = $model->getOrmManager()->getModel($relationModel);
 
-        $data = $relationModel->getDataList(array('locale' => $locale));
+        $entries = $relationModel->find(null, $locale);
+        $options = $relationModel->getOptionsFromEntries($entries);
 
-        $filters[$field]['options'] = $data;
+        $filters[$field]['options'] = $options;
         $filters[$field]['urls'] = array();
         $filters[$field]['values'] = array();
         $filters[$field]['empty'] = $this->getUrl($baseUrl, $filters, $field, null);
 
-        foreach ($data as $id => $label) {
+        foreach ($options as $id => $label) {
             $filters[$field]['urls'][$label] = $this->getUrl($baseUrl, $filters, $field, $id);
             $filters[$field]['values'][$label] = $id;
         }
@@ -76,20 +77,16 @@ class SingleContentOverviewFilter implements ContentOverviewFilter {
      * Gets the available options for the filter
      * @param \ride\library\orm\model\Model $model
      * @param string $field Name of the filter field
-     * @return array Label as key, URL as value
+     * @return array Label as key, id as value
     */
     public function getUrls(Model $model, $field, $baseUrl) {
         $relationModel = $model->getMeta()->getRelationModelName($fieldName);
         $relationModel = $model->getOrmManager()->getModel($relationModel);
 
-        $result = array();
+        $entries = $relationModel->find(null, $locale);
+        $options = $relationModel->getOptionsFromEntries($entries);
 
-        $data = $relationModel->getDataList(array('locale' => $locale));
-        foreach ($data as $id => $label) {
-            $result[$label] = $id;
-        }
-
-        return $result;
+        return array_flip($options);
     }
 
     /**

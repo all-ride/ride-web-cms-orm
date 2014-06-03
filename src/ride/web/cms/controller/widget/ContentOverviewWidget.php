@@ -7,7 +7,7 @@ use ride\library\cms\node\NodeModel;
 use ride\library\html\Pagination;
 use ride\library\http\Response;
 use ride\library\orm\query\ModelQuery;
-use ride\library\orm\model\data\format\DataFormatter;
+use ride\library\orm\entry\format\EntryFormatter;
 use ride\library\orm\OrmManager;
 use ride\library\router\Route;
 use ride\library\validation\exception\ValidationException;
@@ -49,25 +49,16 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
     private $model;
 
     /**
-     * Data formatter for ORM data
-     * @var \ride\library\orm\model\data\format\DataFormatter
+     * Formatter for ORM entries
+     * @var \ride\library\orm\entry\format\EntryFormatter
      */
-    private $dataFormatter;
+    private $entryFormatter;
 
     /**
      * Processed filters of the data
      * @var array
      */
     private $filters;
-
-    /**
-     * Construct this widget
-     * @return null
-     */
-    public function __construct() {
-        $this->model = null;
-        $this->dataFormatter = null;
-    }
 
     /**
      * Gets the additional sub routes for this widget
@@ -172,7 +163,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             }
         }
 
-        $this->dataFormatter = $orm->getDataFormatter();
+        $this->entryFormatter = $orm->getEntryFormatter();
         $this->model = $orm->getModel($modelName);
 
         $query = $this->getModelQuery($contentProperties, $this->locale, $page, $arguments);
@@ -186,19 +177,9 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             }
         }
 
-//         try {
-            $result = $this->getResult($contentProperties, $query);
+        $result = $this->getResult($contentProperties, $query);
 
-            $view = $this->getView($contentProperties, $result, $pages, $page, $arguments);
-//         } catch (Exception $exception) {
-//             $log = $this->zibo->getLog();
-//             if ($log) {
-//                 $log->logException($exception);
-//             }
-
-//             $view = null;
-//         }
-
+        $view = $this->getView($contentProperties, $result, $pages, $page, $arguments);
         if (!$view) {
             return;
         }
@@ -285,22 +266,22 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
 
         $titleFormat = $contentProperties->getContentTitleFormat();
         if (!$titleFormat) {
-            $titleFormat = $modelTable->getDataFormat(DataFormatter::FORMAT_TITLE);
+            $titleFormat = $modelTable->getFormat(EntryFormatter::FORMAT_TITLE);
         }
 
         $teaserFormat = $contentProperties->getContentTeaserFormat();
-        if (!$teaserFormat && $modelTable->hasDataFormat(DataFormatter::FORMAT_TEASER)) {
-            $teaserFormat = $modelTable->getDataFormat(DataFormatter::FORMAT_TEASER);
+        if (!$teaserFormat && $modelTable->hasFormat(EntryFormatter::FORMAT_TEASER)) {
+            $teaserFormat = $modelTable->getFormat(EntryFormatter::FORMAT_TEASER);
         }
 
         $imageFormat = $contentProperties->getContentImageFormat();
-        if (!$imageFormat && $modelTable->hasDataFormat(DataFormatter::FORMAT_IMAGE)) {
-            $imageFormat = $modelTable->getDataFormat(DataFormatter::FORMAT_IMAGE);
+        if (!$imageFormat && $modelTable->hasFormat(EntryFormatter::FORMAT_IMAGE)) {
+            $imageFormat = $modelTable->getFormat(EntryFormatter::FORMAT_IMAGE);
         }
 
         $dateFormat = $contentProperties->getContentDateFormat();
-        if (!$dateFormat && $modelTable->hasDataFormat(DataFormatter::FORMAT_DATE)) {
-            $dateFormat = $modelTable->getDataFormat(DataFormatter::FORMAT_DATE);
+        if (!$dateFormat && $modelTable->hasFormat(EntryFormatter::FORMAT_DATE)) {
+            $dateFormat = $modelTable->getFormat(EntryFormatter::FORMAT_DATE);
         }
 
         try {
@@ -310,34 +291,30 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
 
             $nodeModel = $this->dependencyInjector->get('ride\\library\\cms\\node\\NodeModel');
 
-            $mapper = new OrmContentMapper($nodeModel, $this->model, $this->dataFormatter);
+            $mapper = new OrmContentMapper($nodeModel, $this->model, $this->entryFormatter);
         }
 
         $type = $this->model->getName();
-        foreach ($result as $index => $data) {
-            $title = $this->dataFormatter->formatData($data, $titleFormat);
-            $url = $mapper->getUrl($node->getRootNodeId(), $this->locale, $data);
+        foreach ($result as $index => $entry) {
+            $title = $this->entryFormatter->formatEntry($entry, $titleFormat);
+            $url = $mapper->getUrl($node->getRootNodeId(), $this->locale, $entry);
             $teaser = null;
             $image = null;
             $date = null;
 
             if ($teaserFormat) {
-                $teaser = $this->dataFormatter->formatData($data, $teaserFormat);
+                $teaser = $this->entryFormatter->formatEntry($entry, $teaserFormat);
             }
 
-//             if ($data instanceof MediaItem) {
-//                 $image = $data->getImage($this->zibo);
-//             } elseif ($imageFormat) {
             if ($imageFormat) {
-                $image = $this->dataFormatter->formatData($data, $imageFormat);
+                $image = $this->entryFormatter->formatEntry($entry, $imageFormat);
             }
 
             if ($dateFormat) {
-                $date = $this->dataFormatter->formatData($data, $dateFormat);
+                $date = $this->entryFormatter->formatEntry($entry, $dateFormat);
             }
 
-
-            $content = new Content($type, $title, $url, $teaser, $image, $date, $data);
+            $content = new Content($type, $title, $url, $teaser, $image, $date, $entry);
 
             $result[$index] = $content;
         }
@@ -355,11 +332,9 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
      * @return \ride\library\orm\query\ModelQuery
      */
     public function getModelQuery(ContentProperties $contentProperties, $locale, $page = 1, array $arguments) {
-        $includeUnlocalizedData = $contentProperties->getIncludeUnlocalized();
-
         $query = $this->model->createQuery($locale);
         $query->setRecursiveDepth($contentProperties->getRecursiveDepth());
-        $query->setFetchUnlocalizedData($includeUnlocalizedData);
+        $query->setFetchUnlocalized($contentProperties->getIncludeUnlocalized());
 
         $modelFields = $contentProperties->getModelFields();
         if ($modelFields) {
@@ -458,15 +433,6 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
     }
 
     /**
-     * Gets the callback for the properties action
-     * @return null|callback Null if the widget does not implement a properties
-     * action, a callback for the action otherwise
-     */
-    public function getPropertiesCallback() {
-        return array($this, 'propertiesAction');
-    }
-
-    /**
      * Gets a preview of the properties of this widget
      * @return string
      */
@@ -486,7 +452,10 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             $preview .= $translator->translate('label.fields') . ': ' . implode(', ', $fields) . '<br />';
         }
 
-        $preview .= $translator->translate('label.depth.recursive') . ': ' . $contentProperties->getRecursiveDepth() . '<br />';
+        $recursiveDepth = $contentProperties->getRecursiveDepth();
+        if ($recursiveDepth) {
+            $preview .= $translator->translate('label.depth.recursive') . ': ' . $recursiveDepth . '<br />';
+        }
 
         $includeUnlocalized = $contentProperties->getIncludeUnlocalized();
         if ($includeUnlocalized) {

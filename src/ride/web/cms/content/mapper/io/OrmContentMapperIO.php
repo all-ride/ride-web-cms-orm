@@ -80,7 +80,7 @@ class OrmContentMapperIO implements ContentMapperIO {
 
         $this->mappers = array();
 
-        $dataFormatter = $this->orm->getDataFormatter();
+        $entryFormatter = $this->orm->getEntryFormatter();
 
         $nodes = $this->nodeModel->getNodesForWidget('orm.detail');
         foreach ($nodes as $node) {
@@ -99,9 +99,9 @@ class OrmContentMapperIO implements ContentMapperIO {
             $model = $this->orm->getModel($modelName);
 
             if ($model instanceof SearchableModel) {
-                $this->mappers[$modelName] = new SearchableOrmContentMapper($this->nodeModel, $node, $model, $dataFormatter, $widgetProperties);
+                $this->mappers[$modelName] = new SearchableOrmContentMapper($this->nodeModel, $node, $model, $entryFormatter, $widgetProperties);
             } else {
-                $this->mappers[$modelName] = new GenericOrmContentMapper($this->nodeModel, $node, $model, $dataFormatter, $widgetProperties);
+                $this->mappers[$modelName] = new GenericOrmContentMapper($this->nodeModel, $node, $model, $entryFormatter, $widgetProperties);
             }
         }
     }
