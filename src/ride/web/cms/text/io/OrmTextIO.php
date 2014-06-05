@@ -11,7 +11,7 @@ use ride\library\orm\OrmManager;
 use ride\library\widget\WidgetProperties;
 
 use ride\web\cms\controller\widget\TextWidget;
-use ride\web\cms\orm\model\TextData;
+use ride\web\cms\orm\entry\TextEntry;
 use ride\web\cms\orm\model\TextModel;
 use ride\web\cms\text\Text;
 
@@ -102,6 +102,7 @@ class OrmTextIO extends AbstractTextIO {
      */
     public function setText(WidgetProperties $widgetProperties, $locales, Text $text, array $submittedData) {
         $locales = (array) $locales;
+        $model = $this->getModel();
 
         if (isset($submittedData['version'])) {
             $version = $submittedData['version'];
@@ -109,24 +110,38 @@ class OrmTextIO extends AbstractTextIO {
             $version = 0;
         }
 
-        if (!$text instanceof TextData) {
-            $data = $this->getModel()->createEntry();
-            $data->setFormat($text->getFormat());
-            $data->setTitle($text->getTitle());
-            $data->setBody($text->getBody());
-            $data->setImage($text->getImage());
-            $data->setImageAlignment($text->getImageAlignment());
+        if (!$text instanceof TextEntry) {
+            if (isset($submittedData['existing']) && $submittedData['existing']) {
+                $entry = $model->createProxy($submittedData['existing']);
+            } else {
+                $entry = $model->createEntry();
+            }
 
-            $text = $data;
+            $entry->setFormat($text->getFormat());
+            $entry->setTitle($text->getTitle());
+            $entry->setBody($text->getBody());
+            $entry->setImage($text->getImage());
+            $entry->setImageAlignment($text->getImageAlignment());
+
+            $text = $entry;
         }
 
-        if (isset($submittedData['existing']) && $submittedData['existing'] && $submittedData['existing'] != $text->id) {
-            if ($submittedData['existing-new']) {
-                $widgetProperties->setWidgetProperty(TextWidget::PROPERTY_TEXT, 0);
+        if ($submittedData['existing-new']) {
+            $widgetProperties->setWidgetProperty(TextWidget::PROPERTY_TEXT, 0);
+            $version = 0;
+        } elseif (isset($submittedData['existing']) && $submittedData['existing']) {
+            $widgetProperties->setWidgetProperty(TextWidget::PROPERTY_TEXT, $submittedData['existing']);
 
-                $version = 0;
-            } else {
-                $widgetProperties->setWidgetProperty(TextWidget::PROPERTY_TEXT, $submittedData['existing']);
+            if ($text->id != $submittedData['existing']) {
+                $entry = $model->createProxy($submittedData['existing']);
+
+                $entry->setFormat($text->getFormat());
+                $entry->setTitle($text->getTitle());
+                $entry->setBody($text->getBody());
+                $entry->setImage($text->getImage());
+                $entry->setImageAlignment($text->getImageAlignment());
+
+                $text = $entry;
             }
         }
 

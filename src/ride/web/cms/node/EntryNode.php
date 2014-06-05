@@ -78,7 +78,7 @@ class EntryNode extends PageNode {
 
         $model = $this->orm->getModel($model);
 
-        $this->entries[$locale] = $model->getById($id, 1, $locale);
+        $this->entries[$locale] = $model->getById($id, $locale);
 
         return $this->entries[$locale];
     }
