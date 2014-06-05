@@ -47,6 +47,10 @@ class EntryVariableParser extends AbstractVariableParser {
             return null;
         }
 
+        if (count($tokens) === 2 && $tokens[1] === 'url') {
+            return $node->getUrl($this->textParser->getLocale(), $this->textParser->getBaseUrl());
+        }
+
         $value = $node->getEntry();
 
         $numTokens = count($tokens);

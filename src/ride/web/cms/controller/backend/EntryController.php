@@ -106,7 +106,6 @@ class EntryController extends AbstractNodeTypeController {
                 'required' => array(),
             ),
         ));
-        $form->setRequest($this->request);
 
         // process form
         $form = $form->build();
