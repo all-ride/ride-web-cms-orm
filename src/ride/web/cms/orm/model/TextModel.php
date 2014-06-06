@@ -2,6 +2,8 @@
 
 namespace ride\web\cms\orm\model;
 
+use ride\library\orm\definition\ModelTable;
+use ride\library\orm\entry\proxy\EntryProxy;
 use ride\library\orm\model\GenericModel;
 use ride\library\StringHelper;
 
@@ -53,6 +55,10 @@ class TextModel extends GenericModel {
 	 * @return nulls
 	 */
 	public function saveEntry($entry) {
+		if (!$this->willSave($entry)) {
+		    return;
+		}
+
 		// generate a name for the text
 		if ($entry->getTitle()) {
 			$entry->name = $entry->getTitle();
