@@ -36,6 +36,7 @@
         <option name="behaviour.version" value="true" />
         <option name="order.field" value="name" />
         <option name="rest.expose" value="true" />
+        <option name="scaffold.controller" value="ride\web\cms\controller\TextScaffoldController" />
         <option name="scaffold.expose" value="true" />
         <option name="scaffold.title" value="title.texts" />
     </model>
