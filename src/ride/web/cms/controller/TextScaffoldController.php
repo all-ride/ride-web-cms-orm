@@ -5,6 +5,7 @@ namespace ride\web\cms\controller;
 use ride\library\form\Form;
 use ride\library\html\table\decorator\ValueDecorator;
 use ride\library\html\table\FormTable;
+use ride\library\orm\model\Model;
 
 use ride\web\cms\decorator\TextUsageDecorator;
 use ride\web\orm\controller\ScaffoldController;
