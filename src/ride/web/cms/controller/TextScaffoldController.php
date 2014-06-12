@@ -39,7 +39,10 @@ class TextScaffoldController extends ScaffoldController {
         $nodeModel = $this->dependencyInjector->get('ride\\library\\cms\\node\\NodeModel');
         $nodeUrl = $this->getUrl('cms.node.layout.region', array('site' => '%site%', 'node' => '%node%', 'region' => '%region%', 'locale' => $this->locale));
 
-        $table->addDecorator(new ValueDecorator(null, new TextUsageDecorator($nodeModel, $this->locale, $nodeUrl)));
+        $decorator = new ValueDecorator(null, new TextUsageDecorator($nodeModel, $this->locale, $nodeUrl));
+        $decorator->setCellClass('text-usage');
+
+        $table->addDecorator($decorator);
     }
 
 }
