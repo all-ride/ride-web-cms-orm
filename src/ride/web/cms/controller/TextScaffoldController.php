@@ -12,19 +12,17 @@ use ride\web\orm\controller\ScaffoldController;
 class TextScaffoldController extends ScaffoldController {
 
     /**
-     * Sets the index view for the scaffolding to the response
-     * @param \ride\library\html\table\FormTable $table Table with the model data
-     * @param \ride\library\form\Form $form Form of the table
-     * @param array $locales Available locale codes
-     * @param string $locale Code of the current locale
-     * @param array $actions Array with the URL of the action as key and the label for the action as value
+     * Constructs a new scaffold controller
+     * @param string $modelName Name of the model to scaffold, if not provided the name will be retrieved from the class name
+     * @param boolean|array $search Boolean to enable or disable the search functionality, an array of field names to query is also allowed to enable the search
+     * @param boolean|array $order Boolean to enable or disable the order functionality, an array of field names to order is also allowed to enable the order
+     * @param boolean|array $pagination Boolean to enable or disable the pagination functionality, an array of pagination options is also allowed to enable the pagination
      * @return null
      */
-    protected function setIndexView(FormTable $table, Form $form, array $locales, $locale, array $actions = null) {
-        $view = parent::setIndexView($table, $form, $locales, $locale, $actions);
-        $view->addJavascript('js/text.admin.js');
+    public function __construct(Model $model, $search = true, $order = true, $pagination = true) {
+        parent::__construct($model, $search, $order, $pagination);
 
-        return $view;
+        $this->templateIndex = 'orm/scaffold/index.text';
     }
 
     /**
