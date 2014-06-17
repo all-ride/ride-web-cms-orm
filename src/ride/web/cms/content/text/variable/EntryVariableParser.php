@@ -75,7 +75,7 @@ class EntryVariableParser extends AbstractVariableParser {
             }
         } elseif ($tokens[0] === 'entry') {
             // lookup entry node
-            $modelName = $tokens[1];
+            $modelName = ucfirst($tokens[1]);
             $entryId = $tokens[2];
 
             $nodes = $this->nodeModel->getNodes();
