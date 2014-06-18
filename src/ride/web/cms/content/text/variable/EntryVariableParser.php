@@ -46,16 +46,12 @@ class EntryVariableParser extends AbstractVariableParser {
      */
     public function parseVariable($variable) {
         $tokens = explode('.', $variable);
+
         $numTokens = count($tokens);
 
-        if ($numTokens < 3) {
-            return;
-        }
-
-        $value = null;
-
-        if ($tokens[0] === 'node' && $tokens[1] === 'var') {
-            // parse properties of the first entry node
+        if ($numTokens < 2) {
+            return null;
+        } elseif ($numTokens === 2 || $tokens[0] === 'node' && $tokens[1] === 'var') {
             $node = $this->textParser->getNode();
             while ($node && !$node instanceof EntryNode) {
                 $node = $node->getParentNode();
@@ -64,7 +60,24 @@ class EntryVariableParser extends AbstractVariableParser {
             if (!$node) {
                 return null;
             }
+        }
 
+        $value = null;
+
+        if ($tokens[0] === 'entry' && $numTokens === 2) {
+            switch ($tokens[1]) {
+                case NodeVariableParser::VARIABLE_URL:
+                    $value = $this->textParser->getBaseUrl() . $node->getRoute($this->textParser->getLocale());
+
+                    break;
+                case NodeVariableParser::VARIABLE_NAME:
+                    $value = $node->getName($this->textParser->getLocale());
+
+                    break;
+            }
+
+            return $value;
+        } elseif ($tokens[0] === 'node' && $tokens[1] === 'var' && $numTokens > 2) {
             $value = $node->getEntry();
 
             for ($i = 2; $i < $numTokens; $i++) {
