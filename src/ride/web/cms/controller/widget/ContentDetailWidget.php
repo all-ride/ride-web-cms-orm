@@ -48,7 +48,7 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
         }
 
         return array(
-            new Route('/%id%', array($this, 'indexAction'), null, array('head', 'get')),
+            new Route('/%id%', array($this, 'indexAction'), null, array('head', 'get', 'post')),
         );
     }
 
