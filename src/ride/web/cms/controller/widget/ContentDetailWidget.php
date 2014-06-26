@@ -112,6 +112,10 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
             }
         }
 
+        if ($content && $content->data instanceof LocalizedEntry && !$content->data->isLocalized() && !$contentProperties->getIncludeUnlocalized()) {
+            $content = null;
+        }
+
         if (!$content) {
             if ($action != ContentProperties::NONE_IGNORE) {
                 $this->response->setStatusCode(Response::STATUS_CODE_NOT_FOUND);
