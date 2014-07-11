@@ -26,7 +26,7 @@
         "ride/lib-widget": ">=0.1.1",
         "ride/web-base": ">=0.4.0",
         "ride/web-cms": ">=0.5.0",
-        "ride/web-cms-widgets": ">=0.10.0",
+        "ride/web-cms-widgets": ">=0.11.0",
         "ride/web-orm": ">=0.4.0"
     },
     "autoload": {
