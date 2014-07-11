@@ -11,6 +11,10 @@
             <option name="label" value="label.title" />
             <option name="scaffold.search" value="1" />
         </field>
+        <field name="subtitle" type="string" localized="true">
+            <option name="label" value="label.subtitle" />
+            <option name="scaffold.search" value="1" />
+        </field>
         <field name="body" type="wysiwyg" localized="true">
             <option name="label" value="label.text" />
             <option name="scaffold.search" value="1" />
@@ -26,6 +30,9 @@
         <field name="format" type="string" localized="true" default="wysiwyg">
             <option name="scaffold.form.omit" value="1" />
         </field>
+        <field name="callToActions" model="TextCta" relation="hasMany" dependant="true">
+            <option name="label" value="label.cta" />
+        </field>
 
         <format name="title">{name}</format>
         <format name="teaser">{body|striptags|truncate:120}</format>
@@ -39,5 +46,34 @@
         <option name="scaffold.controller" value="ride\web\cms\controller\TextScaffoldController" />
         <option name="scaffold.expose" value="true" />
         <option name="scaffold.title" value="title.texts" />
+    </model>
+    <model name="TextCta">
+        <field name="text" model="Text" relation="belongsTo">
+            <validation name="required" />
+            <option name="label" value="label.text" />
+        </field>
+        <field name="label" type="string" localized="true">
+            <validation name="required" />
+            <option name="label" value="label.label" />
+            <option name="scaffold.order" value="1" />
+            <option name="scaffold.search" value="1" />
+        </field>
+        <field name="node" type="string" localized="true">
+            <option name="label" value="label.node" />
+            <option name="scaffold.search" value="1" />
+        </field>
+        <field name="url" type="string" localized="true">
+            <option name="label" value="label.url" />
+            <option name="scaffold.search" value="1" />
+        </field>
+        <field name="icon" type="string">
+            <option name="label" value="label.icon" />
+            <option name="scaffold.search" value="1" />
+        </field>
+
+        <format name="title">{label}</format>
+        <format name="teaser">{node}{url}</format>
+
+        <option name="behaviour.log" value="true" />
     </model>
 </models>

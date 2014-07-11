@@ -70,7 +70,7 @@ class OrmTextIO extends AbstractTextIO {
      * @return null
      */
     public function processForm(WidgetProperties $widgetProperties, $locale, Translator $translator, Text $text, FormBuilder $formBuilder) {
-        $model = $this->getModel();
+        $model = $this->orm->getTextModel();
 
         $texts = $model->find(null, $locale);
         $existingOptions = array('' => '---') + $model->getOptionsFromEntries($texts);
@@ -80,15 +80,25 @@ class OrmTextIO extends AbstractTextIO {
         $formBuilder->addRow('existing', 'select', array(
             'label' => $translator->translate('label.text.existing'),
             'options' => $existingOptions,
-            'default' => $text->id,
         ));
         $formBuilder->addRow('existing-new', 'option', array(
             'label' => '',
             'description' => $translator->translate('label.text.existing.new'),
         ));
-        $formBuilder->addRow('version', 'hidden', array(
-            'default' => $text->getVersion(),
-        ));
+        $formBuilder->addRow('version', 'hidden');
+    }
+
+    /**
+     * Hook to process the form data
+     * @param \ride\web\cms\text\Text $text Instance of the text
+     * @param array $data Data to preset the form
+     * @return null
+     */
+    public function processFormData(Text $text, array &$data) {
+        if ($text instanceof TextEntry) {
+            $data['existing'] = $text->getId();
+            $data['version'] = $text->getVersion();
+        }
     }
 
     /**
@@ -101,8 +111,9 @@ class OrmTextIO extends AbstractTextIO {
      * @return null
      */
     public function setText(WidgetProperties $widgetProperties, $locales, Text $text, array $submittedData) {
+        $model = $this->orm->getTextModel();
+
         $locales = (array) $locales;
-        $model = $this->getModel();
 
         if (isset($submittedData['version'])) {
             $version = $submittedData['version'];
@@ -119,6 +130,7 @@ class OrmTextIO extends AbstractTextIO {
 
             $entry->setFormat($text->getFormat());
             $entry->setTitle($text->getTitle());
+            $entry->setSubtitle($text->getSubtitle());
             $entry->setBody($text->getBody());
             $entry->setImage($text->getImage());
             $entry->setImageAlignment($text->getImageAlignment());
@@ -126,10 +138,31 @@ class OrmTextIO extends AbstractTextIO {
             $text = $entry;
         }
 
+        $cta = array();
+        if (isset($submittedData[TextWidget::PROPERTY_CTA])) {
+            $ctaModel = $this->orm->getTextCtaModel();
+
+            foreach ($submittedData[TextWidget::PROPERTY_CTA] as $index => $action) {
+                $ctaEntry = $ctaModel->createEntry();
+                $ctaEntry->setLabel($action['label']);
+                $ctaEntry->setUrl($action['url']);
+
+                if (isset($action['node'])) {
+                    $ctaEntry->setNode($action['node']);
+                }
+                if (isset($action['icon'])) {
+                    $ctaEntry->setIcon($action['icon']);
+                }
+
+                $cta[$index] = $ctaEntry;
+            }
+        }
+        $text->setCallToActions($cta);
+
         if ($submittedData['existing-new']) {
             $widgetProperties->setWidgetProperty(TextWidget::PROPERTY_TEXT, 0);
             $version = 0;
-        } elseif (isset($submittedData['existing']) && $submittedData['existing']) {
+        } elseif ($submittedData['existing']) {
             $widgetProperties->setWidgetProperty(TextWidget::PROPERTY_TEXT, $submittedData['existing']);
 
             if ($text->id != $submittedData['existing']) {
@@ -137,9 +170,11 @@ class OrmTextIO extends AbstractTextIO {
 
                 $entry->setFormat($text->getFormat());
                 $entry->setTitle($text->getTitle());
+                $entry->setSubtitle($text->getSubtitle());
                 $entry->setBody($text->getBody());
                 $entry->setImage($text->getImage());
                 $entry->setImageAlignment($text->getImageAlignment());
+                $entry->setCallToActions($text->getCallToActions());
 
                 $text = $entry;
             }
@@ -151,7 +186,7 @@ class OrmTextIO extends AbstractTextIO {
             $text->setLocale($locale);
             $text->setVersion($version);
 
-            $this->getModel()->save($text);
+            $model->save($text);
 
             $version = $text->getVersion();
         }
@@ -167,11 +202,41 @@ class OrmTextIO extends AbstractTextIO {
      * @return \ride\web\cms\text\Text
      */
     public function getText(WidgetProperties $widgetProperties, $locale) {
-        $model = $this->getModel();
+        $model = $this->orm->getTextModel();
 
         $text = null;
 
         $textId = $widgetProperties->getWidgetProperty(TextWidget::PROPERTY_TEXT);
+        if ($textId) {
+            $query = $model->createQuery($locale);
+            $query->setIncludeUnlocalized(true);
+            $query->addCondition('{id} = %1%', $textId);
+
+            $text = $query->queryFirst();
+        }
+
+        if (!$text) {
+            $text = $model->createEntry();
+            $text->setLocale($locale);
+        }
+
+        return $text;
+    }
+
+    /**
+     * Gets an existing text from the data source
+     * @param \ride\library\widget\WidgetProperties $widgetProperties Instance
+     * of the widget properties
+     * @param string $locale Code of the current locale
+     * @param string $textId Identifier of the text
+     * @param boolean $isNew Flag to see if this text will be a new text
+     * @return \ride\web\cms\text\Text Instance of the text
+     */
+    public function getExistingText(WidgetProperties $widgetProperties, $locale, $textId, $isNew) {
+        $model = $this->orm->getTextModel();
+
+        $text = null;
+
         if ($textId) {
             $query = $model->createQuery($locale);
             $query->setIncludeUnlocalized(true);
@@ -229,14 +294,6 @@ class OrmTextIO extends AbstractTextIO {
 
             break;
         }
-    }
-
-    /**
-     * Gets the text model
-     * @return \ride\web\cms\orm\model\TextModel
-     */
-    protected function getModel() {
-        return $this->orm->getTextModel();
     }
 
 }
