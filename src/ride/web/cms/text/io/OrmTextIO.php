@@ -70,12 +70,12 @@ class OrmTextIO extends AbstractTextIO {
      * @return null
      */
     public function processForm(WidgetProperties $widgetProperties, $locale, Translator $translator, Text $text, FormBuilder $formBuilder) {
-        $model = $this->orm->getTextModel();
+        $textModel = $this->orm->getTextModel();
 
-        $texts = $model->find(null, $locale);
-        $existingOptions = array('' => '---') + $model->getOptionsFromEntries($texts);
+        $texts = $textModel->find(null, $locale);
+        $existingOptions = array('' => '---') + $textModel->getOptionsFromEntries($texts);
 
-        $this->warnAboutUsedText($widgetProperties, $model, $text, $translator->translate('warning.cms.text.used'));
+        $this->warnAboutUsedText($widgetProperties, $textModel, $text, $translator->translate('warning.cms.text.used'));
 
         $formBuilder->addRow('existing', 'select', array(
             'label' => $translator->translate('label.text.existing'),
@@ -111,7 +111,8 @@ class OrmTextIO extends AbstractTextIO {
      * @return null
      */
     public function setText(WidgetProperties $widgetProperties, $locales, Text $text, array $submittedData) {
-        $model = $this->orm->getTextModel();
+        $textModel = $this->orm->getTextModel();
+        $ctaModel = $this->orm->getTextCtaModel();
 
         $locales = (array) $locales;
 
@@ -123,9 +124,9 @@ class OrmTextIO extends AbstractTextIO {
 
         if (!$text instanceof TextEntry) {
             if (isset($submittedData['existing']) && $submittedData['existing']) {
-                $entry = $model->createProxy($submittedData['existing']);
+                $entry = $textModel->createProxy($submittedData['existing']);
             } else {
-                $entry = $model->createEntry();
+                $entry = $textModel->createEntry();
             }
 
             $entry->setFormat($text->getFormat());
@@ -138,27 +139,6 @@ class OrmTextIO extends AbstractTextIO {
             $text = $entry;
         }
 
-        $cta = array();
-        if (isset($submittedData[TextWidget::PROPERTY_CTA])) {
-            $ctaModel = $this->orm->getTextCtaModel();
-
-            foreach ($submittedData[TextWidget::PROPERTY_CTA] as $index => $action) {
-                $ctaEntry = $ctaModel->createEntry();
-                $ctaEntry->setLabel($action['label']);
-                $ctaEntry->setUrl($action['url']);
-
-                if (isset($action['node'])) {
-                    $ctaEntry->setNode($action['node']);
-                }
-                if (isset($action['icon'])) {
-                    $ctaEntry->setIcon($action['icon']);
-                }
-
-                $cta[$index] = $ctaEntry;
-            }
-        }
-        $text->setCallToActions($cta);
-
         if ($submittedData['existing-new']) {
             $widgetProperties->setWidgetProperty(TextWidget::PROPERTY_TEXT, 0);
             $version = 0;
@@ -166,7 +146,7 @@ class OrmTextIO extends AbstractTextIO {
             $widgetProperties->setWidgetProperty(TextWidget::PROPERTY_TEXT, $submittedData['existing']);
 
             if ($text->id != $submittedData['existing']) {
-                $entry = $model->createProxy($submittedData['existing']);
+                $entry = $textModel->createProxy($submittedData['existing']);
 
                 $entry->setFormat($text->getFormat());
                 $entry->setTitle($text->getTitle());
@@ -174,7 +154,6 @@ class OrmTextIO extends AbstractTextIO {
                 $entry->setBody($text->getBody());
                 $entry->setImage($text->getImage());
                 $entry->setImageAlignment($text->getImageAlignment());
-                $entry->setCallToActions($text->getCallToActions());
 
                 $text = $entry;
             }
@@ -183,10 +162,31 @@ class OrmTextIO extends AbstractTextIO {
         $text->id = (integer) $widgetProperties->getWidgetProperty(TextWidget::PROPERTY_TEXT);
 
         foreach ($locales as $locale) {
+            $cta = array();
+            if (isset($submittedData[TextWidget::PROPERTY_CTA])) {
+                foreach ($submittedData[TextWidget::PROPERTY_CTA] as $index => $action) {
+                    $ctaEntry = $ctaModel->createEntry();
+                    $ctaEntry->setId($action['id']);
+                    $ctaEntry->setLabel($action['label']);
+                    $ctaEntry->setUrl($action['url']);
+                    $ctaEntry->setLocale($locale);
+
+                    if (isset($action['node'])) {
+                        $ctaEntry->setNode($action['node']);
+                    }
+                    if (isset($action['icon'])) {
+                        $ctaEntry->setIcon($action['icon']);
+                    }
+
+                    $cta[$index] = $ctaEntry;
+                }
+            }
+
+            $text->setCallToActions($cta);
             $text->setLocale($locale);
             $text->setVersion($version);
 
-            $model->save($text);
+            $textModel->save($text);
 
             $version = $text->getVersion();
         }
@@ -202,13 +202,13 @@ class OrmTextIO extends AbstractTextIO {
      * @return \ride\web\cms\text\Text
      */
     public function getText(WidgetProperties $widgetProperties, $locale) {
-        $model = $this->orm->getTextModel();
+        $textModel = $this->orm->getTextModel();
 
         $text = null;
 
         $textId = $widgetProperties->getWidgetProperty(TextWidget::PROPERTY_TEXT);
         if ($textId) {
-            $query = $model->createQuery($locale);
+            $query = $textModel->createQuery($locale);
             $query->setIncludeUnlocalized(true);
             $query->addCondition('{id} = %1%', $textId);
 
@@ -216,7 +216,7 @@ class OrmTextIO extends AbstractTextIO {
         }
 
         if (!$text) {
-            $text = $model->createEntry();
+            $text = $textModel->createEntry();
             $text->setLocale($locale);
         }
 
@@ -233,12 +233,12 @@ class OrmTextIO extends AbstractTextIO {
      * @return \ride\web\cms\text\Text Instance of the text
      */
     public function getExistingText(WidgetProperties $widgetProperties, $locale, $textId, $isNew) {
-        $model = $this->orm->getTextModel();
+        $textModel = $this->orm->getTextModel();
 
         $text = null;
 
         if ($textId) {
-            $query = $model->createQuery($locale);
+            $query = $textModel->createQuery($locale);
             $query->setIncludeUnlocalized(true);
             $query->addCondition('{id} = %1%', $textId);
 
@@ -246,7 +246,7 @@ class OrmTextIO extends AbstractTextIO {
         }
 
         if (!$text) {
-            $text = $model->createEntry();
+            $text = $textModel->createEntry();
             $text->setLocale($locale);
         }
 
@@ -262,7 +262,7 @@ class OrmTextIO extends AbstractTextIO {
      * @param string $warning
      * @return null
      */
-    protected function warnAboutUsedText(WidgetProperties $widgetProperties, TextModel $model, Text $text, $warning) {
+    protected function warnAboutUsedText(WidgetProperties $widgetProperties, TextModel $textModel, Text $text, $warning) {
         if (!$text->id) {
             return;
         }
