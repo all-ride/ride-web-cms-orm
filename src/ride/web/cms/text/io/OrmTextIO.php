@@ -174,8 +174,8 @@ class OrmTextIO extends AbstractTextIO {
                     if (isset($action['node'])) {
                         $ctaEntry->setNode($action['node']);
                     }
-                    if (isset($action['icon'])) {
-                        $ctaEntry->setIcon($action['icon']);
+                    if (isset($action['type'])) {
+                        $ctaEntry->setType($action['type']);
                     }
 
                     $cta[$index] = $ctaEntry;

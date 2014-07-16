@@ -66,8 +66,8 @@
             <option name="label" value="label.url" />
             <option name="scaffold.search" value="1" />
         </field>
-        <field name="icon" type="string">
-            <option name="label" value="label.icon" />
+        <field name="type" type="string">
+            <option name="label" value="label.type" />
             <option name="scaffold.search" value="1" />
         </field>
 
