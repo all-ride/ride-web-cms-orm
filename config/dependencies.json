@@ -7,6 +7,11 @@
         },
         {
             "interfaces": "ride\\library\\cms\\widget\\Widget",
+            "class": "ride\\web\\cms\\controller\\widget\\CommentsWidget",
+            "id": "orm.comments"
+        },
+        {
+            "interfaces": "ride\\library\\cms\\widget\\Widget",
             "class": "ride\\web\\cms\\controller\\widget\\ContentOverviewWidget",
             "id": "orm.overview"
         },
