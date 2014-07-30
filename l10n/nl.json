@@ -1,10 +1,4 @@
 {
-    "label.approved": "Goedgekeurd",
-    "label.client": "Client",
-    "label.comment": "Commentaar",
-    "label.comments.anonymous": "Anonieme gebruikers toestaan",
-    "label.comments.approval": "Goedkeuring nodig alvorens commentaar te publiceren",
-    "label.comments.finish.description": "Node waarnaar doorverwezen wordt als een commentaar gepost wordt. Laat dit veld leeg om op de huidige pagina te blijven.",
     "label.condition": "Voorwaarde",
     "label.condition.description": "Voorwaarde expressie van de query",
     "label.content.overview.filter.and": "Meerdere waardes (en)",
@@ -30,7 +24,6 @@
     "label.format.teaser.description": "Overschrijf het teaserformaat van het model",
     "label.format.title": "Titel formaat",
     "label.format.title.description": "Overschrijf het titel formaat van het model",
-    "label.locale": "Taal",
     "label.message.result.empty": "Leeg resultaat",
     "label.message.result.empty.description": "Geef een boodschap die getoond moet worden als het resultaat leeg is",
     "label.model": "Model",
@@ -82,7 +75,6 @@
     "label.type": "Type",
     "label.unlocalized": "Localizatie",
     "label.unlocalized.description": "Data in andere talen opnemen als deze niet bestaat in de huidige taal",
-    "label.user": "Gebruiker",
     "label.view": "Beeld",
     "label.view.description": "Selecteer een voorgedefiniëerd beeld",
     "label.view.block": "Blokken",
@@ -91,8 +83,6 @@
     "label.view.gallery": "Galerij",
     "label.view.list": "Lijst",
     "label.widget.properties.unset": "Deze widget werd nog niet ingesteld.",
-    "success.comment.posted": "Je commentaar werd gepost op %entry%",
-    "success.comment.posted.approval": "Je commentaar op %entry% werd verstuurd en wacht op goedkeuring",
     "title.condition": "Voorwaarde",
     "title.formats.data": "Data Formaten",
     "title.order": "Sortering",
@@ -102,7 +92,6 @@
     "title.texts": "Teksten",
     "title.view": "Beeld",
     "warning.cms.text.used": "Deze tekst wordt ook gebruikt in andere tekst blokken. Het wijzigen van deze tekst zal ook die blokken treffen.",
-    "widget.orm.comments": "Commentaar",
     "widget.orm.detail": "Data detail",
     "widget.orm.overview": "Data overzicht"
 }

@@ -1,10 +1,4 @@
 {
-    "label.approved": "Approved",
-    "label.client": "Client",
-    "label.comment": "Comment",
-    "label.comments.anonymous": "Allow anonymous comments",
-    "label.comments.approval": "Comments need approval before being published",
-    "label.comments.finish.description": "Node to redirect to after a comment has been posted, leave empty to stay on the current page",
     "label.condition": "Condition",
     "label.condition.description": "ORM condition expression for the query",
     "label.content.overview.filter.and": "Multiple values (and)",
@@ -30,7 +24,6 @@
     "label.format.teaser.description": "Override the teaser format of the model",
     "label.format.title": "Title format",
     "label.format.title.description": "Override the title format of the model",
-    "label.locale": "Language",
     "label.message.result.empty": "No results",
     "label.message.result.empty.description": "Enter a message shown when the result is empty",
     "label.model": "Model",
@@ -82,7 +75,6 @@
     "label.type": "Type",
     "label.unlocalized": "Localization",
     "label.unlocalized.description": "Include data which is not localized in the current locale",
-    "label.user": "User",
     "label.view": "View",
     "label.view.description": "Select one of the predefined views",
     "label.view.block": "Blocks",
@@ -91,8 +83,6 @@
     "label.view.gallery": "Gallery",
     "label.view.list": "List",
     "label.widget.properties.unset": "No properties have been set for this widget.",
-    "success.comment.posted": "You have posted a comment on %entry%",
-    "success.comment.posted.approval": "Your comment on %entry% has been sent succesfully and awaits approval.",
     "title.condition": "Condition",
     "title.formats.data": "Data Formats",
     "title.order": "Order",
@@ -102,7 +92,6 @@
     "title.texts": "Texts",
     "title.view": "View",
     "warning.cms.text.used": "This text is also used in one or more other text blocks. Changing this text will affect those blocks as well.",
-    "widget.orm.comments": "Comments",
     "widget.orm.detail": "Content Detail",
     "widget.orm.overview": "Content Overview"
 }
