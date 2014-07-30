@@ -11,7 +11,6 @@
     ],
     "require": {
         "ride/app-orm": ">=0.2.0",
-        "ride/app-orm-comment": ">=0.1.0",
         "ride/lib-cms": ">=0.10.1",
         "ride/lib-common": ">=0.4.0",
         "ride/lib-event": ">=0.3.2",
