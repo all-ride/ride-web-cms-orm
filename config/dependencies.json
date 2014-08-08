@@ -103,6 +103,24 @@
                     ]
                 }
             ]
+        },
+        {
+            "class": "ride\\web\\cms\\controller\\TextScaffoldController",
+            "calls": [
+                {
+                    "method": "__construct",
+                    "arguments": [
+                        {
+                            "name": "model",
+                            "type": "call",
+                            "properties": {
+                                "interface": "ride\\library\\orm\\OrmManager",
+                                "method": "getTextModel"
+                            }
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }
