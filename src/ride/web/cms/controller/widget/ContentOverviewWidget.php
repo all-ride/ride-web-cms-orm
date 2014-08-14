@@ -359,8 +359,10 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
         foreach ($filters as $filter) {
             $filterValue = $this->request->getQueryParameter($filter['field']);
 
-            $this->filters[$filter['field']] = array('filter' => $this->dependencyInjector->get('ride\\web\\cms\\orm\\filter\\ContentOverviewFilter', $filter['type']));
-            $this->filters[$filter['field']]['type'] = $filter['type'];
+            $this->filters[$filter['field']] = array(
+                'type' => $filter['type'],
+                'filter' => $this->dependencyInjector->get('ride\\web\\cms\\orm\\filter\\ContentOverviewFilter', $filter['type']),
+            );
             $this->filters[$filter['field']]['value'] = $this->filters[$filter['field']]['filter']->applyQuery($this->model, $query, $filter['field'], $filterValue);
         }
 
