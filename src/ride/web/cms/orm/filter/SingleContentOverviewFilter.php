@@ -16,26 +16,36 @@ class SingleContentOverviewFilter implements ContentOverviewFilter {
      * Gets the available options for the filter
      * @param array $filters Filters to update
      * @param \ride\library\orm\model\Model $model
-     * @param string $field Name of the filter field
+     * @param string $fieldName Name of the filter field
      * @param string $locale Code of the current locale
      * @param string $baseUrl Base URL
      * @return null
      */
-    public function setVariables(array &$filters, Model $model, $field, $locale, $baseUrl) {
-        $relationModel = $model->getMeta()->getRelationModelName($field);
-        $relationModel = $model->getOrmManager()->getModel($relationModel);
+    public function setVariables(array &$filters, Model $model, $fieldName, $locale, $baseUrl) {
+        $meta = $model->getMeta();
 
-        $entries = $relationModel->find(null, $locale);
+        $relationModelName = $meta->getRelationModelName($fieldName);
+        $relationModel = $model->getOrmManager()->getModel($relationModelName);
+
+        $options = array();
+
+        $field = $meta->getField($fieldName);
+        $condition = $field->getOption('scaffold.form.condition');
+        if ($condition) {
+            $options['condition'] = array($condition);
+        }
+
+        $entries = $relationModel->find($options, $locale);
         $options = $relationModel->getOptionsFromEntries($entries);
 
-        $filters[$field]['options'] = $options;
-        $filters[$field]['urls'] = array();
-        $filters[$field]['values'] = array();
-        $filters[$field]['empty'] = $this->getUrl($baseUrl, $filters, $field, null);
+        $filters[$fieldName]['options'] = $options;
+        $filters[$fieldName]['urls'] = array();
+        $filters[$fieldName]['values'] = array();
+        $filters[$fieldName]['empty'] = $this->getUrl($baseUrl, $filters, $fieldName, null);
 
         foreach ($options as $id => $label) {
-            $filters[$field]['urls'][$label] = $this->getUrl($baseUrl, $filters, $field, $id);
-            $filters[$field]['values'][$label] = $id;
+            $filters[$fieldName]['urls'][$label] = $this->getUrl($baseUrl, $filters, $fieldName, $id);
+            $filters[$fieldName]['values'][$label] = $id;
         }
     }
 
