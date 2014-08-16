@@ -77,6 +77,7 @@
     "label.unlocalized.description": "Include data which is not localized in the current locale",
     "label.view": "View",
     "label.view.description": "Select one of the predefined views",
+    "label.view.alphabet": "Alphabet",
     "label.view.block": "Blocks",
     "label.view.cloud": "Cloud",
     "label.view.detail": "Detail",

@@ -27,6 +27,11 @@
         },
         {
             "interfaces": "ride\\web\\cms\\view\\widget\\ContentOverviewView",
+            "class": "ride\\web\\cms\\view\\widget\\predefined\\ContentAlphabetView",
+            "id": "alphabet"
+        },
+        {
+            "interfaces": "ride\\web\\cms\\view\\widget\\ContentOverviewView",
             "class": "ride\\web\\cms\\view\\widget\\predefined\\ContentCloudView",
             "id": "cloud"
         },
