@@ -77,6 +77,7 @@
     "label.unlocalized.description": "Data in andere talen opnemen als deze niet bestaat in de huidige taal",
     "label.view": "Beeld",
     "label.view.description": "Selecteer een voorgedefiniëerd beeld",
+    "label.view.alphabet": "Alfabet",
     "label.view.block": "Blokken",
     "label.view.cloud": "Wolk",
     "label.view.detail": "Detail",

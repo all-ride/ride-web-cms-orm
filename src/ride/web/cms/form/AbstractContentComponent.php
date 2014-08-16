@@ -206,11 +206,7 @@ abstract class AbstractContentComponent extends AbstractComponent {
 
 	    $options = array();
 	    foreach ($models as $modelName => $model) {
-	        if (!$model->getMeta()->getOption('scaffold.expose')) {
-    	        unset($options[$modelName]);
-	        } else {
-    	        $options[$modelName] = $modelName;
-	        }
+	        $options[$modelName] = $modelName;
 	    }
 
 	    return $options;
