@@ -98,11 +98,7 @@ class OrmContentMapperIO implements ContentMapperIO {
 
             $model = $this->orm->getModel($modelName);
 
-            if ($model instanceof SearchableModel) {
-                $this->mappers[$modelName] = new SearchableOrmContentMapper($this->nodeModel, $node, $model, $entryFormatter, $widgetProperties);
-            } else {
-                $this->mappers[$modelName] = new GenericOrmContentMapper($this->nodeModel, $node, $model, $entryFormatter, $widgetProperties);
-            }
+            $this->mappers[$modelName] = new GenericOrmContentMapper($this->nodeModel, $node, $model, $entryFormatter, $widgetProperties);
         }
     }
 
