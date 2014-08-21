@@ -67,7 +67,7 @@ class FieldServiceController extends AbstractController {
 	 */
     public function relationFieldsAction(FieldService $fieldService, $model) {
         if ($model) {
-        	$fields = $fieldService->getRelationFields($model);
+        	$fields = $fieldService->getFields($model, true, true, 1);
         } else {
             $fields = array();
         }

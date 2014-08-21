@@ -140,11 +140,13 @@ class ContentOverviewComponent extends AbstractContentComponent {
 	 * @return null
 	 */
 	public function prepareForm(FormBuilder $builder, array $options) {
+            $data = $options['data'];
+
 	    parent::prepareForm($builder, $options);
 
-	    if ($this->data) {
-	        $modelName = $this->data->getModelName();
-	        $recursiveDepth = $this->data->getRecursiveDepth();
+	    if ($data) {
+	        $modelName = $data->getModelName();
+	        $recursiveDepth = $data->getRecursiveDepth();
 	    } else {
 	        $modelName = null;
 	        $recursiveDepth = 1;
@@ -153,7 +155,7 @@ class ContentOverviewComponent extends AbstractContentComponent {
 	    $translator = $options['translator'];
 
 	    $filterComponent = new ContentOverviewFilterComponent();
-	    $filterComponent->setFields($this->fieldService->getRelationFields($modelName));
+	    $filterComponent->setFields($this->fieldService->getFields($modelName, true, true, $recursiveDepth));
 	    $filterComponent->setTypes($this->contentOverviewFilters);
 
 	    $builder->addRow('condition', 'text', array(

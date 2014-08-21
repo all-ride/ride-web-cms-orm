@@ -14,12 +14,12 @@ interface ContentOverviewFilter {
      * Gets the available options for the filter
      * @param array $filters Filters to update
      * @param \ride\library\orm\model\Model $model
-     * @param string $field Name of the filter field
+     * @param string $name Name of the filter
      * @param string $locale Code of the current locale
      * @param string $baseUrl Base URL
      * @return null
      */
-    public function setVariables(array &$filters, Model $model, $field, $locale, $baseUrl);
+    public function setVariables(array &$filters, Model $model, $name, $locale, $baseUrl);
 
     /**
      * Applies the filter to the provided query

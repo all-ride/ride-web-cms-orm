@@ -47,6 +47,16 @@ class ContentOverviewFilterComponent extends AbstractComponent {
     public function prepareForm(FormBuilder $builder, array $options) {
         $translator = $options['translator'];
 
+        $builder->addRow('name', 'string', array(
+            'label' => $translator->translate('label.name'),
+            'filters' => array(
+                'trim' => array(),
+                'safeString' => array(),
+            ),
+            'validators' => array(
+                'required' => array(),
+            )
+        ));
         $builder->addRow('field', 'select', array(
             'label' => $translator->translate('label.field'),
             'options' => $this->fields,

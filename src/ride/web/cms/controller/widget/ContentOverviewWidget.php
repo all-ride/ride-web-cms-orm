@@ -357,13 +357,14 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
 
         $filters = $contentProperties->getFilters();
         foreach ($filters as $filter) {
-            $filterValue = $this->request->getQueryParameter($filter['field']);
+            $filterValue = $this->request->getQueryParameter($filter['name']);
 
-            $this->filters[$filter['field']] = array(
+            $this->filters[$filter['name']] = array(
                 'type' => $filter['type'],
+                'field' => $filter['field'],
                 'filter' => $this->dependencyInjector->get('ride\\web\\cms\\orm\\filter\\ContentOverviewFilter', $filter['type']),
             );
-            $this->filters[$filter['field']]['value'] = $this->filters[$filter['field']]['filter']->applyQuery($this->model, $query, $filter['field'], $filterValue);
+            $this->filters[$filter['name']]['value'] = $this->filters[$filter['name']]['filter']->applyQuery($this->model, $query, $filter['field'], $filterValue);
         }
 
         $order = $contentProperties->getOrder();
@@ -474,7 +475,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
         $filters = $contentProperties->getFilters();
         if ($filters) {
             foreach ($filters as $index => $filter) {
-                $filters[$index] = $filter['field'] . ' (' . $filter['type'] . ')';
+                $filters[$index] = $filter['name'] . ' (' . $filter['type'] . ': ' . $filter['field'] . ')';
             }
 
             $preview .= $translator->translate('label.filters') . ': ' . implode(', ', $filters) . '<br />';

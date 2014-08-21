@@ -127,10 +127,12 @@ abstract class AbstractContentComponent extends AbstractComponent {
 	 * @return null
 	 */
 	public function prepareForm(FormBuilder $builder, array $options) {
+            $data = $options['data'];
+
 	    $translator = $options['translator'];
 
-	    if ($this->data) {
-            $modelName = $this->data->getModelName();
+	    if ($data) {
+                $modelName = $data->getModelName();
 	    } else {
 	        $modelName = null;
 	    }
