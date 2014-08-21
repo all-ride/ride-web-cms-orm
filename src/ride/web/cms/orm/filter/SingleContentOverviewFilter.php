@@ -71,7 +71,7 @@ class SingleContentOverviewFilter extends AbstractContentOverviewFilter {
         $filters[$name]['options'] = $options;
         $filters[$name]['urls'] = array();
         $filters[$name]['values'] = array();
-        $filters[$name]['empty'] = $this->getUrl($baseUrl, $filters, $fieldName, null);
+        $filters[$name]['empty'] = $this->getUrl($baseUrl, $filters, $name, null);
 
         foreach ($options as $id => $label) {
             $filters[$name]['urls'][$label] = $this->getUrl($baseUrl, $filters, $name, $id);
