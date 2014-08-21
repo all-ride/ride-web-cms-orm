@@ -46,12 +46,14 @@ class ContentDetailComponent extends AbstractContentComponent {
      * @return null
      */
     public function prepareForm(FormBuilder $builder, array $options) {
+        $data = $options['data'];
+
         parent::prepareForm($builder, $options);
 
         $translator = $options['translator'];
 
-        if ($this->data) {
-            $modelName = $this->data->getModelName();
+        if ($data) {
+            $modelName = $data->getModelName();
         } else {
             $modelName = null;
         }

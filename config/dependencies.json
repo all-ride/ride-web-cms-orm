@@ -46,6 +46,11 @@
             "id": "single"
         },
         {
+            "interfaces": "ride\\web\\cms\\orm\\filter\\ContentOverviewFilter",
+            "class": "ride\\web\\cms\\orm\\filter\\DateContentOverviewFilter",
+            "id": "date"
+        },
+        {
             "class": "ride\\library\\cms\\content\\ContentFacade",
             "extends": "cms",
             "id": "cms",

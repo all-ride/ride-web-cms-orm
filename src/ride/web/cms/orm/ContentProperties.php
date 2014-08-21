@@ -809,11 +809,11 @@ class ContentProperties {
 		if ($filters) {
 		    $filters = explode(self::SEPARATOR, $filters);
 		    foreach ($filters as $filter) {
-		        list($filterType, $filterField) = explode(':', $filter, 2);
+		        list($filterName, $filterType, $filterField) = explode(':', $filter);
 
-		        $this->filters[$filterField] = array('type' => $filterType, 'field' => $filterField);
+		        $this->filters[$filterName] = array('name' => $filterName, 'type' => $filterType, 'field' => $filterField);
 		    }
-	    }
+                }
 
 		$fieldsString = $properties->getWidgetProperty(self::PROPERTY_MODEL_FIELDS);
 		if (!$fieldsString) {
@@ -900,13 +900,13 @@ class ContentProperties {
         if (is_array($filters)) {
             $filterValues = array();
             foreach ($filters as $filter) {
-                $filterValues[] = $filter['type'] . ':' . $filter['field'];
+                $filterValues[] = $filter['name'] . ':' . $filter['type'] . ':' . $filter['field'];
             }
 
             $properties->setWidgetProperty(self::PROPERTY_FILTERS, implode(self::SEPARATOR, $filterValues));
         } else {
             $properties->setWidgetProperty(self::PROPERTY_FILTERS, null);
         }
-	}
+    }
 
 }

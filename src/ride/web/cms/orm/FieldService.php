@@ -53,17 +53,27 @@ class FieldService {
         $fields = $meta->getFields();
 
         foreach ($fields as $fieldName => $field) {
-            if (!$includeRelationFields || $field instanceof PropertyField) {
+            if ($field instanceof PropertyField) {
                 $options[$fieldName] = $fieldName;
 
                 continue;
             }
 
-            if (!($includeHasFields || $field instanceof BelongsToField)) {
+            if (!$includeRelationFields) {
                 continue;
             }
 
-            if ($recursiveDepth != '1') {
+            $isBelongsTo = $field instanceof BelongsToField;
+
+            if ($isBelongsTo) {
+                $options[$fieldName] = $fieldName;
+            }
+
+            if (!$isBelongsTo && !$includeHasFields) {
+                continue;
+            }
+
+            if (!$isBelongsTo && $recursiveDepth != '1') {
                 $options[$fieldName] = $fieldName;
 
                 continue;
