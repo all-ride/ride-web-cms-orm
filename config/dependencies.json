@@ -51,6 +51,11 @@
             "id": "date"
         },
         {
+            "interfaces": "ride\\web\\cms\\orm\\filter\\ContentOverviewFilter",
+            "class": "ride\\web\\cms\\orm\\filter\\CalendarContentOverviewFilter",
+            "id": "calendar"
+        },
+        {
             "class": "ride\\library\\cms\\content\\ContentFacade",
             "extends": "cms",
             "id": "cms",

@@ -8,7 +8,7 @@ use ride\library\orm\model\Model;
 use ride\library\orm\query\ModelQuery;
 
 /**
- * Implementation for a single value filter for the content overview widget
+ * Implementation for a date filter for the content overview widget
  */
 class DateContentOverviewFilter extends AbstractContentOverviewFilter {
 
@@ -38,15 +38,36 @@ class DateContentOverviewFilter extends AbstractContentOverviewFilter {
      * @return string|array Value of the filter
      */
     public function applyQuery(Model $model, ModelQuery $query, $fieldName, $value = null) {
-        $isArray = is_array($value);
-        if ($value === null || ($isArray && !$value)) {
+        if ($value === null || (is_array($value) && !$value)) {
             return null;
         }
 
         $from = null;
         $until = null;
+        $this->getPeriodFromValue($value, $from, $until);
 
-        if (count($value) === 1) {
+        if ($from) {
+            $query->addCondition('{' . $fieldName . '} >= %1%', $from);
+        }
+
+        if ($until) {
+            $query->addCondition('{' . $fieldName . '} <= %1%', $until);
+        }
+
+        return $value;
+    }
+
+    /**
+     * Gets the filter period from the filter value
+     * @param string|array $value
+     * @param integer $from
+     * @param integer $until
+     * @return null
+     */
+    protected function getPeriodFromValue($value, &$from, &$until) {
+        $isArray = is_array($value);
+
+        if (!$isArray || count($value) === 1) {
             if ($isArray) {
                 $value = array_shift($value);
             }
@@ -86,15 +107,6 @@ class DateContentOverviewFilter extends AbstractContentOverviewFilter {
                 $until = mktime(23, 59, 59, 12, 31, $tokens[0]);
             }
         }
-
-        if ($from) {
-            $query->addCondition('{' . $fieldName . '} >= %1%', $from);
-        }
-        if ($until) {
-            $query->addCondition('{' . $fieldName . '} <= %1%', $until);
-        }
-
-        return $value;
     }
 
 }
