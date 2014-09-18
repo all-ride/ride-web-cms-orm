@@ -1,46 +1,44 @@
 <?php
 
-namespace ride\web\cms\view\widget\predefined;
+namespace ride\web\cms\orm\processor;
 
 use ride\library\orm\OrmManager;
 
-use ride\web\cms\view\widget\AbstractContentOverviewView;
+use ride\web\mvc\view\TemplateView;
 use ride\web\orm\taxonomy\TaxonomyTerm;
 
 /**
- * View for a taxonomy term cloud
+ * View processor for a cloud content overview
  */
-class ContentCloudView extends AbstractContentOverviewView {
-
-    /**
-     * Path to the template of this view
-     * @var string
-     */
-    const TEMPLATE = 'cms/widget/orm/cloud';
+class CloudViewProcessor implements ViewProcessor {
 
     /**
      * Constructs a new taxonomy term cloud view
      * @param \ride\library\orm\OrmManager $orm Instance of the ORM
      * @return null
      */
-    public function __construct(OrmManager $orm) {
+    public function __construct(OrmManager $orm, $steps = 10) {
         $this->orm = $orm;
-        $this->steps = 10;
-
-        parent::__construct();
+        $this->steps = $steps;
     }
 
     /**
-     * Hook to process the content set to this view
+     * Processes the view for a specific template
+     * @parma \ride\web\mvc\view\TemplateView $view
      * @return null
      */
-    protected function processContent() {
+    public function processView(TemplateView $view) {
+        $template = $view->getTemplate();
+        $result = $template->get('result');
+        if (!$result) {
+            return;
+        }
+
         $model = $this->orm->getTaxonomyTermModel();
 
         $minWeight = 999999;
         $maxWeight = -1;
 
-        $result = $this->template->get('result');
         foreach ($result as $index => $content) {
             if (!$content->data instanceof TaxonomyTerm) {
                 unset($result[$index]);
@@ -58,7 +56,7 @@ class ContentCloudView extends AbstractContentOverviewView {
             $content->data->weightClass = $this->calculateWeightClass($content->data->weight, $minWeight, $maxWeight);
         }
 
-        $this->template->set('result', $result);
+        $template->set('result', $result);
     }
 
     /**

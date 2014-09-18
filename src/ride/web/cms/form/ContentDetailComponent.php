@@ -52,16 +52,18 @@ class ContentDetailComponent extends AbstractContentComponent {
 
         $translator = $options['translator'];
 
-        if ($data) {
-            $modelName = $data->getModelName();
-        } else {
-            $modelName = null;
+        $modelName = $data->getModelName();
+        if (!$modelName) {
+            $modelOptions = $builder->getRow('model')->getOption('options');
+            $modelName = reset($modelOptions);
         }
+
+        $fieldIdOptions = $this->fieldService->getUniqueFields($modelName);
 
         $builder->addRow('field-id', 'select', array(
             'label' => $translator->translate('label.field.id'),
             'description' => $translator->translate('label.field.id.description'),
-            'options' => $this->fieldService->getUniqueFields($modelName),
+            'options' => $fieldIdOptions,
         ));
         $builder->addRow('title', 'boolean', array(
             'label' => $translator->translate('label.title'),

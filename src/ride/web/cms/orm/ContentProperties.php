@@ -10,29 +10,29 @@ use ride\library\widget\WidgetProperties;
  */
 class ContentProperties {
 
-	/**
-	 * Name of the model name setting
-	 * @var string
-	 */
-	const PROPERTY_MODEL_NAME = 'model';
+    /**
+     * Name of the model name setting
+     * @var string
+     */
+    const PROPERTY_MODEL_NAME = 'model';
 
-	/**
-	 * Name of the model fields setting
-	 * @var string
-	 */
-	const PROPERTY_MODEL_FIELDS = 'fields';
+    /**
+     * Name of the model fields setting
+     * @var string
+     */
+    const PROPERTY_MODEL_FIELDS = 'fields';
 
-	/**
-	 * Name of the recursive depth setting
-	 * @var string
-	 */
-	const PROPERTY_RECURSIVE_DEPTH = 'depth';
+    /**
+     * Name of the recursive depth setting
+     * @var string
+     */
+    const PROPERTY_RECURSIVE_DEPTH = 'depth';
 
-	/**
-	 * Name of the include unlocalized setting
-	 * @var string
-	 */
-	const PROPERTY_INCLUDE_UNLOCALIZED = 'include.unlocalized';
+    /**
+     * Name of the include unlocalized setting
+     * @var string
+     */
+    const PROPERTY_INCLUDE_UNLOCALIZED = 'include.unlocalized';
 
     /**
      * Name of the condition setting
@@ -46,173 +46,179 @@ class ContentProperties {
      */
     const PROPERTY_ORDER = 'order';
 
-	/**
-	 * Name of the pagination enabled setting
-	 * @var string
-	 */
-	const PROPERTY_PAGINATION_ENABLE = 'pagination.enable';
+    /**
+     * Name of the pagination enabled setting
+     * @var string
+     */
+    const PROPERTY_PAGINATION_ENABLE = 'pagination.enable';
 
-	/**
-	 * Name of the pagination rows setting
-	 * @var string
-	 */
-	const PROPERTY_PAGINATION_ROWS = 'pagination.rows';
+    /**
+     * Name of the pagination rows setting
+     * @var string
+     */
+    const PROPERTY_PAGINATION_ROWS = 'pagination.rows';
 
-	/**
-	 * Name of the pagination offset setting
-	 * @var string
-	 */
-	const PROPERTY_PAGINATION_OFFSET = 'pagination.offset';
+    /**
+     * Name of the pagination offset setting
+     * @var string
+     */
+    const PROPERTY_PAGINATION_OFFSET = 'pagination.offset';
 
-	/**
-	 * Name of the pagination show setting
-	 * @var string
-	 */
-	const PROPERTY_PAGINATION_SHOW = 'pagination.show';
+    /**
+     * Name of the pagination show setting
+     * @var string
+     */
+    const PROPERTY_PAGINATION_SHOW = 'pagination.show';
 
-	/**
-	 * Name of the pagination ajax setting
-	 * @var string
-	 */
-	const PROPERTY_PAGINATION_AJAX = 'pagination.ajax';
+    /**
+     * Name of the pagination ajax setting
+     * @var string
+     */
+    const PROPERTY_PAGINATION_AJAX = 'pagination.ajax';
 
-	/**
-	 * Name of the more enabled setting
-	 * @var string
-	 */
-	const PROPERTY_MORE_SHOW = 'more.show.';
+    /**
+     * Name of the more enabled setting
+     * @var string
+     */
+    const PROPERTY_MORE_SHOW = 'more.show.';
 
-	/**
-	 * Name of the more node setting
-	 * @var string
-	 */
-	const PROPERTY_MORE_NODE = 'more.node.';
+    /**
+     * Name of the more node setting
+     * @var string
+     */
+    const PROPERTY_MORE_NODE = 'more.node.';
 
-	/**
-	 * Name of the more label setting
-	 * @var string
-	 */
-	const PROPERTY_MORE_LABEL = 'more.label.';
+    /**
+     * Name of the more label setting
+     * @var string
+     */
+    const PROPERTY_MORE_LABEL = 'more.label.';
 
-	/**
-	 * Name of the parameters type setting
-	 * @var string
-	 */
-	const PROPERTY_PARAMETERS = 'parameters';
+    /**
+     * Name of the parameters type setting
+     * @var string
+     */
+    const PROPERTY_PARAMETERS = 'parameters';
 
-	/**
-	 * Name of the no parameters action
-	 * @var string
-	 */
-	const PROPERTY_PARAMETERS_NONE = 'parameters.none';
+    /**
+     * Name of the no parameters action
+     * @var string
+     */
+    const PROPERTY_PARAMETERS_NONE = 'parameters.none';
 
-	/**
-	 * Name of the id field setting
-	 * @var string
-	 */
-	const PROPERTY_ID_FIELD = 'field.id';
+    /**
+     * Name of the id field setting
+     * @var string
+     */
+    const PROPERTY_ID_FIELD = 'field.id';
 
-	/**
-	 * Name of the filters field setting
-	 * @var string
-	 */
-	const PROPERTY_FILTERS = 'filters';
+    /**
+     * Name of the filters field setting
+     * @var string
+     */
+    const PROPERTY_FILTERS = 'filters';
 
-	/**
-	 * Name of the view class setting
-	 * @var string
-	 */
-	const PROPERTY_VIEW = 'view';
+    /**
+     * Name of the template setting
+     * @var string
+     */
+    const PROPERTY_TEMPLATE = 'template';
 
-	/**
-	 * Name of the title format setting
-	 * @var string
-	 */
-	const PROPERTY_FORMAT_TITLE = 'format.title';
+    /**
+     * Name of the template setting
+     * @var string
+     */
+    const PROPERTY_VIEW_PROCESSOR = 'view.processor';
 
-	/**
-	 * Name of the teaser format setting
-	 * @var string
-	 */
-	const PROPERTY_FORMAT_TEASER = 'format.teaser';
+    /**
+     * Name of the title format setting
+     * @var string
+     */
+    const PROPERTY_FORMAT_TITLE = 'format.title';
 
-	/**
-	 * Name of the image format setting
-	 * @var string
-	 */
-	const PROPERTY_FORMAT_IMAGE = 'format.image';
+    /**
+     * Name of the teaser format setting
+     * @var string
+     */
+    const PROPERTY_FORMAT_TEASER = 'format.teaser';
 
-	/**
-	 * Name of the date format setting
-	 * @var string
-	 */
-	const PROPERTY_FORMAT_DATE = 'format.date';
+    /**
+     * Name of the image format setting
+     * @var string
+     */
+    const PROPERTY_FORMAT_IMAGE = 'format.image';
 
-	/**
-	 * Name of the title setting
-	 * @var string
-	 */
-	const PROPERTY_TITLE = 'title.';
+    /**
+     * Name of the date format setting
+     * @var string
+     */
+    const PROPERTY_FORMAT_DATE = 'format.date';
 
-	/**
-	 * Name of the empty result message setting
-	 * @var string
-	 */
-	const PROPERTY_EMPTY_RESULT_MESSAGE = 'message.result.empty.';
+    /**
+     * Name of the title setting
+     * @var string
+     */
+    const PROPERTY_TITLE = 'title.';
 
-	/**
-	 * Separator a list property
-	 * @var string
-	 */
-	const SEPARATOR = ',';
+    /**
+     * Name of the empty result message setting
+     * @var string
+     */
+    const PROPERTY_EMPTY_RESULT_MESSAGE = 'message.result.empty.';
 
-	/**
-	 * 404 no parameters action
-	 * @var string
-	 */
-	const NONE_404 = '404';
+    /**
+     * Separator a list property
+     * @var string
+     */
+    const SEPARATOR = ',';
 
-	/**
-	 * Ignore no parameters action
-	 * @var string
-	 */
-	const NONE_IGNORE = 'ignore';
+    /**
+     * 404 no parameters action
+     * @var string
+     */
+    const NONE_404 = '404';
 
-	/**
-	 * Predefined view type
-	 * @var string
-	 */
-	const VIEW_TYPE_PREDEFINED = 'predefined';
+    /**
+     * Ignore no parameters action
+     * @var string
+     */
+    const NONE_IGNORE = 'ignore';
 
-	/**
-	 * Custom view type
-	 * @var string
-	 */
-	const VIEW_TYPE_CUSTOM = 'custom';
+    /**
+     * Predefined view type
+     * @var string
+     */
+    const VIEW_TYPE_PREDEFINED = 'predefined';
 
-	/**
-	 * Name of the model to query
-	 * @var string
-	 */
-	private $modelName;
+    /**
+     * Custom view type
+     * @var string
+     */
+    const VIEW_TYPE_CUSTOM = 'custom';
 
-	/**
-	 * Array with the fields to select, null to select all
-	 * @var array
-	 */
-	private $modelFields;
+    /**
+     * Name of the model to query
+     * @var string
+     */
+    private $modelName;
 
-	/**
-	 * Recursive depth for the relations of the model
-	 * @var integer
-	 */
-	private $recursiveDepth;
+    /**
+     * Array with the fields to select, null to select all
+     * @var array
+     */
+    private $modelFields;
 
-	/**
-	 * Include unlocalized data flag for the query
-	 * @var string
-	 */
-	private $includeUnlocalized;
+    /**
+     * Recursive depth for the relations of the model
+     * @var integer
+     */
+    private $recursiveDepth;
+
+    /**
+     * Include unlocalized data flag for the query
+     * @var string
+     */
+    private $includeUnlocalized;
 
     /**
      * Expression for the condition
@@ -232,182 +238,188 @@ class ContentProperties {
      */
     private $order;
 
-	/**
-	 * Flag to see if pagination is enabled
-	 * @var boolean
-	 */
-	private $isPaginationEnabled;
+    /**
+     * Flag to see if pagination is enabled
+     * @var boolean
+     */
+    private $isPaginationEnabled;
 
-	/**
-	 * Number of rows per page
-	 * @var integer
-	 */
-	private $paginationRows;
+    /**
+     * Number of rows per page
+     * @var integer
+     */
+    private $paginationRows;
 
-	/**
-	 * Offset for the pagination
-	 * @var integer
-	 */
-	private $paginationOffset;
+    /**
+     * Offset for the pagination
+     * @var integer
+     */
+    private $paginationOffset;
 
-	/**
-	 * Flag to see if the pagination should be showed
-	 * @var boolean
-	 */
-	private $showPagination;
+    /**
+     * Flag to see if the pagination should be showed
+     * @var boolean
+     */
+    private $showPagination;
 
-	/**
-	 * Flag to see if the pagination should be done with ajax
-	 * @var boolean
-	 */
-	private $useAjaxForPagination;
+    /**
+     * Flag to see if the pagination should be done with ajax
+     * @var boolean
+     */
+    private $useAjaxForPagination;
 
-	/**
-	 * Flag to see if the more link shouls be showed
-	 * @var boolean
-	 */
-	private $showMore;
+    /**
+     * Flag to see if the more link shouls be showed
+     * @var boolean
+     */
+    private $showMore;
 
-	/**
-	 * Node to link to for the more link
-	 * @var integer
-	 */
-	private $moreNode;
+    /**
+     * Node to link to for the more link
+     * @var integer
+     */
+    private $moreNode;
 
-	/**
-	 * Label for the more link
-	 * @var string
-	 */
-	private $moreLabel;
+    /**
+     * Label for the more link
+     * @var string
+     */
+    private $moreLabel;
 
-	/**
-	 * An array with parameter names for named parameters, an integer for
-	 * numeric parameters, null otherwise
-	 * @var null|integer|array
-	 */
-	private $parameters;
+    /**
+     * An array with parameter names for named parameters, an integer for
+     * numeric parameters, null otherwise
+     * @var null|integer|array
+     */
+    private $parameters;
 
-	/**
-	 * Name of the no parameters action
-	 * @var string
-	 */
-	private $parametersNone;
+    /**
+     * Name of the no parameters action
+     * @var string
+     */
+    private $parametersNone;
 
-	/**
-	 * Name of the id field for the detail
-	 * @var string
-	 */
-	private $idField;
+    /**
+     * Name of the id field for the detail
+     * @var string
+     */
+    private $idField;
 
-	/**
-	 * Name of the view
-	 * @var string
-	 */
-	private $view;
+    /**
+     * Relative path to the template resource
+     * @var string
+     */
+    private $template;
 
-	/**
-	 * Format of the title
-	 * @var string
-	 */
-	private $contentTitleFormat;
+    /**
+     * Id of the view processor
+     * @var string
+     */
+    private $viewProcessor;
 
-	/**
-	 * Format of the teaser
-	 * @var string
-	 */
-	private $contentTeaserFormat;
+    /**
+     * Format of the title
+     * @var string
+     */
+    private $contentTitleFormat;
 
-	/**
-	 * Format of the image
-	 * @var string
-	 */
-	private $contentImageFormat;
+    /**
+     * Format of the teaser
+     * @var string
+     */
+    private $contentTeaserFormat;
 
-	/**
-	 * Format of the date
-	 * @var string
-	 */
-	private $contentDateFormat;
+    /**
+     * Format of the image
+     * @var string
+     */
+    private $contentImageFormat;
 
-	/**
-	 * Title for the view
-	 * @var string
-	 */
-	private $title;
+    /**
+     * Format of the date
+     * @var string
+     */
+    private $contentDateFormat;
 
-	/**
-	 * Message when the result is empty
-	 * @var string
-	 */
-	private $emptyResultMessage;
+    /**
+     * Title for the view
+     * @var string
+     */
+    private $title;
 
-	/**
-	 * Sets the model name
-	 * @param string $modelName
-	 * @return null
-	 */
-	public function setModelName($modelName) {
-		$this->modelName = $modelName;
-	}
+    /**
+     * Message when the result is empty
+     * @var string
+     */
+    private $emptyResultMessage;
 
-	/**
-	 * Gets the model name
-	 * @return string
-	 */
-	public function getModelName() {
-		return $this->modelName;
-	}
+    /**
+     * Sets the model name
+     * @param string $modelName
+     * @return null
+     */
+    public function setModelName($modelName) {
+        $this->modelName = $modelName;
+    }
 
-	/**
-	 * Sets the model fields
-	 * @param array $fields Array with the name of the field as value;
-	 * @return null
-	 */
-	public function setModelFields(array $fields = null) {
-		$this->modelFields = $fields;
-	}
+    /**
+     * Gets the model name
+     * @return string
+     */
+    public function getModelName() {
+        return $this->modelName;
+    }
 
-	/**
-	 * Gets the model fields
-	 * @return array Array with the name of the field as value;
-	 */
-	public function getModelFields() {
-		return $this->modelFields;
-	}
+    /**
+     * Sets the model fields
+     * @param array $fields Array with the name of the field as value;
+     * @return null
+     */
+    public function setModelFields(array $fields = null) {
+        $this->modelFields = $fields;
+    }
 
-	/**
-	 * Sets the recursive depth for the query
-	 * @param integer $recursiveDepth
-	 * @return null
-	 */
-	public function setRecursiveDepth($recursiveDepth) {
-		$this->recursiveDepth = $recursiveDepth;
-	}
+    /**
+     * Gets the model fields
+     * @return array Array with the name of the field as value;
+     */
+    public function getModelFields() {
+        return $this->modelFields;
+    }
 
-	/**
-	 * Gets the recursive depth for the query
-	 * @return integer
-	 */
-	public function getRecursiveDepth() {
-		return $this->recursiveDepth;
-	}
+    /**
+     * Sets the recursive depth for the query
+     * @param integer $recursiveDepth
+     * @return null
+     */
+    public function setRecursiveDepth($recursiveDepth) {
+        $this->recursiveDepth = $recursiveDepth;
+    }
 
-	/**
-	 * Sets the include unlocalized flag for the query
-	 * @param string $includeUnlocalized
-	 * @return null
-	 */
-	public function setIncludeUnlocalized($includeUnlocalized) {
-		$this->includeUnlocalized = $includeUnlocalized;
-	}
+    /**
+     * Gets the recursive depth for the query
+     * @return integer
+     */
+    public function getRecursiveDepth() {
+        return $this->recursiveDepth;
+    }
 
-	/**
-	 * Gets the include unlocalized flag for the query
-	 * @return string
-	 */
-	public function getIncludeUnlocalized() {
-		return $this->includeUnlocalized;
-	}
+    /**
+     * Sets the include unlocalized flag for the query
+     * @param string $includeUnlocalized
+     * @return null
+     */
+    public function setIncludeUnlocalized($includeUnlocalized) {
+        $this->includeUnlocalized = $includeUnlocalized;
+    }
+
+    /**
+     * Gets the include unlocalized flag for the query
+     * @return string
+     */
+    public function getIncludeUnlocalized() {
+        return $this->includeUnlocalized;
+    }
 
     /**
      * Sets the expression for the condition part of the query
@@ -460,90 +472,90 @@ class ContentProperties {
         return $this->order;
     }
 
-	/**
-	 * Sets if the pagination is enabled
-	 * @param boolean $flag True to enable the pagination, false otherwise
-	 * @return null
-	 */
-	public function setIsPaginationEnabled($flag) {
-		$this->isPaginationEnabled = $flag;
-	}
+    /**
+     * Sets if the pagination is enabled
+     * @param boolean $flag True to enable the pagination, false otherwise
+     * @return null
+     */
+    public function setIsPaginationEnabled($flag) {
+        $this->isPaginationEnabled = $flag;
+    }
 
-	/**
-	 * Gets if the pagination is enabled
-	 * @return boolean True to enable the pagination, false otherwise
-	 */
-	public function isPaginationEnabled() {
-		return $this->isPaginationEnabled ? true : false;
-	}
+    /**
+     * Gets if the pagination is enabled
+     * @return boolean True to enable the pagination, false otherwise
+     */
+    public function isPaginationEnabled() {
+        return $this->isPaginationEnabled ? true : false;
+    }
 
-	/**
-	 * Sets the number of rows per page
-	 * @param integer $rows
-	 * @return null
-	 */
-	public function setPaginationRows($rows) {
-		$this->paginationRows = $rows;
-	}
+    /**
+     * Sets the number of rows per page
+     * @param integer $rows
+     * @return null
+     */
+    public function setPaginationRows($rows) {
+        $this->paginationRows = $rows;
+    }
 
-	/**
-	 * Gets the number of rows per page
-	 * @return integer
-	 */
-	public function getPaginationRows() {
-		return $this->paginationRows;
-	}
+    /**
+     * Gets the number of rows per page
+     * @return integer
+     */
+    public function getPaginationRows() {
+        return $this->paginationRows;
+    }
 
-	/**
-	 * Sets the offset for the pagination
-	 * @param integer $offset
-	 * @return null
-	 */
-	public function setPaginationOffset($offset) {
-		$this->paginationOffset = $offset;
-	}
+    /**
+     * Sets the offset for the pagination
+     * @param integer $offset
+     * @return null
+     */
+    public function setPaginationOffset($offset) {
+        $this->paginationOffset = $offset;
+    }
 
-	/**
-	 * Gets the offset of the pagination
-	 * @return integer
-	 */
-	public function getPaginationOffset() {
-		return $this->paginationOffset;
-	}
+    /**
+     * Gets the offset of the pagination
+     * @return integer
+     */
+    public function getPaginationOffset() {
+        return $this->paginationOffset;
+    }
 
-	/**
-	 * Sets the flag to show the pagination
-	 * @param boolean $flag
-	 * @return null
-	 */
-	public function setWillShowPagination($flag) {
-		$this->showPagination = $flag;
-	}
+    /**
+     * Sets the flag to show the pagination
+     * @param boolean $flag
+     * @return null
+     */
+    public function setWillShowPagination($flag) {
+        $this->showPagination = $flag;
+    }
 
-	/**
-	 * Gets the flag to show the pagination
-	 * @return boolean
-	 */
-	public function willShowPagination() {
-		return $this->showPagination ? true : false;
-	}
+    /**
+     * Gets the flag to show the pagination
+     * @return boolean
+     */
+    public function willShowPagination() {
+        return $this->showPagination ? true : false;
+    }
 
-	/**
-	 * Sets the flag to use ajax for the pagination
-	 * @param boolean $flag
-	 * @return null
-	 */
-	public function setUseAjaxForPagination($flag) {
-		$this->useAjaxForPagination = $flag;
-	}
+    /**
+     * Sets the flag to use ajax for the pagination
+     * @param boolean $flag
+     * @return null
+     */
+    public function setUseAjaxForPagination($flag) {
+        $this->useAjaxForPagination = $flag;
+    }
 
-	/**
-	 * Gets the flag to show the pagination
-	 * @return boolean
-	 */
-	public function useAjaxForPagination() {
-		return $this->useAjaxForPagination ? true : false;
-	}
+    /**
+     * Gets the flag to show the pagination
+     * @return boolean
+     */
+    public function useAjaxForPagination() {
+        return $this->useAjaxForPagination ? true : false;
+    }
 
     /**
      * Sets the flag to show the more link
@@ -568,7 +580,7 @@ class ContentProperties {
      * @return null
      */
     public function setMoreNode($node) {
-    	$this->moreNode = $node;
+        $this->moreNode = $node;
     }
 
     /**
@@ -576,7 +588,7 @@ class ContentProperties {
      * @return integer
      */
     public function getMoreNode() {
-    	return $this->moreNode;
+        return $this->moreNode;
     }
 
     /**
@@ -585,7 +597,7 @@ class ContentProperties {
      * @return null
      */
     public function setMoreLabel($label) {
-    	$this->moreLabel = $label;
+        $this->moreLabel = $label;
     }
 
     /**
@@ -593,7 +605,7 @@ class ContentProperties {
      * @return string
      */
     public function getMoreLabel() {
-    	return !$this->moreLabel ? 'more ...' : $this->moreLabel;
+        return !$this->moreLabel ? 'more ...' : $this->moreLabel;
     }
 
     /**
@@ -603,7 +615,7 @@ class ContentProperties {
      * @return null
      */
     public function setParameters($parameters) {
-    	$this->parameters = $parameters;
+        $this->parameters = $parameters;
     }
 
     /**
@@ -612,7 +624,7 @@ class ContentProperties {
      * parameters, an integer for numeric parameters, false otherwise
      */
     public function getParameters() {
-    	return $this->parameters;
+        return $this->parameters;
     }
 
     /**
@@ -649,90 +661,107 @@ class ContentProperties {
         return $this->idField;
     }
 
-	/**
-	 * Sets the name of the view
-	 * @param string $view Internal name of the view to use
-	 * @return null
-	 */
-	public function setView($view) {
-		$this->view = $view;
-	}
+    /**
+     * Sets the resource for the template
+     * @param string $template Relative path to the template resource
+     * @return null
+     */
+    public function setTemplate($template) {
+        $this->template = $template;
+    }
 
-	/**
-	 * Gets the name of the view
-	 * @return string
-	 */
-	public function getView() {
-		return $this->view;
-	}
+    /**
+     * Gets the path of the template resource
+     * @return string
+     */
+    public function getTemplate() {
+        return $this->template;
+    }
 
-	/**
-	 * Sets the format for the teaser of the content
-	 * @param string $format
-	 * @return null
-	 */
-	public function setContentTeaserFormat($format) {
-		$this->contentTeaserFormat = $format;
-	}
+    /**
+     * Sets the view processor
+     * @param string $viewProcessor Id of the view processor
+     * @return null
+     */
+    public function setViewProcessor($viewProcessor) {
+        $this->viewProcessor = $viewProcessor;
+    }
 
-	/**
-	 * Gets the format for the title of the content
-	 * @return string
-	 */
-	public function getContentTeaserFormat() {
-		return $this->contentTeaserFormat;
-	}
+    /**
+     * Gets the view processor
+     * @return string
+     */
+    public function getViewProcessor() {
+        return $this->viewProcessor;
+    }
 
-	/**
-	 * Sets the format for the title of the content
-	 * @param string $format
-	 * @return null
-	 */
-	public function setContentTitleFormat($format) {
-		$this->contentTitleFormat = $format;
-	}
+    /**
+     * Sets the format for the teaser of the content
+     * @param string $format
+     * @return null
+     */
+    public function setContentTeaserFormat($format) {
+        $this->contentTeaserFormat = $format;
+    }
 
-	/**
-	 * Gets the format for the title of the content
-	 * @return string
-	 */
-	public function getContentTitleFormat() {
-		return $this->contentTitleFormat;
-	}
+    /**
+     * Gets the format for the title of the content
+     * @return string
+     */
+    public function getContentTeaserFormat() {
+        return $this->contentTeaserFormat;
+    }
 
-	/**
-	 * Sets the format for the image of the content
-	 * @param string $format
-	 * @return null
-	 */
-	public function setContentImageFormat($format) {
-		$this->contentImageFormat = $format;
-	}
+    /**
+     * Sets the format for the title of the content
+     * @param string $format
+     * @return null
+     */
+    public function setContentTitleFormat($format) {
+        $this->contentTitleFormat = $format;
+    }
 
-	/**
-	 * Gets the format for the image of the content
-	 * @return string
-	 */
-	public function getContentImageFormat() {
-		return $this->contentImageFormat;
-	}
+    /**
+     * Gets the format for the title of the content
+     * @return string
+     */
+    public function getContentTitleFormat() {
+        return $this->contentTitleFormat;
+    }
 
-	/**
-	 * Sets the format for the date of the content
-	 * @param string $format
-	 * @return null
-	 */
-	public function setContentDateFormat($format) {
-		$this->contentDateFormat = $format;
-	}
+    /**
+     * Sets the format for the image of the content
+     * @param string $format
+     * @return null
+     */
+    public function setContentImageFormat($format) {
+        $this->contentImageFormat = $format;
+    }
 
-	/**
-	 * Gets the format for the date of the content
-	 * @return string
-	 */
-	public function getContentDateFormat() {
-		return $this->contentDateFormat;
-	}
+    /**
+     * Gets the format for the image of the content
+     * @return string
+     */
+    public function getContentImageFormat() {
+        return $this->contentImageFormat;
+    }
+
+    /**
+     * Sets the format for the date of the content
+     * @param string $format
+     * @return null
+     */
+    public function setContentDateFormat($format) {
+        $this->contentDateFormat = $format;
+    }
+
+    /**
+     * Gets the format for the date of the content
+     * @return string
+     */
+    public function getContentDateFormat() {
+        return $this->contentDateFormat;
+    }
 
     /**
      * Sets the title for the view
@@ -768,79 +797,80 @@ class ContentProperties {
         return $this->emptyResultMessage;
     }
 
-	/**
-	 * Read the properties of the content from the widget properties
-	 * @param \ride\library\widget\WidgetProperties $properties
-	 * @return null
+    /**
+     * Read the properties of the content from the widget properties
+     * @param \ride\library\widget\WidgetProperties $properties
+     * @return null
      * @todo remove default value for condition
-	 */
-	public function getFromWidgetProperties(WidgetProperties $properties, $locale) {
-		$this->modelName = $properties->getWidgetProperty(self::PROPERTY_MODEL_NAME);
-		$this->recursiveDepth = $properties->getWidgetProperty(self::PROPERTY_RECURSIVE_DEPTH);
-		$this->includeUnlocalized = $properties->getWidgetProperty(self::PROPERTY_INCLUDE_UNLOCALIZED);
-		$this->isPaginationEnabled = $properties->getWidgetProperty(self::PROPERTY_PAGINATION_ENABLE);
-		$this->paginationRows = $properties->getWidgetProperty(self::PROPERTY_PAGINATION_ROWS);
-		$this->paginationOffset = $properties->getWidgetProperty(self::PROPERTY_PAGINATION_OFFSET);
-		$this->condition = $properties->getWidgetProperty(self::PROPERTY_CONDITION . $locale, $properties->getWidgetProperty('condition'));
-		$this->order = $properties->getWidgetProperty(self::PROPERTY_ORDER);
-		$this->parameters = $properties->getWidgetProperty(self::PROPERTY_PARAMETERS);
-		$this->parametersNone = $properties->getWidgetProperty(self::PROPERTY_PARAMETERS_NONE);
-		$this->idField = $properties->getWidgetProperty(self::PROPERTY_ID_FIELD);
-		$this->view = $properties->getWidgetProperty(self::PROPERTY_VIEW);
-		$this->contentTitleFormat = $properties->getWidgetProperty(self::PROPERTY_FORMAT_TITLE);
-		$this->contentTeaserFormat = $properties->getWidgetProperty(self::PROPERTY_FORMAT_TEASER);
-		$this->contentImageFormat = $properties->getWidgetProperty(self::PROPERTY_FORMAT_IMAGE);
-		$this->contentDateFormat = $properties->getWidgetProperty(self::PROPERTY_FORMAT_DATE);
-		$this->title = $properties->getWidgetProperty(self::PROPERTY_TITLE . $locale);
-		$this->emptyResultMessage = $properties->getWidgetProperty(self::PROPERTY_EMPTY_RESULT_MESSAGE . $locale);
-		$this->showPagination = $properties->getWidgetProperty(self::PROPERTY_PAGINATION_SHOW);
-		$this->useAjaxForPagination = $properties->getWidgetProperty(self::PROPERTY_PAGINATION_AJAX);
-		$this->showMore = $properties->getWidgetProperty(self::PROPERTY_MORE_SHOW . $locale);
-		$this->moreLabel = $properties->getWidgetProperty(self::PROPERTY_MORE_LABEL . $locale);
-		$this->moreNode = $properties->getWidgetProperty(self::PROPERTY_MORE_NODE . $locale);
+     */
+    public function getFromWidgetProperties(WidgetProperties $properties, $locale) {
+        $this->modelName = $properties->getWidgetProperty(self::PROPERTY_MODEL_NAME);
+        $this->recursiveDepth = $properties->getWidgetProperty(self::PROPERTY_RECURSIVE_DEPTH);
+        $this->includeUnlocalized = $properties->getWidgetProperty(self::PROPERTY_INCLUDE_UNLOCALIZED);
+        $this->isPaginationEnabled = $properties->getWidgetProperty(self::PROPERTY_PAGINATION_ENABLE);
+        $this->paginationRows = $properties->getWidgetProperty(self::PROPERTY_PAGINATION_ROWS);
+        $this->paginationOffset = $properties->getWidgetProperty(self::PROPERTY_PAGINATION_OFFSET);
+        $this->condition = $properties->getWidgetProperty(self::PROPERTY_CONDITION . $locale, $properties->getWidgetProperty('condition'));
+        $this->order = $properties->getWidgetProperty(self::PROPERTY_ORDER);
+        $this->parameters = $properties->getWidgetProperty(self::PROPERTY_PARAMETERS);
+        $this->parametersNone = $properties->getWidgetProperty(self::PROPERTY_PARAMETERS_NONE);
+        $this->idField = $properties->getWidgetProperty(self::PROPERTY_ID_FIELD);
+        $this->template = $properties->getWidgetProperty(self::PROPERTY_TEMPLATE);
+        $this->viewProcessor = $properties->getWidgetProperty(self::PROPERTY_VIEW_PROCESSOR);
+        $this->contentTitleFormat = $properties->getWidgetProperty(self::PROPERTY_FORMAT_TITLE);
+        $this->contentTeaserFormat = $properties->getWidgetProperty(self::PROPERTY_FORMAT_TEASER);
+        $this->contentImageFormat = $properties->getWidgetProperty(self::PROPERTY_FORMAT_IMAGE);
+        $this->contentDateFormat = $properties->getWidgetProperty(self::PROPERTY_FORMAT_DATE);
+        $this->title = $properties->getWidgetProperty(self::PROPERTY_TITLE . $locale);
+        $this->emptyResultMessage = $properties->getWidgetProperty(self::PROPERTY_EMPTY_RESULT_MESSAGE . $locale);
+        $this->showPagination = $properties->getWidgetProperty(self::PROPERTY_PAGINATION_SHOW);
+        $this->useAjaxForPagination = $properties->getWidgetProperty(self::PROPERTY_PAGINATION_AJAX);
+        $this->showMore = $properties->getWidgetProperty(self::PROPERTY_MORE_SHOW . $locale);
+        $this->moreLabel = $properties->getWidgetProperty(self::PROPERTY_MORE_LABEL . $locale);
+        $this->moreNode = $properties->getWidgetProperty(self::PROPERTY_MORE_NODE . $locale);
 
-		if ($this->parameters && !is_numeric($this->parameters)) {
-		    $this->parameters = explode(self::SEPARATOR, $this->parameters);
-		}
+        if ($this->parameters && !is_numeric($this->parameters)) {
+            $this->parameters = explode(self::SEPARATOR, $this->parameters);
+        }
 
-	    $this->filters = array();
+        $this->filters = array();
 
-		$filters = $properties->getWidgetProperty(self::PROPERTY_FILTERS);
-		if ($filters) {
-		    $filters = explode(self::SEPARATOR, $filters);
-		    foreach ($filters as $filter) {
-		        list($filterName, $filterType, $filterField) = explode(':', $filter);
+        $filters = $properties->getWidgetProperty(self::PROPERTY_FILTERS);
+        if ($filters) {
+            $filters = explode(self::SEPARATOR, $filters);
+            foreach ($filters as $filter) {
+                list($filterName, $filterType, $filterField) = explode(':', $filter);
 
-		        $this->filters[$filterName] = array('name' => $filterName, 'type' => $filterType, 'field' => $filterField);
-		    }
+                $this->filters[$filterName] = array('name' => $filterName, 'type' => $filterType, 'field' => $filterField);
+            }
                 }
 
-		$fieldsString = $properties->getWidgetProperty(self::PROPERTY_MODEL_FIELDS);
-		if (!$fieldsString) {
-			$this->modelFields = null;
+        $fieldsString = $properties->getWidgetProperty(self::PROPERTY_MODEL_FIELDS);
+        if (!$fieldsString) {
+            $this->modelFields = null;
 
-			return;
-		}
+            return;
+        }
 
-		$this->modelFields = array();
+        $this->modelFields = array();
 
-		$tokens = explode(self::SEPARATOR, $fieldsString);
-		foreach ($tokens as $token) {
-			$fieldName = trim($token);
+        $tokens = explode(self::SEPARATOR, $fieldsString);
+        foreach ($tokens as $token) {
+            $fieldName = trim($token);
 
-			$this->modelFields[$fieldName] = $fieldName;
-		}
-	}
+            $this->modelFields[$fieldName] = $fieldName;
+        }
+    }
 
-	/**
-	 * Write the properties of the content to the widget properties
-	 * @param \ride\library\widget\WidgetSettings $properties
-	 * @return null
-	 */
-	public function setToWidgetProperties(WidgetProperties $properties, $locale) {
+    /**
+     * Write the properties of the content to the widget properties
+     * @param \ride\library\widget\WidgetSettings $properties
+     * @return null
+     */
+    public function setToWidgetProperties(WidgetProperties $properties, $locale) {
         $fields = null;
         if ($this->modelFields) {
-        	$fields = implode(self::SEPARATOR, $this->modelFields);
+            $fields = implode(self::SEPARATOR, $this->modelFields);
         }
 
         $properties->setWidgetProperty(self::PROPERTY_MODEL_NAME, $this->modelName);
@@ -856,13 +886,13 @@ class ContentProperties {
             $properties->setWidgetProperty(self::PROPERTY_PAGINATION_SHOW, $this->showPagination);
             $properties->setWidgetProperty(self::PROPERTY_PAGINATION_AJAX, $this->useAjaxForPagination);
             if ($this->showMore) {
-	            $properties->setWidgetProperty(self::PROPERTY_MORE_SHOW . $locale, $this->showMore);
-	            $properties->setWidgetProperty(self::PROPERTY_MORE_LABEL . $locale, $this->moreLabel);
-	            $properties->setWidgetProperty(self::PROPERTY_MORE_NODE . $locale, $this->moreNode);
+                $properties->setWidgetProperty(self::PROPERTY_MORE_SHOW . $locale, $this->showMore);
+                $properties->setWidgetProperty(self::PROPERTY_MORE_LABEL . $locale, $this->moreLabel);
+                $properties->setWidgetProperty(self::PROPERTY_MORE_NODE . $locale, $this->moreNode);
             } else {
-	            $properties->setWidgetProperty(self::PROPERTY_MORE_SHOW . $locale, null);
-	            $properties->setWidgetProperty(self::PROPERTY_MORE_LABEL . $locale, null);
-	            $properties->setWidgetProperty(self::PROPERTY_MORE_NODE . $locale, null);
+                $properties->setWidgetProperty(self::PROPERTY_MORE_SHOW . $locale, null);
+                $properties->setWidgetProperty(self::PROPERTY_MORE_LABEL . $locale, null);
+                $properties->setWidgetProperty(self::PROPERTY_MORE_NODE . $locale, null);
             }
         } else {
             $properties->setWidgetProperty(self::PROPERTY_PAGINATION_ROWS, null);
@@ -875,7 +905,8 @@ class ContentProperties {
         }
 
         $properties->setWidgetProperty(self::PROPERTY_ID_FIELD, $this->idField);
-        $properties->setWidgetProperty(self::PROPERTY_VIEW, $this->view);
+        $properties->setWidgetProperty(self::PROPERTY_TEMPLATE, $this->template);
+        $properties->setWidgetProperty(self::PROPERTY_VIEW_PROCESSOR, $this->viewProcessor);
         $properties->setWidgetProperty(self::PROPERTY_FORMAT_TITLE, $this->contentTitleFormat);
         $properties->setWidgetProperty(self::PROPERTY_FORMAT_TEASER, $this->contentTeaserFormat);
         $properties->setWidgetProperty(self::PROPERTY_FORMAT_IMAGE, $this->contentImageFormat);
