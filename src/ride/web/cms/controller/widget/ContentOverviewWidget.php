@@ -37,6 +37,12 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
     const ICON = 'img/cms/widget/content.overview.png';
 
     /**
+     * Namespace for the templates of this widget
+     * @var string
+     */
+    const TEMPLATE_NAMESPACE = 'cms/widget/orm-overview';
+
+    /**
      * Parameter name for the page
      * @var string
      */
@@ -78,23 +84,6 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
         return array(
             $route,
         );
-    }
-
-    /**
-     * Gets the templates used by this widget
-     * @return array Array with the resource names of the templates
-     */
-    public function getTemplates() {
-        $contentProperties = $this->getContentProperties();
-
-        $view = $contentProperties->getView();
-        if (!$view) {
-            return null;
-        }
-
-        $view = $this->dependencyInjector->get('ride\\web\\cms\\view\\widget\\ContentOverviewView', $view);
-
-        return array($view->getTemplate()->getResource());
     }
 
     /**
@@ -179,17 +168,12 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
 
         $result = $this->getResult($contentProperties, $query);
 
-        $view = $this->getView($contentProperties, $result, $pages, $page, $arguments);
-        if (!$view) {
-            return;
-        }
+        $this->setView($contentProperties, $result, $pages, $page, $arguments);
 
         if ($this->properties->isAutoCache()) {
             $this->properties->setCache(true);
             $this->properties->setCacheTtl(60);
         }
-
-        $this->response->setView($view);
     }
 
     /**
@@ -201,12 +185,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
      * @param array $arguments
      * @return \ride\library\mvc\view\View
      */
-    private function getView(ContentProperties $contentProperties, array $result, $pages = 1, $page = 1, array $arguments = array()) {
-        $view = $contentProperties->getView();
-
-        $view = $this->dependencyInjector->get('ride\\web\\cms\\view\\widget\\ContentOverviewView', $view);
-        $view = clone $view;
-
+    private function setView(ContentProperties $contentProperties, array $result, $pages = 1, $page = 1, array $arguments = array()) {
         $pagination = null;
         if ($contentProperties->willShowPagination()) {
             $query = null;
@@ -241,7 +220,29 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             $filter['filter']->setVariables($this->filters, $this->model, $filterName, $this->locale, $baseUrl);
         }
 
-        $view->setContent($this->locale, $this->id, $result, $contentProperties, $this->filters, $arguments, $pagination, $moreUrl);
+        $template = $this->getTemplate(static::TEMPLATE_NAMESPACE . '/block');
+        $variables = array(
+            'locale' => $this->locale,
+            'widgetId' => $this->id,
+            'result' => $result,
+            'properties' => $contentProperties,
+            'title' => $contentProperties->getTitle(),
+            'emptyResultMessage' => $contentProperties->getEmptyResultMessage(),
+            'filters' => $this->filters,
+            'arguments' => $arguments,
+            'pagination' => $pagination,
+            'moreUrl' => $moreUrl,
+            'moreLabel' => $contentProperties->getMoreLabel(),
+        );
+
+        $view = $this->setTemplateView($template, $variables);
+
+        $viewProcessor = $contentProperties->getViewProcessor();
+        if ($viewProcessor) {
+            $viewProcessor = $this->dependencyInjector->get('ride\\web\\cms\\orm\\processor\\ViewProcessor', $viewProcessor);
+
+            $viewProcessor->processView($view);
+        }
 
         return $view;
     }
@@ -495,11 +496,6 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             $preview .= $translator->translate('label.pagination.description', $parameters) . '<br />';
         }
 
-        $view = $contentProperties->getView();
-        if ($view) {
-            $preview .= $translator->translate('label.view') . ': ' . $view . '<br />';
-        }
-
         return $preview;
     }
 
@@ -509,6 +505,10 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
      */
     public function propertiesAction(NodeModel $nodeModel, FieldService $fieldService) {
         $contentProperties = $this->getContentProperties();
+        if (!$contentProperties->getModelName()) {
+            $contentProperties->setRecursiveDepth(0);
+            $contentProperties->setTemplate(static::TEMPLATE_NAMESPACE . '/block');
+        }
         $translator = $this->getTranslator();
 
         $contentOverviewFilters = $this->dependencyInjector->getAll('ride\\web\\cms\\orm\\filter\\ContentOverviewFilter');
@@ -516,18 +516,23 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             $contentOverviewFilters[$filterName] = $translator->translate('label.content.overview.filter.' . $filterName);
         }
 
-        $views = $this->dependencyInjector->getAll('ride\\web\\cms\\view\\widget\\ContentOverviewView');
-
         $node = $this->properties->getNode();
         $rootNodeId = $node->getRootNodeId();
         $rootNode = $nodeModel->getNode($rootNodeId, null, true);
         $nodeList = $nodeModel->getListFromNodes(array($rootNode), $this->locale);
         $nodeOptions = array($rootNode->getId() => '/' . $rootNode->getName($this->locale)) + $nodeList;
 
+        $viewProcessors = $this->dependencyInjector->getByTag('ride\\web\\cms\\orm\\processor\\ViewProcessor', 'overview');
+        foreach ($viewProcessors as $id => $viewProcessor) {
+            $viewProcessors[$id] = $id;
+        }
+        $viewProcessors = array('' => '---') + $viewProcessors;
+
         $component = new ContentOverviewComponent($fieldService);
         $component->setNodeOptions($nodeOptions);
         $component->setContentOverviewFilters($contentOverviewFilters);
-        $component->setViews($views);
+        $component->setTemplates($this->getAvailableTemplates(static::TEMPLATE_NAMESPACE));
+        $component->setViewProcessors($viewProcessors);
 
         $form = $this->buildForm($component, $contentProperties);
         if ($form->isSubmitted($this->request)) {
@@ -547,15 +552,14 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             }
         }
 
-        $selectFieldsAction = $this->getUrl('cms.ajax.orm.fields.select', array('model' => '%model%'));
         $orderFieldsAction = $this->getUrl('cms.ajax.orm.fields.order', array('model' => '%model%', 'recursiveDepth' => '%recursiveDepth%'));
         $filterFieldsAction = $this->getUrl('cms.ajax.orm.fields.relation', array('model' => '%model%'));
 
-        $view = $this->setTemplateView('cms/widget/orm/properties.overview', array(
+        $view = $this->setTemplateView(static::TEMPLATE_NAMESPACE . '/properties', array(
         	'form' => $form->getView(),
         ));
         $view->addJavascript('js/cms/orm.js');
-        $view->addInlineJavascript('joppaContentInitializeOverviewProperties("' . $selectFieldsAction . '", "' . $orderFieldsAction . '", "' . $filterFieldsAction . '");');
+        $view->addInlineJavascript('joppaContentInitializeOverviewProperties("' . $orderFieldsAction . '", "' . $filterFieldsAction . '");');
 
         return false;
     }

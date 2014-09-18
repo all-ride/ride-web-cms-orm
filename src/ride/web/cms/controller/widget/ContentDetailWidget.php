@@ -35,6 +35,12 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
     const ICON = 'img/cms/widget/content.detail.png';
 
     /**
+     * Namespace for the templates of this widget
+     * @var string
+     */
+    const TEMPLATE_NAMESPACE = 'cms/widget/orm-detail';
+
+    /**
      * Gets the additional sub routes for this widget
      * @return array|null Array with a route path as key and the action method
      * as value
@@ -52,24 +58,7 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
         );
     }
 
-    /**
-     * Gets the templates used by this widget
-     * @return array Array with the resource names of the templates
-     */
-    public function getTemplates() {
-        $contentProperties = $this->getContentProperties();
-
-        $view = $contentProperties->getView();
-        if (!$view) {
-            return null;
-        }
-
-        $view = $this->dependencyInjector->get('ride\\web\\cms\\view\\widget\\ContentDetailView', $view);
-
-        return array($view->getTemplate()->getResource());
-    }
-
-    /**
+     /**
      * Action to display the widget
      * @return null
      */
@@ -133,7 +122,7 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
             $this->setPageTitle($content->title);
         }
 
-        $view = $this->getView($contentProperties, $content);
+        $this->setView($contentProperties, $content);
 
         if ($this->properties->isAutoCache()) {
             $this->properties->setCache(true);
@@ -143,8 +132,6 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
         if ($this->properties->getWidgetProperty('region')) {
             $this->setIsRegion(true);
         }
-
-        $this->response->setView($view);
     }
 
     /**
@@ -155,7 +142,7 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
      * @param string $id The id of the record to fetch
      * @return \ride\library\orm\query\ModelQuery
      */
-    private function getModelQuery(ContentProperties $contentProperties, $locale, $id) {
+    protected function getModelQuery(ContentProperties $contentProperties, $locale, $id) {
         $query = $this->model->createQuery($locale);
         $query->setRecursiveDepth($contentProperties->getRecursiveDepth());
         $query->setFetchUnlocalized($contentProperties->getIncludeUnlocalized());
@@ -189,7 +176,7 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
      * @param \ride\library\orm\query\ModelQuery $query
      * @return array Array with Content objects
      */
-    private function getResult(ContentProperties $contentProperties, $query) {
+    protected function getResult(ContentProperties $contentProperties, $query) {
         $entry = $query->queryFirst();
         if (!$entry) {
             return $entry;
@@ -249,18 +236,28 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
     }
 
     /**
-     * Gets the view
+     * Sets the view
      * @param \ride\web\cms\orm\ContentProperties $properties
      * @param \ride\library\cms\content\Content $content
-     * @return \ride\web\cms\view\widget\ContentView
+     * @return \ride\library\mvc\view\View
      */
-    private function getView(ContentProperties $contentProperties, $content) {
-        $view = $contentProperties->getView();
+    protected function setView(ContentProperties $contentProperties, $content) {
+        $template = $this->getTemplate(static::TEMPLATE_NAMESPACE . '/index');
+        $variables = array(
+            'locale' => $this->locale,
+            'widgetId' => $this->id,
+            'content' => $content,
+            'properties' => $contentProperties,
+        );
 
-        $view = $this->dependencyInjector->get('ride\\web\\cms\\view\\widget\\ContentDetailView', $view);
-        $view = clone $view;
+        $view = $this->setTemplateView($template, $variables);
 
-        $view->setContent($this->locale, $this->id, $content, $contentProperties);
+        $viewProcessor = $contentProperties->getViewProcessor();
+        if ($viewProcessor) {
+            $viewProcessor = $this->dependencyInjector->get('ride\\web\\cms\\orm\\processor\\ViewProcessor', $viewProcessor);
+
+            $viewProcessor->processView($view);
+        }
 
         return $view;
     }
@@ -302,11 +299,6 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
             $preview .= $translator->translate('label.field.id') . ': ' . $idField . '<br />';
         }
 
-        $view = $contentProperties->getView();
-        if ($view) {
-            $preview .= $translator->translate('label.view') . ': ' . $view . '<br />';
-        }
-
         return $preview;
     }
 
@@ -316,10 +308,19 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
      */
     public function propertiesAction(FieldService $fieldService) {
         $contentProperties = $this->getContentProperties();
-        $views = $this->dependencyInjector->getAll('ride\\web\\cms\\view\\widget\\ContentDetailView');
+        if (!$contentProperties->getModelName()) {
+            $contentProperties->setTitle(true);
+        }
+
+        $viewProcessors = $this->dependencyInjector->getByTag('ride\\web\\cms\\orm\\processor\\ViewProcessor', 'detail');
+        foreach ($viewProcessors as $id => $viewProcessors) {
+            $viewProcessors[$id] = $id;
+        }
+        $viewProcessors = array('' => '---') + $viewProcessors;
 
         $component = new ContentDetailComponent($fieldService);
-        $component->setViews($views);
+        $component->setTemplates($this->getAvailableTemplates(static::TEMPLATE_NAMESPACE));
+        $component->setViewProcessors($viewProcessors);
 
         $form = $this->buildForm($component, $contentProperties);
         if ($form->isSubmitted()) {
@@ -333,20 +334,20 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
                 $contentProperties = $form->getData();
                 $contentProperties->setToWidgetProperties($this->properties, $this->locale);
 
+
                 return true;
             } catch (ValidationException $exception) {
 
             }
         }
 
-        $selectFieldsAction = $this->getUrl('cms.ajax.orm.fields.select', array('model' => '%model%'));
         $uniqueFieldsAction = $this->getUrl('cms.ajax.orm.fields.unique', array('model' => '%model%'));
 
-        $view = $this->setTemplateView('cms/widget/orm/properties.detail', array(
+        $view = $this->setTemplateView(static::TEMPLATE_NAMESPACE . '/properties', array(
             'form' => $form->getView(),
         ));
         $view->addJavascript('js/cms/orm.js');
-        $view->addInlineJavascript('joppaContentInitializeDetailProperties("' . $selectFieldsAction . '", "' . $uniqueFieldsAction . '");');
+        $view->addInlineJavascript('joppaContentInitializeDetailProperties("' . $uniqueFieldsAction . '");');
 
         return false;
     }

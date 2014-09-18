@@ -16,29 +16,10 @@
             "id": "orm.detail"
         },
         {
-            "interfaces": "ride\\web\\cms\\view\\widget\\ContentOverviewView",
-            "class": "ride\\web\\cms\\view\\widget\\predefined\\ContentBlockView",
-            "id": "block"
-        },
-        {
-            "interfaces": "ride\\web\\cms\\view\\widget\\ContentOverviewView",
-            "class": "ride\\web\\cms\\view\\widget\\predefined\\ContentListView",
-            "id": "list"
-        },
-        {
-            "interfaces": "ride\\web\\cms\\view\\widget\\ContentOverviewView",
-            "class": "ride\\web\\cms\\view\\widget\\predefined\\ContentAlphabetView",
-            "id": "alphabet"
-        },
-        {
-            "interfaces": "ride\\web\\cms\\view\\widget\\ContentOverviewView",
-            "class": "ride\\web\\cms\\view\\widget\\predefined\\ContentCloudView",
-            "id": "cloud"
-        },
-        {
-            "interfaces": "ride\\web\\cms\\view\\widget\\ContentDetailView",
-            "class": "ride\\web\\cms\\view\\widget\\predefined\\ContentDetailView",
-            "id": "detail"
+            "interfaces": "ride\\web\\cms\\orm\\processor\\ViewProcessor",
+            "class": "ride\\web\\cms\\orm\\processor\\CloudViewProcessor",
+            "id": "cloud",
+            "tags": ["overview"]
         },
         {
             "interfaces": "ride\\web\\cms\\orm\\filter\\ContentOverviewFilter",

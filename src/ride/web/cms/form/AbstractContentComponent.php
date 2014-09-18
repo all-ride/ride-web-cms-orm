@@ -27,10 +27,16 @@ abstract class AbstractContentComponent extends AbstractComponent {
     protected $data;
 
     /**
-     * Model of this form component
+     * Available templates for the widget
      * @var array
      */
-    protected $views;
+    protected $templates;
+
+    /**
+     * Available view processors
+     * @var array
+     */
+    protected $viewProcessors;
 
     /**
      * Constructs a new content properties form component
@@ -46,8 +52,17 @@ abstract class AbstractContentComponent extends AbstractComponent {
      * @param array $views
      * @return null
      */
-    public function setViews(array $views) {
-        $this->views = $views;
+    public function setTemplates(array $templates) {
+        $this->templates = $templates;
+    }
+
+    /**
+     * Sets the view processors
+     * @param array $views
+     * @return null
+     */
+    public function setViewProcessors(array $viewProcessors) {
+        $this->viewProcessors = $viewProcessors;
     }
 
     /**
@@ -80,12 +95,11 @@ abstract class AbstractContentComponent extends AbstractComponent {
         $this->data = $data;
 
         return array(
-        	'model' => $data->getModelName(),
-            'fields' => $data->getModelFields(),
-            'recursive-depth' => $data->getRecursiveDepth(),
+            'model' => $data->getModelName(),
             'include-unlocalized' => $data->getIncludeUnlocalized(),
             'parameters-none' => $data->getNoParametersAction(),
-            'view' => $data->getView(),
+            'template' => $data->getTemplate(),
+            'viewProcessor' => $data->getViewProcessor(),
             'format-title' => $data->getContentTitleFormat(),
             'format-teaser' => $data->getContentTeaserFormat(),
             'format-image' => $data->getContentImageFormat(),
@@ -104,156 +118,131 @@ abstract class AbstractContentComponent extends AbstractComponent {
         }
 
         $this->data->setModelName($data['model']);
-        $this->data->setRecursiveDepth($data['recursive-depth']);
         $this->data->setIncludeUnlocalized($data['include-unlocalized']);
         $this->data->setNoParametersAction($data['parameters-none']);
-        $this->data->setView($data['view']);
+        $this->data->setTemplate($data['template']);
+        $this->data->setViewProcessor($data['view-processor']);
         $this->data->setContentTitleFormat($data['format-title']);
         $this->data->setContentTeaserFormat($data['format-teaser']);
         $this->data->setContentImageFormat($data['format-image']);
         $this->data->setContentDateFormat($data['format-date']);
 
-        if ($data['fields']) {
-            $this->data->setModelFields($data['fields']);
-        }
-
         return $this->data;
     }
 
-	/**
-	 * Prepares the form builder by adding row definitions
-	 * @param \ride\library\form\FormBuilder $builder
-	 * @param array $options Extra options from the controller
-	 * @return null
-	 */
-	public function prepareForm(FormBuilder $builder, array $options) {
-            $data = $options['data'];
+    /**
+     * Prepares the form builder by adding row definitions
+     * @param \ride\library\form\FormBuilder $builder
+     * @param array $options Extra options from the controller
+     * @return null
+     */
+    public function prepareForm(FormBuilder $builder, array $options) {
+        $data = $options['data'];
 
-	    $translator = $options['translator'];
+        $translator = $options['translator'];
 
-	    if ($data) {
-                $modelName = $data->getModelName();
-	    } else {
-	        $modelName = null;
-	    }
+        if ($data) {
+            $modelName = $data->getModelName();
+        } else {
+            $modelName = null;
+        }
 
-	    $builder->addRow('model', 'select', array(
-	        'label' => $translator->translate('label.model'),
-	        'description' => $translator->translate('label.model.description'),
-	    	'options' => $this->getModelOptions(),
-	    ));
-	    $builder->addRow('fields', 'select', array(
-	        'label' => $translator->translate('label.fields'),
-	        'description' => $translator->translate('label.fields.description'),
-	    	'options' => $this->fieldService->getFields($modelName),
-	    	'multiple' => true,
-	    ));
-	    $builder->addRow('recursive-depth', 'select', array(
-	        'label' => $translator->translate('label.depth.recursive'),
-	        'description' => $translator->translate('label.depth.recursive.description'),
-	    	'options' => $this->getNumericOptions(0, 5),
-	    ));
-	    $builder->addRow('include-unlocalized', 'boolean', array(
-	        'label' => $translator->translate('label.unlocalized'),
-	        'description' => $translator->translate('label.unlocalized.description'),
-	    ));
-	    $builder->addRow('view', 'select', array(
-	        'label' => $translator->translate('label.view'),
-	        'description' => $translator->translate('label.view.description'),
-	    	'options' => $this->getViewOptions($translator),
-	    ));
-	    $builder->addRow('format-title', 'string', array(
-	        'label' => $translator->translate('label.format.title'),
-	        'description' => $translator->translate('label.format.title.description'),
-	        'filters' => array(
-	            'trim' => array(),
+        $builder->addRow('model', 'select', array(
+            'label' => $translator->translate('label.model'),
+            'description' => $translator->translate('label.model.description'),
+            'options' => $this->getModelOptions(),
+        ));
+        $builder->addRow('include-unlocalized', 'boolean', array(
+            'label' => $translator->translate('label.unlocalized'),
+            'description' => $translator->translate('label.unlocalized.description'),
+        ));
+        $builder->addRow('template', 'select', array(
+            'label' => $translator->translate('label.template'),
+            'description' => $translator->translate('label.template.widget.description'),
+            'options' => $this->templates,
+        ));
+        $builder->addRow('view-processor', 'select', array(
+            'label' => $translator->translate('label.processor.view'),
+            'description' => $translator->translate('label.processor.view.description'),
+            'options' => $this->viewProcessors,
+        ));
+        $builder->addRow('format-title', 'string', array(
+            'label' => $translator->translate('label.format.title'),
+            'description' => $translator->translate('label.format.title.description'),
+            'filters' => array(
+                'trim' => array(),
             ),
-	    ));
-	    $builder->addRow('format-teaser', 'string', array(
-	        'label' => $translator->translate('label.format.teaser'),
-	        'description' => $translator->translate('label.format.teaser.description'),
-	        'filters' => array(
-	            'trim' => array(),
+        ));
+        $builder->addRow('format-teaser', 'string', array(
+            'label' => $translator->translate('label.format.teaser'),
+            'description' => $translator->translate('label.format.teaser.description'),
+            'filters' => array(
+                'trim' => array(),
             ),
-	    ));
-	    $builder->addRow('format-image', 'string', array(
-	        'label' => $translator->translate('label.format.image'),
-	        'description' => $translator->translate('label.format.image.description'),
-	        'filters' => array(
-	            'trim' => array(),
+        ));
+        $builder->addRow('format-image', 'string', array(
+            'label' => $translator->translate('label.format.image'),
+            'description' => $translator->translate('label.format.image.description'),
+            'filters' => array(
+                'trim' => array(),
             ),
-	    ));
-	    $builder->addRow('format-date', 'string', array(
-	        'label' => $translator->translate('label.format.date'),
-	        'description' => $translator->translate('label.format.date.description'),
-	        'filters' => array(
-	            'trim' => array(),
+        ));
+        $builder->addRow('format-date', 'string', array(
+            'label' => $translator->translate('label.format.date'),
+            'description' => $translator->translate('label.format.date.description'),
+            'filters' => array(
+                'trim' => array(),
             ),
-	    ));
-	    $builder->addRow('parameters-none', 'select', array(
-	        'label' => $translator->translate('label.parameters.none'),
-	        'description' => $translator->translate('label.parameters.none.description'),
-	    	'options' => $this->getParametersNoneOptions($translator),
-	    ));
-	}
+        ));
+        $builder->addRow('parameters-none', 'select', array(
+            'label' => $translator->translate('label.parameters.none'),
+            'description' => $translator->translate('label.parameters.none.description'),
+            'options' => $this->getParametersNoneOptions($translator),
+        ));
+    }
 
-	/**
-	 * Gets the options for the model field
-	 * @return array Array with the name of the model as key and as value
-	 */
-	protected function getModelOptions() {
-	    $models = $this->fieldService->getOrm()->getModels(true);
+    /**
+     * Gets the options for the model field
+     * @return array Array with the name of the model as key and as value
+     */
+    protected function getModelOptions() {
+        $models = $this->fieldService->getOrm()->getModels(true);
 
-	    ksort($models);
+        ksort($models);
 
-	    $options = array();
-	    foreach ($models as $modelName => $model) {
-	        $options[$modelName] = $modelName;
-	    }
+        $options = array();
+        foreach ($models as $modelName => $model) {
+            $options[$modelName] = $modelName;
+        }
 
-	    return $options;
-	}
+        return $options;
+    }
 
-	/**
-	 * Gets the options for the view type
-	 * @param \ride\library\i18n\translator\Translator $translator
-	 * @return array
-	 */
-	protected function getViewOptions(Translator $translator) {
-	    $views = array();
+    /**
+     * Gets numeric options
+     * @param integer $minimum
+     * @param integer $maximum
+     * @return array
+     */
+    protected function getNumericOptions($minimum, $maximum) {
+        $options = array();
+        for ($i = $minimum; $i <= $maximum; $i++) {
+            $options[$i] = $i;
+        }
 
-	    foreach ($this->views as $name => $class) {
-	        $views[$name] = $translator->translate('label.view.' . $name);
-	    }
+        return $options;
+    }
 
-	    return $views;
-	}
-
-	/**
-	 * Gets numeric options
-	 * @param integer $minimum
-	 * @param integer $maximum
-	 * @return array
-	 */
-	protected function getNumericOptions($minimum, $maximum) {
-	    $options = array();
-	    for ($i = $minimum; $i <= $maximum; $i++) {
-	        $options[$i] = $i;
-	    }
-
-	    return $options;
-	}
-
-	/**
-	 * Gets the options for the parameters type
-	 * @param \ride\library\i18n\translator\Translator $translator
-	 * @return array
-	 */
-	protected function getParametersNoneOptions(Translator $translator) {
-	    return array(
-	        ContentProperties::NONE_404 => $translator->translate('label.parameters.none.404'),
-	        ContentProperties::NONE_IGNORE => $translator->translate('label.parameters.none.ignore'),
-	    );
-	}
+    /**
+     * Gets the options for the parameters type
+     * @param \ride\library\i18n\translator\Translator $translator
+     * @return array
+     */
+    protected function getParametersNoneOptions(Translator $translator) {
+        return array(
+            ContentProperties::NONE_404 => $translator->translate('label.parameters.none.404'),
+            ContentProperties::NONE_IGNORE => $translator->translate('label.parameters.none.ignore'),
+        );
+    }
 
 }

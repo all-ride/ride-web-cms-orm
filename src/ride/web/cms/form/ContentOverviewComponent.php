@@ -133,140 +133,140 @@ class ContentOverviewComponent extends AbstractContentComponent {
         return $result;
     }
 
-	/**
-	 * Prepares the form builder by adding row definitions
-	 * @param \ride\library\form\FormBuilder $builder
-	 * @param array $options Extra options from the controller
-	 * @return null
-	 */
-	public function prepareForm(FormBuilder $builder, array $options) {
+    /**
+     * Prepares the form builder by adding row definitions
+     * @param \ride\library\form\FormBuilder $builder
+     * @param array $options Extra options from the controller
+     * @return null
+     */
+    public function prepareForm(FormBuilder $builder, array $options) {
             $data = $options['data'];
 
-	    parent::prepareForm($builder, $options);
+        parent::prepareForm($builder, $options);
 
-	    if ($data) {
-	        $modelName = $data->getModelName();
-	        $recursiveDepth = $data->getRecursiveDepth();
-	    } else {
-	        $modelName = null;
-	        $recursiveDepth = 1;
-	    }
+        $modelName = $data->getModelName();
+        if (!$modelName) {
+            $modelOptions = $builder->getRow('model')->getOption('options');
+            $modelName = reset($modelOptions);
+        }
 
-	    $translator = $options['translator'];
+        $fieldIdOptions = $this->fieldService->getUniqueFields($modelName);
 
-	    $filterComponent = new ContentOverviewFilterComponent();
-	    $filterComponent->setFields($this->fieldService->getFields($modelName, true, true, $recursiveDepth));
-	    $filterComponent->setTypes($this->contentOverviewFilters);
+        $translator = $options['translator'];
 
-	    $builder->addRow('condition', 'text', array(
-	        'label' => $translator->translate('label.condition'),
-	        'description' => $translator->translate('label.condition.description'),
-	    ));
-	    $builder->addRow('order-field', 'select', array(
-	        'label' => $translator->translate('label.order.field'),
-	        'description' => $translator->translate('label.order.field.description'),
-	        'options' => $this->fieldService->getFields($modelName, true, false, $recursiveDepth),
-	    ));
-	    $builder->addRow('order-direction', 'select', array(
-	        'label' => $translator->translate('label.order.direction'),
-	        'description' => $translator->translate('label.order.direction.description'),
-	        'options' => $this->getOrderDirectionOptions($translator),
-	    ));
-	    $builder->addRow('order', 'text', array(
-	        'label' => $translator->translate('label.order'),
-	        'description' => $translator->translate('label.order.description'),
-	    ));
-	    $builder->addRow('pagination-enable', 'option', array(
-	        'label' => $translator->translate('label.pagination.enabled'),
-	        'description' => $translator->translate('label.pagination.enabled.description'),
-	    ));
-	    $builder->addRow('pagination-rows', 'select', array(
-	        'label' => $translator->translate('label.pagination.rows'),
-	        'description' => $translator->translate('label.pagination.rows.description'),
-	        'options' => $this->getNumericOptions(1, 50),
-	    ));
-	    $builder->addRow('pagination-offset', 'select', array(
-	        'label' => $translator->translate('label.pagination.offset'),
-	        'description' => $translator->translate('label.pagination.offset.description'),
-	        'options' => $this->getNumericOptions(0, 50),
-	    ));
-	    $builder->addRow('pagination-show', 'option', array(
-	        'label' => $translator->translate('label.pagination.show'),
-	        'description' => $translator->translate('label.pagination.show.description'),
-	    ));
-	    $builder->addRow('pagination-ajax', 'option', array(
-	        'label' => $translator->translate('label.pagination.ajax'),
-	        'description' => $translator->translate('label.pagination.ajax.description'),
-	    ));
-	    $builder->addRow('parameters-type', 'option', array(
-	        'label' => $translator->translate('label.parameters.type'),
-	        'description' => $translator->translate('label.parameters.type.description'),
-	        'options' => $this->getParametersTypeOptions($translator),
-	    ));
-	    $builder->addRow('parameters-number', 'select', array(
-	        'label' => $translator->translate('label.parameters.number'),
-	        'description' => $translator->translate('label.parameters.number.description'),
-	        'options' => $this->getNumericOptions(1, 5),
-	    ));
-	    $builder->addRow('parameters-name', 'collection', array(
-	        'type' => 'string',
-	        'label' => $translator->translate('label.parameter'),
-	    ));
-	    $builder->addRow('title', 'string', array(
-	        'label' => $translator->translate('label.title'),
-	        'description' => $translator->translate('label.title.query.description'),
-	    ));
-	    $builder->addRow('filters', 'collection', array(
-	        'type' => 'component',
-	        'options' => array(
-    	        'component' => $filterComponent,
+        $filterComponent = new ContentOverviewFilterComponent();
+        $filterComponent->setFields($this->fieldService->getFields($modelName, true, true, 2));
+        $filterComponent->setTypes($this->contentOverviewFilters);
+
+        $builder->addRow('condition', 'text', array(
+            'label' => $translator->translate('label.condition'),
+            'description' => $translator->translate('label.condition.description'),
+        ));
+        $builder->addRow('order-field', 'select', array(
+            'label' => $translator->translate('label.order.field'),
+            'description' => $translator->translate('label.order.field.description'),
+            'options' => $this->fieldService->getFields($modelName, true, false, 1),
+        ));
+        $builder->addRow('order-direction', 'select', array(
+            'label' => $translator->translate('label.order.direction'),
+            'description' => $translator->translate('label.order.direction.description'),
+            'options' => $this->getOrderDirectionOptions($translator),
+        ));
+        $builder->addRow('order', 'text', array(
+            'label' => $translator->translate('label.order'),
+            'description' => $translator->translate('label.order.description'),
+        ));
+        $builder->addRow('pagination-enable', 'option', array(
+            'label' => $translator->translate('label.pagination.enabled'),
+            'description' => $translator->translate('label.pagination.enabled.description'),
+        ));
+        $builder->addRow('pagination-rows', 'select', array(
+            'label' => $translator->translate('label.pagination.rows'),
+            'description' => $translator->translate('label.pagination.rows.description'),
+            'options' => $this->getNumericOptions(1, 50),
+        ));
+        $builder->addRow('pagination-offset', 'select', array(
+            'label' => $translator->translate('label.pagination.offset'),
+            'description' => $translator->translate('label.pagination.offset.description'),
+            'options' => $this->getNumericOptions(0, 50),
+        ));
+        $builder->addRow('pagination-show', 'option', array(
+            'label' => $translator->translate('label.pagination.show'),
+            'description' => $translator->translate('label.pagination.show.description'),
+        ));
+        $builder->addRow('pagination-ajax', 'option', array(
+            'label' => $translator->translate('label.pagination.ajax'),
+            'description' => $translator->translate('label.pagination.ajax.description'),
+        ));
+        $builder->addRow('parameters-type', 'option', array(
+            'label' => $translator->translate('label.parameters.type'),
+            'description' => $translator->translate('label.parameters.type.description'),
+            'options' => $this->getParametersTypeOptions($translator),
+        ));
+        $builder->addRow('parameters-number', 'select', array(
+            'label' => $translator->translate('label.parameters.number'),
+            'description' => $translator->translate('label.parameters.number.description'),
+            'options' => $this->getNumericOptions(1, 5),
+        ));
+        $builder->addRow('parameters-name', 'collection', array(
+            'type' => 'string',
+            'label' => $translator->translate('label.parameter'),
+        ));
+        $builder->addRow('title', 'string', array(
+            'label' => $translator->translate('label.title'),
+            'description' => $translator->translate('label.title.query.description'),
+        ));
+        $builder->addRow('filters', 'collection', array(
+            'type' => 'component',
+            'options' => array(
+                'component' => $filterComponent,
             ),
-	        'label' => $translator->translate('label.filters'),
-	        'description' => $translator->translate('label.filters.exposed.description'),
-	    ));
-	    $builder->addRow('empty-result-message', 'wysiwyg', array(
-	        'label' => $translator->translate('label.message.result.empty'),
-	        'description' => $translator->translate('label.message.result.empty.description'),
-	    ));
-	    $builder->addRow('more-show', 'option', array(
-	        'label' => $translator->translate('label.more.show'),
-	        'description' => $translator->translate('label.more.show.description'),
-	    ));
-	    $builder->addRow('more-node', 'select', array(
-	        'label' => $translator->translate('label.more.node'),
-	        'description' => $translator->translate('label.more.node.description'),
-	        'options' => $this->nodeOptions,
-	    ));
-	    $builder->addRow('more-label', 'string', array(
-	        'label' => $translator->translate('label.more.label'),
-	        'description' => $translator->translate('label.more.label.description'),
-	    ));
-	}
+            'label' => $translator->translate('label.filters'),
+            'description' => $translator->translate('label.filters.exposed.description'),
+        ));
+        $builder->addRow('empty-result-message', 'wysiwyg', array(
+            'label' => $translator->translate('label.message.result.empty'),
+            'description' => $translator->translate('label.message.result.empty.description'),
+        ));
+        $builder->addRow('more-show', 'option', array(
+            'label' => $translator->translate('label.more.show'),
+            'description' => $translator->translate('label.more.show.description'),
+        ));
+        $builder->addRow('more-node', 'select', array(
+            'label' => $translator->translate('label.more.node'),
+            'description' => $translator->translate('label.more.node.description'),
+            'options' => $this->nodeOptions,
+        ));
+        $builder->addRow('more-label', 'string', array(
+            'label' => $translator->translate('label.more.label'),
+            'description' => $translator->translate('label.more.label.description'),
+        ));
+    }
 
-	/**
-	 * Gets the options for the order direction
-	 * @param \ride\library\i18n\translator\Translator $translator
-	 * @return array
-	 */
-	private function getOrderDirectionOptions(Translator $translator) {
-	    return array(
-	        OrderExpression::DIRECTION_ASC => $translator->translate('label.order.direction.asc'),
-	        OrderExpression::DIRECTION_DESC => $translator->translate('label.order.direction.desc'),
-	    );
-	}
+    /**
+     * Gets the options for the order direction
+     * @param \ride\library\i18n\translator\Translator $translator
+     * @return array
+     */
+    private function getOrderDirectionOptions(Translator $translator) {
+        return array(
+            OrderExpression::DIRECTION_ASC => $translator->translate('label.order.direction.asc'),
+            OrderExpression::DIRECTION_DESC => $translator->translate('label.order.direction.desc'),
+        );
+    }
 
-	/**
-	 * Gets the options for the parameters type
-	 * @param \ride\library\i18n\translator\Translator $translator
-	 * @return array
-	 */
-	private function getParametersTypeOptions(Translator $translator) {
-	    return array(
-	        self::PARAMETERS_TYPE_NONE => $translator->translate('label.parameters.none'),
-	        self::PARAMETERS_TYPE_NUMERIC => $translator->translate('label.parameters.numeric'),
-	        self::PARAMETERS_TYPE_NAMED => $translator->translate('label.parameters.type.named'),
-	    );
-	}
+    /**
+     * Gets the options for the parameters type
+     * @param \ride\library\i18n\translator\Translator $translator
+     * @return array
+     */
+    private function getParametersTypeOptions(Translator $translator) {
+        return array(
+            self::PARAMETERS_TYPE_NONE => $translator->translate('label.parameters.none'),
+            self::PARAMETERS_TYPE_NUMERIC => $translator->translate('label.parameters.numeric'),
+            self::PARAMETERS_TYPE_NAMED => $translator->translate('label.parameters.type.named'),
+        );
+    }
 
     /**
      * Gets the options for the parameters type
