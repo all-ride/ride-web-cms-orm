@@ -12,26 +12,25 @@ use ride\library\validation\exception\ValidationException;
 
 class EntryController extends AbstractNodeTypeController {
 
-    public function formAction(I18n $i18n, $locale, ImageUrlGenerator $imageUrlGenerator, LayoutModel $layoutModel, ThemeModel $themeModel, NodeModel $nodeModel, OrmManager $orm, $site, $node = null) {
-        $locales = $i18n->getLocaleCodeList();
-        $translator = $i18n->getTranslator();
-        $themes = $themeModel->getThemes();
-        $layouts = $layoutModel->getLayouts();
-
+    public function formAction(Cms $cms, ImageUrlGenerator $imageUrlGenerator, $locale, OrmManager $orm, $site, $revision = null, $node = null) {
         if ($node) {
-            if (!$this->resolveNode($nodeModel, $site, $node, 'entry')) {
+            if (!$cms->resolveNode($site, $revision, $node, 'entry')) {
                 return;
             }
 
-            $this->setLastAction('edit');
+            $cms->setLastAction('edit');
         } else {
-            if (!$this->resolveNode($nodeModel, $site)) {
+            if (!$cms->resolveNode($site, $revision)) {
                 return;
             }
 
-            $node = $nodeModel->createNode('entry');
-            $node->setParentNode($site);
+            $node = $cms->createNode('entry', $site);
         }
+
+        $translator = $this->getTranslator();
+        $locales = $cms->getLocales();
+        $themes = $cms->getThemes();
+        $layouts = $cms->getLayouts();
 
         // gather data
         $data = array(
@@ -97,15 +96,17 @@ class EntryController extends AbstractNodeTypeController {
                 'required' => array(),
             )
         ));
-        $form->addRow('availableLocales', 'select', array(
-            'label' => $translator->translate('label.locales'),
-            'description' => $translator->translate('label.locales.available.description'),
-            'options' => $this->getLocalesOptions($node, $translator, $locales),
-            'multiple' => true,
-            'validators' => array(
-                'required' => array(),
-            ),
-        ));
+        if ($site->isLocalizationMethodCopy()) {
+            $form->addRow('availableLocales', 'select', array(
+                'label' => $translator->translate('label.locales'),
+                'description' => $translator->translate('label.locales.available.description'),
+                'options' => $this->getLocalesOptions($node, $translator, $locales),
+                'multiple' => true,
+                'validators' => array(
+                    'required' => array(),
+                ),
+            ));
+        }
 
         // process form
         $form = $form->build();
@@ -123,10 +124,15 @@ class EntryController extends AbstractNodeTypeController {
                 $node->setRoute($locale, $data['route']);
                 $node->setLayout($locale, $data['layout']);
                 $node->setTheme($this->getOptionValueFromForm($data['theme']));
-                $node->setAvailableLocales($this->getOptionValueFromForm($data['availableLocales']));
+                if ($site->isLocalizationMethodCopy()) {
+                    $node->setAvailableLocales($this->getOptionValueFromForm($data['availableLocales']));
+                } else {
+                    $node->setAvailableLocales($locale);
+                }
+
                 $node->setEntry($data['model'], $data['entry']);
 
-                $nodeModel->setNode($node, (!$node->getId() ? 'Created new entry ' : 'Updated entry ') . $node->getName());
+                $cms->saveNode($node, (!$node->getId() ? 'Created new entry ' : 'Updated entry ') . $node->getName());
 
                 $this->addSuccess('success.node.saved', array(
                     'node' => $node->getName($locale),
@@ -136,6 +142,7 @@ class EntryController extends AbstractNodeTypeController {
                     'cms.entry.edit', array(
                         'locale' => $locale,
                         'site' => $site->getId(),
+                        'revision' => $node->getRevision(),
                         'node' => $node->getId(),
                     )
                 ));
@@ -150,6 +157,7 @@ class EntryController extends AbstractNodeTypeController {
         if (!$referer) {
             $referer = $this->getUrl('cms.site.detail.locale', array(
                 'site' => $site->getId(),
+                'revision' => $site->getRevision(),
                 'locale' => $locale,
             ));
         }

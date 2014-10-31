@@ -242,7 +242,7 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
      * @return \ride\library\mvc\view\View
      */
     protected function setView(ContentProperties $contentProperties, $content) {
-        $template = $this->getTemplate(static::TEMPLATE_NAMESPACE . '/index');
+        $template = $this->getTemplate(static::TEMPLATE_NAMESPACE . '/default');
         $variables = array(
             'locale' => $this->locale,
             'widgetId' => $this->id,
@@ -334,10 +334,9 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
                 $contentProperties = $form->getData();
                 $contentProperties->setToWidgetProperties($this->properties, $this->locale);
 
-
                 return true;
             } catch (ValidationException $exception) {
-
+                $this->setValidationException($exception, $form);
             }
         }
 
