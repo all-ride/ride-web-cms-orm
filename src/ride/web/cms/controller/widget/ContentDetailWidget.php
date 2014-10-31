@@ -334,10 +334,9 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
                 $contentProperties = $form->getData();
                 $contentProperties->setToWidgetProperties($this->properties, $this->locale);
 
-
                 return true;
             } catch (ValidationException $exception) {
-
+                $this->setValidationException($exception, $form);
             }
         }
 

@@ -25,7 +25,7 @@
         "ride/lib-validation": ">=0.4.0",
         "ride/lib-widget": ">=0.1.1",
         "ride/web-base": ">=0.4.0",
-        "ride/web-cms": ">=0.13.0",
+        "ride/web-cms": ">=0.14.0",
         "ride/web-cms-widgets": ">=0.12.3",
         "ride/web-orm": ">=0.5.0"
     },
