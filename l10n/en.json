@@ -82,6 +82,10 @@
     "label.view": "View",
     "label.view.description": "Select one of the predefined views",
     "label.widget.properties.unset": "No properties have been set for this widget.",
+    "template.orm.overview.alphabet": "Alphabet",
+    "template.orm.overview.block": "Block",
+    "template.orm.overview.cloud": "Cloud",
+    "template.orm.overview.list": "List",
     "title.condition": "Condition",
     "title.formats.data": "Data Formats",
     "title.order": "Order",
@@ -93,4 +97,4 @@
     "warning.cms.text.used": "This text is also used in one or more other text blocks. Changing this text will affect those blocks as well.",
     "widget.orm.detail": "Content Detail",
     "widget.orm.overview": "Content Overview"
-}
+    }
