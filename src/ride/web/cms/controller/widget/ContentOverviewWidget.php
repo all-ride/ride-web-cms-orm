@@ -516,11 +516,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             $contentOverviewFilters[$filterName] = $translator->translate('label.content.overview.filter.' . $filterName);
         }
 
-        $node = $this->properties->getNode();
-        $rootNodeId = $node->getRootNodeId();
-        $rootNode = $nodeModel->getNode($rootNodeId, null, true);
-        $nodeList = $nodeModel->getListFromNodes(array($rootNode), $this->locale);
-        $nodeOptions = array($rootNode->getId() => '/' . $rootNode->getName($this->locale)) + $nodeList;
+        $nodeOptions = $this->getNodeList($nodeModel);
 
         $viewProcessors = $this->dependencyInjector->getByTag('ride\\web\\cms\\orm\\processor\\ViewProcessor', 'overview');
         foreach ($viewProcessors as $id => $viewProcessor) {
