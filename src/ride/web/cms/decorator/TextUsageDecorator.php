@@ -46,6 +46,7 @@ class TextUsageDecorator implements Decorator {
 
             $url = $this->url;
             $url = str_replace('%25site%25', $node->getRootNodeId(), $url);
+            $url = str_replace('%25revision%25', $node->getRevision(), $url);
             $url = str_replace('%25node%25', $node->getId(), $url);
             $url = str_replace('%25region%25', $node->getRegion($node->getWidgetId()), $url);
 
