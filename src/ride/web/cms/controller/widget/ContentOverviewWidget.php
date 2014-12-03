@@ -209,7 +209,8 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
         if ($contentProperties->willShowMoreLink()) {
             $nodeModel = $this->dependencyInjector->get('ride\\library\\cms\\node\\NodeModel');
 
-            $node = $nodeModel->getNode($contentProperties->getMoreNode());
+            $selfNode = $this->properties->getNode();
+            $node = $nodeModel->getNode($selfNode->getRootNodeId(), $selfNode->getRevision(), $contentProperties->getMoreNode());
 
             $moreUrl = $this->request->getBaseScript() . $node->getRoute($this->locale);
         }
