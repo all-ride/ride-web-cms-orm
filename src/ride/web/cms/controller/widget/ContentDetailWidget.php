@@ -8,6 +8,7 @@ use ride\library\i18n\I18n;
 use ride\library\orm\definition\ModelTable;
 use ride\library\orm\entry\format\EntryFormatter;
 use ride\library\orm\OrmManager;
+use ride\library\reflection\ReflectionHelper;
 use ride\library\router\Route;
 use ride\library\validation\exception\ValidationException;
 
@@ -54,7 +55,7 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
         }
 
         return array(
-            new Route('/%id%', array($this, 'indexAction'), null, array('head', 'get', 'post')),
+            new Route('/%id%', array($this, 'indexAction'), 'detail', array('head', 'get', 'post')),
         );
     }
 
@@ -62,7 +63,7 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
      * Action to display the widget
      * @return null
      */
-    public function indexAction(OrmManager $orm, I18n $i18n, $id = null) {
+    public function indexAction(OrmManager $orm, I18n $i18n, ReflectionHelper $reflectionHelper, $id = null) {
         $contentProperties = $this->getContentProperties();
         $action = $contentProperties->getNoParametersAction();
 
@@ -86,6 +87,7 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
         $content = $this->getResult($contentProperties, $query);
 
         if (!$content && $contentProperties->getIncludeUnlocalized()) {
+            // no content, look for localized version
             $locales = $i18n->getLocaleList();
             foreach ($locales as $localeCode => $locale) {
                 if ($localeCode == $this->locale) {
@@ -98,6 +100,18 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
                 if ($content) {
                     break;
                 }
+            }
+        }
+
+        if (!$content && $contentProperties->getIdField() != ModelTable::PRIMARY_KEY) {
+            // no content, look for slug in history and redirect if possible
+            $entryId = $this->getIdFromLog($orm, $reflectionHelper, $contentProperties, $this->locale, $id);
+            if ($entryId) {
+                $url = $this->getUrl('detail', array('id' => $entryId));
+
+                $this->response->setRedirect($url, Response::STATUS_CODE_MOVED_PERMANENTLY);
+
+                return;
             }
         }
 
@@ -233,6 +247,55 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
         }
 
         return new Content($this->model->getName(), $title, $url, $teaser, $image, $date, $entry);
+    }
+
+    /**
+     * Gets a previous slug from the entry log
+     * @param \ride\library\orm\OrmManager $orm
+     * @param \ride\library\reflection\ReflectionHelper $reflectionHelper
+     * @param \ride\web\cms\orm\ContentProperties $contentProperties
+     * @param string $locale Code of the locale
+     * @param string $id Requested slug
+     * @return string|null Current slug of the entry, null if no change found
+     */
+    protected function getIdFromLog(OrmManager $orm, ReflectionHelper $reflectionHelper, ContentProperties $contentProperties, $locale, $id) {
+        $entryLogChangeModel = $orm->getEntryLogChangeModel();
+        $meta = $this->model->getMeta();
+
+        $isLocalized = $meta->isLocalized();
+        if ($isLocalized) {
+            $model = $orm->getModel($meta->getLocalizedModelName());
+        } else {
+            $model = $this->model;
+        }
+
+        $idField = $contentProperties->getIdField();
+
+        // look in the log for the requested id
+        $query = $entryLogChangeModel->createQuery($locale);
+        $query->addCondition('{entryLog.model} = %1%', $model->getName());
+        $query->addCondition('{fieldName} = %1%', $idField);
+        $query->addCondition('{oldValue} = %1%', $id);
+
+        $query->addOrderBy('{id} DESC');
+
+        $entryLogChange = $query->queryFirst();
+        if (!$entryLogChange) {
+            // no history of the provided id
+            return null;
+        }
+
+        $entryLog = $entryLogChange->getEntryLog();
+        $entryId = $entryLog->getEntry();
+
+        // get the original entry
+        $entry = $model->getById($entryId, $this->locale);
+        if (!$entry) {
+            return null;
+        }
+
+        // retrieve and return the id value from the entry
+        return $reflectionHelper->getProperty($entry, $idField);
     }
 
     /**
