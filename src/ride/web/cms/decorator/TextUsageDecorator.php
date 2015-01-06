@@ -44,11 +44,18 @@ class TextUsageDecorator implements Decorator {
                 continue;
             }
 
+            $blockInfo = $node->getWidgetBlockInfo($node->getWidgetId());
+            if (!$blockInfo) {
+                continue;
+            }
+
             $url = $this->url;
             $url = str_replace('%25site%25', $node->getRootNodeId(), $url);
             $url = str_replace('%25revision%25', $node->getRevision(), $url);
             $url = str_replace('%25node%25', $node->getId(), $url);
-            $url = str_replace('%25region%25', $node->getRegion($node->getWidgetId()), $url);
+            $url = str_replace('%25region%25', $blockInfo['region'], $url);
+            $url = str_replace('%25section%25', $blockInfo['section'], $url);
+            $url = str_replace('%25block%25', $blockInfo['block'], $url);
 
             $anchor = new Anchor($node->getName($this->locale), $url);
 
