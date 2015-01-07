@@ -2,6 +2,7 @@
 
 namespace ride\web\cms\controller\widget;
 
+use ride\library\cms\exception\NodeNotFoundException;
 use ride\library\cms\content\Content;
 use ride\library\cms\node\NodeModel;
 use ride\library\html\Pagination;
@@ -210,9 +211,12 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             $nodeModel = $this->dependencyInjector->get('ride\\library\\cms\\node\\NodeModel');
 
             $selfNode = $this->properties->getNode();
-            $node = $nodeModel->getNode($selfNode->getRootNodeId(), $selfNode->getRevision(), $contentProperties->getMoreNode());
+            try {
+                $node = $nodeModel->getNode($selfNode->getRootNodeId(), $selfNode->getRevision(), $contentProperties->getMoreNode());
+                $moreUrl = $this->request->getBaseScript() . $node->getRoute($this->locale);
+            } catch (NodeNotFoundException $exception) {
 
-            $moreUrl = $this->request->getBaseScript() . $node->getRoute($this->locale);
+            }
         }
 
         $baseUrl = $this->request->getBaseScript() . $this->properties->getNode()->getRoute($this->locale);
