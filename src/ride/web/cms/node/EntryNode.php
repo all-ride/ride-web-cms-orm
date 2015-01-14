@@ -25,6 +25,12 @@ class EntryNode extends PageNode {
     const PROPERTY_ENTRY_ID = 'entry.id';
 
     /**
+     * Instance of the ORM manager
+     * @var \ride\library\orm\OrmManager
+     */
+    protected $orm;
+
+    /**
      * Sets the ORM manager
      * @param \ride\library\orm\OrmManager $orm Instance of the ORM manager
      * @return null

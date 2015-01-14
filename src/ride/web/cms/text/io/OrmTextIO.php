@@ -6,6 +6,7 @@ use ride\library\cms\node\NodeModel;
 use ride\library\form\FormBuilder;
 use ride\library\i18n\translator\Translator;
 use ride\library\mvc\message\Message;
+use ride\library\mvc\view\View;
 use ride\library\mvc\Response;
 use ride\library\orm\OrmManager;
 use ride\library\widget\WidgetProperties;
@@ -75,8 +76,6 @@ class OrmTextIO extends AbstractTextIO {
         $texts = $textModel->find(null, $locale);
         $existingOptions = array('' => '---') + $textModel->getOptionsFromEntries($texts);
 
-        $this->warnAboutUsedText($widgetProperties, $textModel, $text, $translator->translate('warning.cms.text.used'));
-
         $formBuilder->addRow('existing', 'select', array(
             'label' => $translator->translate('label.text.existing'),
             'options' => $existingOptions,
@@ -99,6 +98,20 @@ class OrmTextIO extends AbstractTextIO {
             $data['existing'] = $text->getId();
             $data['version'] = $text->getVersion();
         }
+    }
+
+    /**
+     * Hook to process the form view
+     * @param \ride\library\widget\WidgetProperties $widgetProperties Instance
+     * of the widget properties
+     * @param \ride\library\i18n\translator\Translator $translator Instance of
+     * the translator
+     * @param \ride\web\cms\text\Text $text Instance of the text
+     * @param \ride\library\mvc\view\View $view Instance of the properties view
+     * @return null
+     */
+    public function processFormView(WidgetProperties $widgetProperties, Translator $translator, Text $text, View $view) {
+        $this->warnAboutUsedText($widgetProperties, $this->orm->getTextModel(), $text, $translator->translate('warning.cms.text.used'));
     }
 
     /**

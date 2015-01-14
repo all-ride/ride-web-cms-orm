@@ -10,6 +10,8 @@ use ride\library\image\ImageUrlGenerator;
 use ride\library\orm\OrmManager;
 use ride\library\validation\exception\ValidationException;
 
+use ride\web\cms\Cms;
+
 class EntryController extends AbstractNodeTypeController {
 
     public function formAction(Cms $cms, ImageUrlGenerator $imageUrlGenerator, $locale, OrmManager $orm, $site, $revision = null, $node = null) {
@@ -30,7 +32,6 @@ class EntryController extends AbstractNodeTypeController {
         $translator = $this->getTranslator();
         $locales = $cms->getLocales();
         $themes = $cms->getThemes();
-        $layouts = $cms->getLayouts();
 
         // gather data
         $data = array(
@@ -38,7 +39,6 @@ class EntryController extends AbstractNodeTypeController {
             'model' => $node->getEntryModel(),
             'entry' => $node->getEntryId(),
             'route' => $node->getRoute($locale, false),
-            'layout' => $node->getLayout($locale),
             'theme' => $this->getThemeValueFromNode($node),
             'availableLocales' => $this->getLocalesValueFromNode($node),
         );
@@ -87,14 +87,6 @@ class EntryController extends AbstractNodeTypeController {
             'label' => $translator->translate('label.theme'),
             'description' => $translator->translate('label.theme.description'),
             'options' => $this->getThemeOptions($node, $translator, $themes),
-        ));
-        $form->addRow('layout', 'option', array(
-            'label' => $translator->translate('label.layout'),
-            'description' => $translator->translate('label.layout.description'),
-            'options' => $this->getLayoutOptions($imageUrlGenerator, $translator, $layouts),
-            'validators' => array(
-                'required' => array(),
-            )
         ));
         if ($site->isLocalizationMethodCopy()) {
             $form->addRow('availableLocales', 'select', array(
