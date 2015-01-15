@@ -114,7 +114,6 @@ class EntryController extends AbstractNodeTypeController {
 
                 $node->setName($locale, $data['name']);
                 $node->setRoute($locale, $data['route']);
-                $node->setLayout($locale, $data['layout']);
                 $node->setTheme($this->getOptionValueFromForm($data['theme']));
                 if ($site->isLocalizationMethodCopy()) {
                     $node->setAvailableLocales($this->getOptionValueFromForm($data['availableLocales']));
