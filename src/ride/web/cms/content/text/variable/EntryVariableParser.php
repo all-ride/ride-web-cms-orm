@@ -48,11 +48,12 @@ class EntryVariableParser extends AbstractVariableParser {
         $tokens = explode('.', $variable);
 
         $numTokens = count($tokens);
-
         if ($numTokens < 2) {
             return null;
-        } elseif ($numTokens === 2 || $tokens[0] === 'node' && $tokens[1] === 'var') {
-            $node = $this->textParser->getNode();
+        }
+
+        $node = $this->textParser->getNode();
+        if ($numTokens === 2 || $tokens[0] === 'node' && $tokens[1] === 'var') {
             while ($node && !$node instanceof EntryNode) {
                 $node = $node->getParentNode();
             }
@@ -67,7 +68,7 @@ class EntryVariableParser extends AbstractVariableParser {
         if ($tokens[0] === 'entry' && $numTokens === 2) {
             switch ($tokens[1]) {
                 case NodeVariableParser::VARIABLE_URL:
-                    $value = $this->textParser->getBaseUrl() . $node->getRoute($this->textParser->getLocale());
+                    $value = $this->textParser->getSiteUrl() . $node->getRoute($this->textParser->getLocale());
 
                     break;
                 case NodeVariableParser::VARIABLE_NAME:
@@ -91,7 +92,7 @@ class EntryVariableParser extends AbstractVariableParser {
             $modelName = ucfirst($tokens[1]);
             $entryId = $tokens[2];
 
-            $nodes = $this->nodeModel->getNodes();
+            $nodes = $this->nodeModel->getNodes($node->getRootNodeId(), $node->getRevision());
             foreach ($nodes as $node) {
                 if ($node->getType() !== EntryNodeType::NAME || $node->getEntryModel() !== $modelName || $node->getEntryId() !== $entryId) {
                     continue;
@@ -101,7 +102,7 @@ class EntryVariableParser extends AbstractVariableParser {
 
                 switch ($tokens[3]) {
                     case NodeVariableParser::VARIABLE_URL:
-                        $value = $this->textParser->getBaseUrl() . $node->getRoute($locale);
+                        $value = $this->textParser->getSiteUrl() . $node->getRoute($locale);
 
                         break 2;
                     case NodeVariableParser::VARIABLE_NAME:
@@ -109,7 +110,7 @@ class EntryVariableParser extends AbstractVariableParser {
 
                         break 2;
                     case NodeVariableParser::VARIABLE_LINK:
-                        $value = '<a href="' . $this->textParser->getBaseUrl() . $node->getRoute($locale) . '">' . $node->getName($locale) . '</a>';
+                        $value = '<a href="' . $this->textParser->getSiteUrl() . $node->getRoute($locale) . '">' . $node->getName($locale) . '</a>';
 
                         break 2;
                 }
