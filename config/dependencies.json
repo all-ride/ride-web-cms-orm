@@ -28,6 +28,44 @@
         },
         {
             "interfaces": "ride\\web\\cms\\orm\\filter\\ContentOverviewFilter",
+            "class": "ride\\web\\cms\\orm\\filter\\MultiContentOverviewFilter",
+            "id": "multi.or",
+            "calls": [
+                {
+                    "method": "__construct",
+                    "arguments": [
+                        {
+                            "name": "operator",
+                            "type": "scalar",
+                            "properties": {
+                                "value": "OR"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "interfaces": "ride\\web\\cms\\orm\\filter\\ContentOverviewFilter",
+            "class": "ride\\web\\cms\\orm\\filter\\MultiContentOverviewFilter",
+            "id": "multi.and",
+            "calls": [
+                {
+                    "method": "__construct",
+                    "arguments": [
+                        {
+                            "name": "operator",
+                            "type": "scalar",
+                            "properties": {
+                                "value": "AND"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "interfaces": "ride\\web\\cms\\orm\\filter\\ContentOverviewFilter",
             "class": "ride\\web\\cms\\orm\\filter\\DateContentOverviewFilter",
             "id": "date"
         },
