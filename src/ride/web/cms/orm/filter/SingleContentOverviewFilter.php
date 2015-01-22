@@ -5,6 +5,7 @@ namespace ride\web\cms\orm\filter;
 use ride\library\orm\definition\field\BelongsToField;
 use ride\library\orm\definition\field\HasField;
 use ride\library\orm\definition\field\HasManyField;
+use ride\library\orm\definition\field\ModelField;
 use ride\library\orm\definition\field\PropertyField;
 use ride\library\orm\definition\ModelTable;
 use ride\library\orm\model\Model;
@@ -25,17 +26,43 @@ class SingleContentOverviewFilter extends AbstractContentOverviewFilter {
      * @return null
      */
     public function setVariables(array &$filters, Model $model, $name, $locale, $baseUrl) {
+        $field = null;
+        $relationModel = null;
+        if (!$this->parseRelationField($model, $filters[$name]['field'], $field, $relationModel)) {
+            return null;
+        }
+
+        $options = $this->getOptions($field, $relationModel, $locale);
+
+        $filters[$name]['options'] = $options;
+        $filters[$name]['urls'] = array();
+        $filters[$name]['values'] = array();
+        $filters[$name]['empty'] = $this->getUrl($baseUrl, $filters, $name, null);
+
+        foreach ($options as $id => $label) {
+            $filters[$name]['urls'][$label] = $this->getUrl($baseUrl, $filters, $name, $id);
+            $filters[$name]['values'][$label] = $id;
+        }
+    }
+
+    /**
+     * Parses the relation field of the filter
+     * @param \ride\library\orm\model\Model $model
+     * @param string $fieldName
+     * @param \ride\library\orm\definition\field\ModelField $field
+     * @param \ride\library\orm\model\Model $relationModel
+     * @return boolean
+     */
+    protected function parseRelationField(Model $model, $fieldName, ModelField &$field = null, Model &$relationModel = null) {
         $orm = $model->getOrmManager();
         $meta = $model->getMeta();
-
-        $fieldName = $filters[$name]['field'];
 
         $fieldTokens = explode('.', $fieldName);
         $fieldTokenName = array_shift($fieldTokens);
 
         $field = $meta->getField($fieldTokenName);
         if ($field instanceof PropertyField) {
-            return;
+            return false;
         }
 
         do {
@@ -53,11 +80,23 @@ class SingleContentOverviewFilter extends AbstractContentOverviewFilter {
             if ($fieldTokenName) {
                 $field = $meta->getField($fieldTokenName);
                 if ($field instanceof PropertyField) {
-                    return;
+                    return false;
                 }
             }
         } while ($fieldTokenName);
 
+        return true;
+    }
+
+    /**
+     * Gets the available options for the provided field
+     * @param \ride\library\orm\definition\field\ModelField $field
+     * @param \ride\library\orm\model\Model $relationModel
+     * @param string $locale Code of the locale
+     * @return array Array with the id of the entry as key and a title for the
+     * entry as value
+     */
+    protected function getOptions($field, $relationModel, $locale) {
         $options = array();
 
         $condition = $field->getOption('scaffold.form.condition');
@@ -65,18 +104,14 @@ class SingleContentOverviewFilter extends AbstractContentOverviewFilter {
             $options['condition'] = array($condition);
         }
 
-        $entries = $relationModel->find($options, $locale);
-        $options = $relationModel->getOptionsFromEntries($entries);
-
-        $filters[$name]['options'] = $options;
-        $filters[$name]['urls'] = array();
-        $filters[$name]['values'] = array();
-        $filters[$name]['empty'] = $this->getUrl($baseUrl, $filters, $name, null);
-
-        foreach ($options as $id => $label) {
-            $filters[$name]['urls'][$label] = $this->getUrl($baseUrl, $filters, $name, $id);
-            $filters[$name]['values'][$label] = $id;
+        $vocabulary = $field->getOption('taxonomy.vocabulary');
+        if ($vocabulary && $relationModel->getName() == 'TaxonomyTerm') {
+            $options['condition'] = array('{vocabulary.slug} = "' . $vocabulary . '"');
         }
+
+        $entries = $relationModel->find($options, $locale);
+
+        return $relationModel->getOptionsFromEntries($entries);
     }
 
     /**
@@ -85,15 +120,15 @@ class SingleContentOverviewFilter extends AbstractContentOverviewFilter {
      * @param string $field Name of the filter field
      * @return array Label as key, id as value
     */
-    public function getUrls(Model $model, $field, $baseUrl) {
-        $relationModel = $model->getMeta()->getRelationModelName($fieldName);
-        $relationModel = $model->getOrmManager()->getModel($relationModel);
+    // public function getUrls(Model $model, $field, $baseUrl) {
+        // $relationModel = $model->getMeta()->getRelationModelName($fieldName);
+        // $relationModel = $model->getOrmManager()->getModel($relationModel);
 
-        $entries = $relationModel->find(null, $locale);
-        $options = $relationModel->getOptionsFromEntries($entries);
+        // $entries = $relationModel->find(null, $locale);
+        // $options = $relationModel->getOptionsFromEntries($entries);
 
-        return array_flip($options);
-    }
+        // return array_flip($options);
+    // }
 
     /**
      * Applies the filter to the provided query
@@ -109,19 +144,38 @@ class SingleContentOverviewFilter extends AbstractContentOverviewFilter {
             return null;
         }
 
-        $orm = $model->getOrmManager();
-        $meta = $model->getMeta();
+        $conditionField = '';
+        if (!$this->prepareQuery($model, $query, $fieldName, $conditionField)) {
+            return null;
+        }
 
         if ($isArray) {
             $value = array_shift($value);
         }
+
+        $query->addCondition('{' . $conditionField . '} = %1%', $value);
+
+        return $value;
+    }
+
+    /**
+     * Prepares the query for the condition
+     * @param \ride\library\orm\model\Model $model
+     * @param \ride\library\orm\query\ModelQuery $query
+     * @param string $fieldName Name of the filter field
+     * @param string $conditionField Name of the model field to query on
+     * @return boolean True when conditionField is set, false otherwise
+     */
+    protected function prepareQuery(Model $model, ModelQuery $query, $fieldName, &$conditionField) {
+        $orm = $model->getOrmManager();
+        $meta = $model->getMeta();
 
         $fieldTokens = explode('.', $fieldName);
         $fieldTokenName = array_shift($fieldTokens);
 
         $field = $meta->getField($fieldTokenName);
         if ($field instanceof PropertyField) {
-            return null;
+            return false;
         } elseif ($field instanceof BelongsToField) {
             $conditionField = $fieldTokenName;
         } else {
@@ -185,9 +239,7 @@ class SingleContentOverviewFilter extends AbstractContentOverviewFilter {
             $numField++;
         }
 
-        $query->addCondition('{' . $conditionField . '} = %1%', $value);
-
-        return $value;
+        return true;
     }
 
 }

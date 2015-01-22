@@ -338,29 +338,27 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
             return $translator->translate('label.widget.properties.unset');
         }
 
-        $preview = $translator->translate('label.model') . ': ' . $modelName . '<br />';
+        $preview = '<strong>' . $translator->translate('label.model') . '</strong>: ' . $modelName . '<br />';
 
         $fields = $contentProperties->getModelFields();
         if ($fields) {
-            $preview .= $translator->translate('label.fields') . ': ' . implode(', ', $fields) . '<br />';
+            $preview .= '<strong>' . $translator->translate('label.fields') . '</strong>: ' . implode(', ', $fields) . '<br />';
         }
 
         $recursiveDepth = $contentProperties->getRecursiveDepth();
         if ($recursiveDepth) {
-            $preview .= $translator->translate('label.depth.recursive') . ': ' . $recursiveDepth . '<br />';
+            $preview .= '<strong>' . $translator->translate('label.depth.recursive') . '</strong>: ' . $recursiveDepth . '<br />';
         }
 
         $includeUnlocalized = $contentProperties->getIncludeUnlocalized();
-        if ($includeUnlocalized) {
-            $preview .= $translator->translate('label.unlocalized') . ': ' . $translator->translate('label.yes') . '<br />';
-        } else {
-            $preview .= $translator->translate('label.unlocalized') . ': ' . $translator->translate('label.no') . '<br />';
-        }
+        $preview .= '<strong>' . $translator->translate('label.unlocalized') . '</strong>: ' . $translator->translate($includeUnlocalized ? 'label.yes' : 'label.no') . '<br />';
 
         $idField = $contentProperties->getIdField();
         if ($idField && $idField != ModelTable::PRIMARY_KEY) {
-            $preview .= $translator->translate('label.field.id') . ': ' . $idField . '<br />';
+            $preview .= '<strong>' . $translator->translate('label.field.id') . '</strong>: ' . $idField . '<br />';
         }
+
+        $preview .= '<strong>' . $translator->translate('label.template') . '</strong>: ' . $this->getTemplate(static::TEMPLATE_NAMESPACE . '/block') . '<br>';
 
         return $preview;
     }

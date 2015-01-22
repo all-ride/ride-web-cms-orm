@@ -1,10 +1,10 @@
 {
     "label.condition": "Condition",
     "label.condition.description": "ORM condition expression for the query",
-    "label.content.overview.filter.and": "Multiple values (and)",
     "label.content.overview.filter.calendar": "Calendar (always uses fields dateStart and dateStop)",
     "label.content.overview.filter.date": "Date value",
-    "label.content.overview.filter.or": "Multiple values (or)",
+    "label.content.overview.filter.multi.and": "Multiple values (and)",
+    "label.content.overview.filter.multi.or": "Multiple values (or)",
     "label.content.overview.filter.single": "Single related value",
     "label.depth.recursive": "Recursive depth",
     "label.depth.recursive.description": "Select how many levels the relations will be fetched.",
