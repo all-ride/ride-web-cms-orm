@@ -225,6 +225,8 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             $filter['filter']->setVariables($this->filters, $this->model, $filterName, $this->locale, $baseUrl);
         }
 
+        $this->setContext('filters', $this->filters);
+
         $template = $this->getTemplate(static::TEMPLATE_NAMESPACE . '/block');
         $variables = array(
             'locale' => $this->locale,
