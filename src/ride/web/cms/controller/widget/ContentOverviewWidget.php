@@ -169,6 +169,8 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
 
         $result = $this->getResult($contentProperties, $query);
 
+        $this->setContext('orm.overview.' . $this->id, $result);
+
         $this->setView($contentProperties, $result, $pages, $page, $arguments);
 
         if ($this->properties->isAutoCache()) {
