@@ -16,6 +16,11 @@
             "id": "orm.detail"
         },
         {
+            "interfaces": "ride\\library\\cms\\widget\\Widget",
+            "class": "ride\\web\\cms\\controller\\widget\\ContentEntryWidget",
+            "id": "orm.entry"
+        },
+        {
             "interfaces": "ride\\web\\cms\\orm\\processor\\ViewProcessor",
             "class": "ride\\web\\cms\\orm\\processor\\CloudViewProcessor",
             "id": "cloud",
