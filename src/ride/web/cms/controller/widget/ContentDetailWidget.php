@@ -204,7 +204,10 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
 
         $titleFormat = $contentProperties->getContentTitleFormat();
         if (!$titleFormat) {
-            $titleFormat = $modelTable->getFormat(EntryFormatter::FORMAT_TITLE);
+            $titleFormat = $modelTable->getFormat(EntryFormatter::FORMAT_TITLE, false);
+            if ($titleFormat == null) {
+                $titleFormat = $this->model->getName() . ' #{id}';
+            }
         }
 
         $teaserFormat = $contentProperties->getContentTeaserFormat();
