@@ -65,6 +65,12 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
      */
     public function indexAction(OrmManager $orm, I18n $i18n, ReflectionHelper $reflectionHelper, $id = null) {
         $contentProperties = $this->getContentProperties();
+
+        $modelName = $contentProperties->getModelName();
+        if (!$modelName) {
+            return;
+        }
+
         $action = $contentProperties->getNoParametersAction();
 
         if ($id === null) {
@@ -72,11 +78,6 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
                 $this->response->setStatusCode(Response::STATUS_CODE_NOT_FOUND);
             }
 
-            return;
-        }
-
-        $modelName = $contentProperties->getModelName();
-        if (!$modelName) {
             return;
         }
 
