@@ -13,9 +13,9 @@ use ride\library\orm\OrmManager;
 use ride\library\router\Route;
 use ride\library\validation\exception\ValidationException;
 
-use ride\web\cms\content\mapper\OrmContentMapper;
 use ride\web\cms\form\ContentOverviewComponent;
 use ride\web\cms\orm\ContentProperties;
+use ride\web\cms\orm\ContentService;
 use ride\web\cms\orm\FieldService;
 
 use \Exception;
@@ -91,7 +91,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
      * Action to display the widget
      * @return null
      */
-    public function indexAction(OrmManager $orm) {
+    public function indexAction(OrmManager $orm, ContentService $contentService) {
         $contentProperties = $this->getContentProperties();
         $modelName = $contentProperties->getModelName();
 
@@ -107,6 +107,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
         $parameters = $contentProperties->getParameters();
         $arguments = func_get_args();
         array_shift($arguments); // remove $orm
+        array_shift($arguments); // remove $contentService
 
         if ($parameters) {
             if (is_array($parameters)) {
@@ -167,9 +168,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             }
         }
 
-        $result = $this->getResult($contentProperties, $query);
-
-        $this->setContext('orm.overview.' . $this->id, $result);
+        $result = $this->getResult($contentProperties, $contentService, $query);
 
         $this->setView($contentProperties, $result, $pages, $page, $arguments);
 
@@ -227,7 +226,8 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             $filter['filter']->setVariables($this->filters, $this->model, $filterName, $this->locale, $baseUrl);
         }
 
-        $this->setContext('filters', $this->filters);
+        $this->setContext('orm.overview.' . $this->id, $result);
+        $this->setContext('orm.filters.' . $this->id, $this->filters);
 
         $template = $this->getTemplate(static::TEMPLATE_NAMESPACE . '/block');
         $variables = array(
@@ -258,12 +258,12 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
 
     /**
      * Gets the result from the query
-     * @param \ride\library\orm\model\Model $model
+     * @param \ride\web\cms\orm\ContentProperties $contentProperties
+     * @param \ride\web\cms\orm\ContentService $contentService
      * @param \ride\library\orm\query\ModelQuery $query
-     * @param \ride\library\orm\model\ContentProperties $properties
      * @return array Array with Content objects
      */
-    private function getResult(ContentProperties $contentProperties, ModelQuery $query) {
+    private function getResult(ContentProperties $contentProperties, ContentService $contentService, ModelQuery $query) {
         $result = $query->query();
         if (!$result) {
             return $result;
@@ -297,42 +297,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             $dateFormat = $modelTable->getFormat(EntryFormatter::FORMAT_DATE);
         }
 
-        try {
-            $mapper = $this->getContentMapper($this->model->getName());
-        } catch (Exception $e) {
-            $this->dependencyInjector->get('ride\\library\\log\\Log')->logException($e);
-
-            $nodeModel = $this->dependencyInjector->get('ride\\library\\cms\\node\\NodeModel');
-
-            $mapper = new OrmContentMapper($nodeModel, $this->model, $this->entryFormatter);
-        }
-
-        $type = $this->model->getName();
-        foreach ($result as $index => $entry) {
-            $title = $this->entryFormatter->formatEntry($entry, $titleFormat);
-            $url = $mapper->getUrl($node->getRootNodeId(), $this->locale, $entry);
-            $teaser = null;
-            $image = null;
-            $date = null;
-
-            if ($teaserFormat) {
-                $teaser = $this->entryFormatter->formatEntry($entry, $teaserFormat);
-            }
-
-            if ($imageFormat) {
-                $image = $this->entryFormatter->formatEntry($entry, $imageFormat);
-            }
-
-            if ($dateFormat) {
-                $date = $this->entryFormatter->formatEntry($entry, $dateFormat);
-            }
-
-            $content = new Content($type, $title, $url, $teaser, $image, $date, $entry);
-
-            $result[$index] = $content;
-        }
-
-        return $result;
+        return $contentService->getContentForEntries($this->model, $result, $node->getRootNodeId(), $this->locale, $titleFormat, $teaserFormat, $imageFormat, $dateFormat);
     }
 
     /**
