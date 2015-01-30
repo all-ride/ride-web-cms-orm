@@ -297,7 +297,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             $dateFormat = $modelTable->getFormat(EntryFormatter::FORMAT_DATE);
         }
 
-        return $contentService->getContentForEntries($this->model, $result, $node->getRootNodeId(), $this->locale, null, $titleFormat, $teaserFormat, $imageFormat, $dateFormat);
+        return $contentService->getContentForEntries($this->model, $result, $node->getRootNodeId(), $this->locale, $contentProperties->getContentMapper(), $titleFormat, $teaserFormat, $imageFormat, $dateFormat);
     }
 
     /**
@@ -482,7 +482,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
      * Action to show and edit the properties of this widget
      * @return null
      */
-    public function propertiesAction(NodeModel $nodeModel, FieldService $fieldService) {
+    public function propertiesAction(NodeModel $nodeModel, FieldService $fieldService, ContentService $contentService) {
         $contentProperties = $this->getContentProperties();
         if (!$contentProperties->getModelName()) {
             $contentProperties->setRecursiveDepth(0);
@@ -504,6 +504,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
         $viewProcessors = array('' => '---') + $viewProcessors;
 
         $component = new ContentOverviewComponent($fieldService);
+        $component->setContentService($contentService);
         $component->setNodeOptions($nodeOptions);
         $component->setContentOverviewFilters($contentOverviewFilters);
         $component->setTemplates($this->getAvailableTemplates(static::TEMPLATE_NAMESPACE));
@@ -529,12 +530,13 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
 
         $orderFieldsAction = $this->getUrl('cms.ajax.orm.fields.order', array('model' => '%model%', 'recursiveDepth' => '%recursiveDepth%'));
         $filterFieldsAction = $this->getUrl('cms.ajax.orm.fields.relation', array('model' => '%model%'));
+        $modelMappersAction = $this->getUrl('api.cms.orm.model.mappers', array('model' => '%model%'));
 
         $view = $this->setTemplateView(static::TEMPLATE_NAMESPACE . '/properties', array(
         	'form' => $form->getView(),
         ));
         $view->addJavascript('js/cms/orm.js');
-        $view->addInlineJavascript('joppaContentInitializeOverviewProperties("' . $orderFieldsAction . '", "' . $filterFieldsAction . '");');
+        $view->addInlineJavascript('joppaContentInitializeOverviewProperties("' . $orderFieldsAction . '", "' . $filterFieldsAction . '", "' . $modelMappersAction . '");');
 
         return false;
     }

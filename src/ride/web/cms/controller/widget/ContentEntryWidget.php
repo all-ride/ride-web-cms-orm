@@ -3,7 +3,6 @@
 namespace ride\web\cms\controller\widget;
 
 use ride\library\cms\content\Content;
-use ride\library\http\Response;
 use ride\library\i18n\I18n;
 use ride\library\orm\definition\ModelTable;
 use ride\library\orm\entry\format\EntryFormatter;
@@ -14,6 +13,7 @@ use ride\library\validation\exception\ValidationException;
 
 use ride\web\cms\form\ContentEntryComponent;
 use ride\web\cms\orm\ContentProperties;
+use ride\web\cms\orm\ContentService;
 use ride\web\cms\orm\FieldService;
 
 use \Exception;
@@ -21,7 +21,7 @@ use \Exception;
 /**
  * Widget to show the detail of a content type
  */
-class ContentEntryWidget extends AbstractWidget implements StyleWidget {
+class ContentEntryWidget extends ContentDetailWidget {
 
     /**
      * Machine name of this widget
@@ -30,22 +30,19 @@ class ContentEntryWidget extends AbstractWidget implements StyleWidget {
     const NAME = 'orm.entry';
 
     /**
-     * Relative path to the icon of this widget
-     * @var string
+     * Gets the additional sub routes for this widget
+     * @return array|null Array with a route path as key and the action method
+     * as value
      */
-    const ICON = 'img/cms/widget/content.detail.png';
-
-    /**
-     * Namespace for the templates of this widget
-     * @var string
-     */
-    const TEMPLATE_NAMESPACE = 'cms/widget/orm-detail';
+    public function getRoutes() {
+        return array();
+    }
 
      /**
      * Action to display the widget
      * @return null
      */
-    public function indexAction(OrmManager $orm, I18n $i18n, ReflectionHelper $reflectionHelper) {
+    public function indexAction(OrmManager $orm, ContentService $contentService, I18n $i18n, ReflectionHelper $reflectionHelper, $id = null) {
         $contentProperties = $this->getContentProperties();
         $id = $contentProperties->getEntryId();
         if ($id === null) {
@@ -57,29 +54,14 @@ class ContentEntryWidget extends AbstractWidget implements StyleWidget {
             return;
         }
 
+        $contentProperties->setIdField(ModelTable::PRIMARY_KEY);
+
         $this->entryFormatter = $orm->getEntryFormatter();
         $this->model = $orm->getModel($modelName);
 
         $query = $this->getModelQuery($contentProperties, $this->locale, $id);
-        $content = $this->getResult($contentProperties, $query);
 
-        if (!$content && $contentProperties->getIncludeUnlocalized()) {
-            // no content, look for localized version
-            $locales = $i18n->getLocaleList();
-            foreach ($locales as $localeCode => $locale) {
-                if ($localeCode == $this->locale) {
-                    continue;
-                }
-
-                $query = $this->getModelQuery($contentProperties, $localeCode, $id);
-                $content = $this->getResult($contentProperties, $query);
-
-                if ($content) {
-                    break;
-                }
-            }
-        }
-
+        $content = $this->getResult($contentProperties, $contentService, $query);
         if ($content && $content->data instanceof LocalizedEntry && !$content->data->isLocalized() && !$contentProperties->getIncludeUnlocalized()) {
             $content = null;
         }
@@ -107,136 +89,12 @@ class ContentEntryWidget extends AbstractWidget implements StyleWidget {
         if ($this->properties->getWidgetProperty('region')) {
             $this->setIsRegion(true);
         }
-    }
-
-    /**
-     * Gets the model query
-     * @param \ride\web\cms\orm\ContentProperties $contentProperties
-     * @param \ride\library\orm\model\Model $model
-     * @param string $locale Code of the locale
-     * @param string $id The id of the record to fetch
-     * @return \ride\library\orm\query\ModelQuery
-     */
-    protected function getModelQuery(ContentProperties $contentProperties, $locale, $id) {
-        $query = $this->model->createQuery($locale);
-        $query->setRecursiveDepth($contentProperties->getRecursiveDepth());
-        $query->setFetchUnlocalized($contentProperties->getIncludeUnlocalized());
-
-        $modelFields = $contentProperties->getModelFields();
-        if ($modelFields) {
-            foreach ($modelFields as $fieldName) {
-                $query->addFields('{' . $fieldName . '}');
-            }
+        if ($this->properties->getWidgetProperty('section')) {
+            $this->setIsSection(true);
         }
-
-        $query->addCondition('{' . ModelTable::PRIMARY_KEY . '} = %1%', $id);
-
-        $condition = $contentProperties->getCondition();
-        if ($condition) {
-            $query->addCondition($condition);
+        if ($this->properties->getWidgetProperty('block')) {
+            $this->setIsBlock(true);
         }
-
-        $order = $contentProperties->getOrder();
-        if ($order) {
-            $query->addOrderBy($order);
-        }
-
-        return $query;
-    }
-
-    /**
-     * Gets the result from the query
-     * @param \ride\web\cms\orm\ContentProperties $properties
-     * @param \ride\library\orm\query\ModelQuery $query
-     * @return array Array with Content objects
-     */
-    protected function getResult(ContentProperties $contentProperties, $query) {
-        $entry = $query->queryFirst();
-        if (!$entry) {
-            return $entry;
-        }
-
-        $node = $this->properties->getNode();
-        $meta = $this->model->getMeta();
-
-        $modelTable = $meta->getModelTable();
-
-        $titleFormat = $contentProperties->getContentTitleFormat();
-        if (!$titleFormat) {
-            $titleFormat = $modelTable->getFormat(EntryFormatter::FORMAT_TITLE, false);
-            if ($titleFormat == null) {
-                $titleFormat = $this->model->getName() . ' #{id}';
-            }
-        }
-
-        $teaserFormat = $contentProperties->getContentTeaserFormat();
-        if (!$teaserFormat && $modelTable->hasFormat(EntryFormatter::FORMAT_TEASER)) {
-            $teaserFormat = $modelTable->getFormat(EntryFormatter::FORMAT_TEASER);
-        }
-
-        $imageFormat = $contentProperties->getContentImageFormat();
-        if (!$imageFormat && $modelTable->hasFormat(EntryFormatter::FORMAT_IMAGE)) {
-            $imageFormat = $modelTable->getFormat(EntryFormatter::FORMAT_IMAGE);
-        }
-
-        $dateFormat = $contentProperties->getContentDateFormat();
-        if (!$dateFormat && $modelTable->hasFormat(EntryFormatter::FORMAT_DATE)) {
-            $dateFormat = $modelTable->getFormat(EntryFormatter::FORMAT_DATE);
-        }
-
-        $title = $this->entryFormatter->formatEntry($entry, $titleFormat);
-        $url = null;
-        $teaser = null;
-        $image = null;
-        $date = null;
-
-        if ($teaserFormat) {
-            $teaser = $this->entryFormatter->formatEntry($entry, $teaserFormat);
-        }
-
-        if ($imageFormat) {
-            $image = $this->entryFormatter->formatEntry($entry, $imageFormat);
-        }
-
-        if ($dateFormat) {
-            $date = $this->entryFormatter->formatEntry($entry, $dateFormat);
-        }
-
-        try {
-            $mapper = $this->getContentMapper($this->model->getName());
-            $url = $mapper->getUrl($node->getRootNodeId(), $this->locale, $entry);
-        } catch (Exception $e) {
-
-        }
-
-        return new Content($this->model->getName(), $title, $url, $teaser, $image, $date, $entry);
-    }
-
-    /**
-     * Sets the view
-     * @param \ride\web\cms\orm\ContentProperties $properties
-     * @param \ride\library\cms\content\Content $content
-     * @return \ride\library\mvc\view\View
-     */
-    protected function setView(ContentProperties $contentProperties, $content) {
-        $template = $this->getTemplate(static::TEMPLATE_NAMESPACE . '/default');
-        $variables = array(
-            'locale' => $this->locale,
-            'widgetId' => $this->id,
-            'content' => $content,
-            'properties' => $contentProperties,
-        );
-
-        $view = $this->setTemplateView($template, $variables);
-
-        $viewProcessor = $contentProperties->getViewProcessor();
-        if ($viewProcessor) {
-            $viewProcessor = $this->dependencyInjector->get('ride\\web\\cms\\orm\\processor\\ViewProcessor', $viewProcessor);
-
-            $viewProcessor->processView($view);
-        }
-
-        return $view;
     }
 
     /**
@@ -323,29 +181,6 @@ class ContentEntryWidget extends AbstractWidget implements StyleWidget {
         $view->addInlineJavascript('joppaContentInitializeEntryProperties("' . $entriesAction . '");');
 
         return false;
-    }
-
-    /**
-     * Gets the properties
-     * @return \ride\web\cms\orm\ContentProperties
-     */
-    private function getContentProperties() {
-        $contentProperties = new ContentProperties();
-        $contentProperties->getFromWidgetProperties($this->properties, $this->locale);
-
-        return $contentProperties;
-    }
-
-    /**
-     * Gets the options for the styles
-     * @return array Array with the name of the option as key and the
-     * translation key as value
-     */
-    public function getWidgetStyleOptions() {
-        return array(
-            'container' => 'label.style.container',
-            'title' => 'label.style.title',
-        );
     }
 
 }

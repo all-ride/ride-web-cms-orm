@@ -125,6 +125,12 @@ class ContentProperties {
     const PROPERTY_PRIMARY = 'primary';
 
     /**
+     * Name of the content mapper setting
+     * @var string
+     */
+    const PROPERTY_MAPPER = 'mapper';
+
+    /**
      * Name of the filters field setting
      * @var string
      */
@@ -328,6 +334,12 @@ class ContentProperties {
      * @var string
      */
     private $isPrimaryMapper;
+
+    /**
+     * Id of the content mapper to use
+     * @var string
+     */
+    private $contentMapper;
 
     /**
      * Relative path to the template resource
@@ -722,6 +734,23 @@ class ContentProperties {
     }
 
     /**
+     * Sets the id of the content mapper
+     * @param string $contentMapper Id of the content mapper
+     * @return null
+     */
+    public function setContentMapper($contentMapper) {
+        $this->contentMapper = $contentMapper;
+    }
+
+    /**
+     * Gets the id of the content mapper
+     * @return string
+     */
+    public function getContentMapper() {
+        return $this->contentMapper;
+    }
+
+    /**
      * Sets the resource for the template
      * @param string $template Relative path to the template resource
      * @return null
@@ -877,6 +906,7 @@ class ContentProperties {
         $this->parametersNone = $properties->getWidgetProperty(self::PROPERTY_PARAMETERS_NONE);
         $this->idField = $properties->getWidgetProperty(self::PROPERTY_ID_FIELD);
         $this->isPrimaryMapper = $properties->getWidgetProperty(self::PROPERTY_PRIMARY);
+        $this->contentMapper = $properties->getWidgetProperty(self::PROPERTY_MAPPER);
         $this->template = $properties->getWidgetProperty(self::PROPERTY_TEMPLATE);
         $this->viewProcessor = $properties->getWidgetProperty(self::PROPERTY_VIEW_PROCESSOR);
         $this->contentTitleFormat = $properties->getWidgetProperty(self::PROPERTY_FORMAT_TITLE);
@@ -969,6 +999,7 @@ class ContentProperties {
 
         $properties->setWidgetProperty(self::PROPERTY_ID_FIELD, $this->idField);
         $properties->setWidgetProperty(self::PROPERTY_PRIMARY, $this->isPrimaryMapper);
+        $properties->setWidgetProperty(self::PROPERTY_MAPPER, $this->contentMapper);
         $properties->setWidgetProperty(self::PROPERTY_TEMPLATE, $this->template);
         $properties->setWidgetProperty(self::PROPERTY_VIEW_PROCESSOR, $this->viewProcessor);
         $properties->setWidgetProperty(self::PROPERTY_FORMAT_TITLE, $this->contentTitleFormat);

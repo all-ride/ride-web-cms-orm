@@ -25,6 +25,12 @@
             "id": "cms.ajax.orm.fields.relation"
         },
         {
+            "path": "/api/cms/orm/models/%model%/mappers",
+            "controller": "ride\\web\\cms\\controller\\FieldServiceController",
+            "action": "modelMappersAction",
+            "id": "api.cms.orm.model.mappers"
+        },
+        {
             "path": "/sites/%site%/%revision%/%locale%/add/entry",
             "controller": "ride\\web\\cms\\controller\\backend\\EntryController",
             "action": "formAction",

@@ -7,6 +7,7 @@ use ride\library\http\Response;
 use ride\library\i18n\I18n;
 use ride\library\orm\definition\ModelTable;
 use ride\library\orm\entry\format\EntryFormatter;
+use ride\library\orm\query\ModelQuery;
 use ride\library\orm\OrmManager;
 use ride\library\reflection\ReflectionHelper;
 use ride\library\router\Route;
@@ -14,6 +15,7 @@ use ride\library\validation\exception\ValidationException;
 
 use ride\web\cms\form\ContentDetailComponent;
 use ride\web\cms\orm\ContentProperties;
+use ride\web\cms\orm\ContentService;
 use ride\web\cms\orm\FieldService;
 
 use \Exception;
@@ -63,7 +65,7 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
      * Action to display the widget
      * @return null
      */
-    public function indexAction(OrmManager $orm, I18n $i18n, ReflectionHelper $reflectionHelper, $id = null) {
+    public function indexAction(OrmManager $orm, ContentService $contentService, I18n $i18n, ReflectionHelper $reflectionHelper, $id = null) {
         $contentProperties = $this->getContentProperties();
 
         $modelName = $contentProperties->getModelName();
@@ -85,7 +87,7 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
         $this->model = $orm->getModel($modelName);
 
         $query = $this->getModelQuery($contentProperties, $this->locale, $id);
-        $content = $this->getResult($contentProperties, $query);
+        $content = $this->getResult($contentProperties, $contentService, $query);
 
         if (!$content && $contentProperties->getIncludeUnlocalized()) {
             // no content, look for localized version
@@ -96,7 +98,7 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
                 }
 
                 $query = $this->getModelQuery($contentProperties, $localeCode, $id);
-                $content = $this->getResult($contentProperties, $query);
+                $content = $this->getResult($contentProperties, $contentService, $query);
 
                 if ($content) {
                     break;
@@ -191,7 +193,7 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
      * @param \ride\library\orm\query\ModelQuery $query
      * @return array Array with Content objects
      */
-    protected function getResult(ContentProperties $contentProperties, $query) {
+    protected function getResult(ContentProperties $contentProperties, ContentService $contentService, ModelQuery $query) {
         $entry = $query->queryFirst();
         if (!$entry) {
             return $entry;
@@ -225,32 +227,7 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
             $dateFormat = $modelTable->getFormat(EntryFormatter::FORMAT_DATE);
         }
 
-        $title = $this->entryFormatter->formatEntry($entry, $titleFormat);
-        $url = null;
-        $teaser = null;
-        $image = null;
-        $date = null;
-
-        if ($teaserFormat) {
-            $teaser = $this->entryFormatter->formatEntry($entry, $teaserFormat);
-        }
-
-        if ($imageFormat) {
-            $image = $this->entryFormatter->formatEntry($entry, $imageFormat);
-        }
-
-        if ($dateFormat) {
-            $date = $this->entryFormatter->formatEntry($entry, $dateFormat);
-        }
-
-        try {
-            $mapper = $this->getContentMapper($this->model->getName());
-            $url = $mapper->getUrl($node->getRootNodeId(), $this->locale, $entry);
-        } catch (Exception $e) {
-
-        }
-
-        return new Content($this->model->getName(), $title, $url, $teaser, $image, $date, $entry);
+        return $contentService->getContentForEntry($this->model, $entry, $node->getRootNodeId(), $this->locale, null, $titleFormat, $teaserFormat, $imageFormat, $dateFormat);
     }
 
     /**
@@ -420,7 +397,7 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
      * Gets the properties
      * @return \ride\web\cms\orm\ContentProperties
      */
-    private function getContentProperties() {
+    protected function getContentProperties() {
         $contentProperties = new ContentProperties();
         $contentProperties->getFromWidgetProperties($this->properties, $this->locale);
 

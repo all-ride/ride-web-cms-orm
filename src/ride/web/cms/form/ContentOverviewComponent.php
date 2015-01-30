@@ -7,6 +7,7 @@ use ride\library\form\FormBuilder;
 use ride\library\i18n\translator\Translator;
 
 use ride\web\cms\orm\ContentProperties;
+use ride\web\cms\orm\ContentService;
 
 /**
  * Form to edit the properties of a content overview widget
@@ -32,10 +33,25 @@ class ContentOverviewComponent extends AbstractContentComponent {
     const PARAMETERS_TYPE_NONE = 'none';
 
     /**
+     * Instance of the content service
+     * @var \ride\web\cms\orm\ContentService
+     */
+    protected $contentService;
+
+    /**
      * Array with node options
      * @var array
      */
     protected $nodeOptions;
+
+    /**
+     * Sets the content service to this component
+     * @param \ride\web\cms\orm\ContentService $contentService
+     * @return null
+     */
+    public function setContentService(ContentService $contentService) {
+        $this->contentService = $contentService;
+    }
 
     /**
      * Set the available nodes
@@ -75,6 +91,7 @@ class ContentOverviewComponent extends AbstractContentComponent {
         $result['pagination-offset'] = $data->getPaginationOffset();
         $result['pagination-show'] = $data->willShowPagination();
         $result['pagination-ajax'] = $data->useAjaxForPagination();
+        $result['content-mapper'] = $data->getContentMapper();
         $result['title'] = $data->getTitle();
         $result['empty-result-message'] = $data->getEmptyResultMessage();
         $result['more-show'] = $data->willShowMoreLink();
@@ -115,7 +132,8 @@ class ContentOverviewComponent extends AbstractContentComponent {
         $result->setPaginationOffset($data['pagination-offset']);
         $result->setWillShowPagination($data['pagination-show']);
         $result->setUseAjaxForPagination($data['pagination-ajax']);
-        $result->setTitle($data['title']);;
+        $result->setContentMapper($data['content-mapper']);
+        $result->setTitle($data['title']);
         $result->setEmptyResultMessage($data['empty-result-message']);
         $result->setWillShowMoreLink($data['more-show']);
         $result->setMoreLabel($data['more-label']);
@@ -140,7 +158,7 @@ class ContentOverviewComponent extends AbstractContentComponent {
      * @return null
      */
     public function prepareForm(FormBuilder $builder, array $options) {
-            $data = $options['data'];
+        $data = $options['data'];
 
         parent::prepareForm($builder, $options);
 
@@ -212,6 +230,11 @@ class ContentOverviewComponent extends AbstractContentComponent {
             'type' => 'string',
             'label' => $translator->translate('label.parameter'),
         ));
+        $builder->addRow('content-mapper', 'select', array(
+            'label' => $translator->translate('label.content.mapper.select'),
+            'description' => $translator->translate('label.content.mapper.select.description'),
+            'options' => $this->getContentMapperOptions($modelName),
+        ));
         $builder->addRow('title', 'string', array(
             'label' => $translator->translate('label.title'),
             'description' => $translator->translate('label.title.query.description'),
@@ -279,6 +302,21 @@ class ContentOverviewComponent extends AbstractContentComponent {
             ContentProperties::NONE_IGNORE => $translator->translate('label.parameters.none.ignore'),
             '' => $translator->translate('label.parameters.none.render'),
         );
+    }
+
+    /**
+     * Gets the options for the content mappers
+     * @return array
+     */
+    protected function getContentMapperOptions($modelName) {
+        $contentMappers = $this->contentService->getContentMappersForType($modelName);
+        foreach ($contentMappers as $id => $contentMapper) {
+            $contentMappers[$id] = $id;
+        }
+
+        $contentMappers = array('' => '---') + $contentMappers;
+
+        return $contentMappers;
     }
 
 }
