@@ -21,6 +21,7 @@ class ContentDetailComponent extends AbstractContentComponent {
 
         $result = parent::parseSetData($data);
         $result['field-id'] = $data->getIdField();
+        $result['primary'] = $data->isPrimaryMapper();
         $result['title'] = $data->getTitle();
 
         return $result;
@@ -35,6 +36,7 @@ class ContentDetailComponent extends AbstractContentComponent {
         $result = parent::parseGetData($data);
         $result->setIdField($data['field-id']);
         $result->setTitle($data['title']);
+        $result->setIsPrimaryMapper($data['primary']);
 
         return $result;
     }
@@ -64,6 +66,10 @@ class ContentDetailComponent extends AbstractContentComponent {
             'label' => $translator->translate('label.field.id'),
             'description' => $translator->translate('label.field.id.description'),
             'options' => $fieldIdOptions,
+        ));
+        $builder->addRow('primary', 'boolean', array(
+            'label' => $translator->translate('label.content.mapper.primary'),
+            'description' => $translator->translate('label.content.mapper.primary.description'),
         ));
         $builder->addRow('title', 'boolean', array(
             'label' => $translator->translate('label.title'),
