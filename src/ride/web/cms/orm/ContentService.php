@@ -109,6 +109,10 @@ class ContentService {
      * content mapper of the type as value
      */
     public function getContentMappers() {
+        if ($this->mappers === null) {
+            $this->readContentMappers();
+        }
+
         $mappers = array();
 
         foreach ($this->defaultMappers as $modelName => $widgetId) {
@@ -125,6 +129,10 @@ class ContentService {
      * instance of the content mapper as value
      */
     public function getContentMappersForType($type) {
+        if ($this->mappers === null) {
+            $this->readContentMappers();
+        }
+
         if (!isset($this->mappers[$type])) {
             return array();
         }

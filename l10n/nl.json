@@ -3,6 +3,8 @@
     "label.condition.description": "Voorwaarde expressie van de query",
     "label.content.mapper.primary": "Primair",
     "label.content.mapper.primary.description": "Dit detail als standaard pagina gebruiken voor het geselecteerde model.",
+    "label.content.mapper.select": "Inhoudsmapper",
+    "label.content.mapper.select.description": "Selecteer de inhoudsmapper dat gebruikt moet worden. Je kan dit veld leeglaten om de standaard mapper te gebruiken.",
     "label.content.overview.filter.calendar": "Kalender (gebruikt altijd de dateStart en dateStop velden)",
     "label.content.overview.filter.date": "Datum waarde",
     "label.content.overview.filter.multi.and": "Meerdere waardes (en)",

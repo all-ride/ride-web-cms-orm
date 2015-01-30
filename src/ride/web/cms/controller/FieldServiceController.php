@@ -3,6 +3,7 @@
 namespace ride\web\cms\controller;
 
 use ride\web\base\controller\AbstractController;
+use ride\web\cms\orm\ContentService;
 use ride\web\cms\orm\FieldService;
 
 /**
@@ -73,6 +74,18 @@ class FieldServiceController extends AbstractController {
         }
 
         $this->setJsonView(array('fields' => $fields));
+    }
+
+    /**
+     * Action to get the available content mappers for a model
+	 * @param \ride\web\cms\orm\ContentService $contentService
+	 * @param string $model Name of the model
+	 * @return null
+     */
+    public function modelMappersAction(ContentService $contentService, $model) {
+        $contentMappers = $contentService->getContentMappersForType($model);
+
+        $this->setJsonView(array($model => array_keys($contentMappers)));
     }
 
 }
