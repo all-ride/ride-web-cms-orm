@@ -414,6 +414,7 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
         $contentProperties = $this->getContentProperties();
         if (!$contentProperties->getModelName()) {
             $contentProperties->setTitle(true);
+            $contentProperties->setMetaOg(true);
         }
 
         $viewProcessors = $this->dependencyInjector->getByTag('ride\\web\\cms\\orm\\processor\\ViewProcessor', 'detail');
