@@ -173,10 +173,34 @@ class ContentProperties {
     const PROPERTY_FORMAT_DATE = 'format.date';
 
     /**
+     * Name of the og title format setting
+     * @var string
+     */
+    const PROPERTY_FORMAT_TITLE_OG = 'format.title.og';
+
+    /**
+     * Name of the og teaser format setting
+     * @var string
+     */
+    const PROPERTY_FORMAT_TEASER_OG = 'format.teaser.og';
+
+    /**
+     * Name of the og image format setting
+     * @var string
+     */
+    const PROPERTY_FORMAT_IMAGE_OG = 'format.image.og';
+
+    /**
      * Name of the title setting
      * @var string
      */
     const PROPERTY_TITLE = 'title.';
+
+    /**
+     * Name of the meta og setting
+     * @var string
+     */
+    const PROPERTY_META_OG = 'meta.og';
 
     /**
      * Name of the empty result message setting
@@ -388,6 +412,30 @@ class ContentProperties {
      * @var string
      */
     private $emptyResultMessage;
+
+    /**
+     * Flag to see if og meta should be set
+     * @var boolean
+     */
+    private $metaOg;
+
+    /**
+     * Format of the title for the og meta
+     * @var string
+     */
+    private $ogTitleFormat;
+
+    /**
+     * Format of the teaser for the og meta
+     * @var string
+     */
+    private $ogTeaserFormat;
+
+    /**
+     * Format of the image for the of meta
+     * @var string
+     */
+    private $ogImageFormat;
 
     /**
      * Sets the model name
@@ -887,6 +935,72 @@ class ContentProperties {
     }
 
     /**
+     * Sets the flag to see if og meta should be added
+     * @param boolean $ogMeta
+     */
+    public function setMetaOg($metaOg) {
+        $this->metaOg = $metaOg;
+    }
+
+    /**
+     * Gets the flag to see if og meta should be added
+     * @return boolean
+     */
+    public function getMetaOg() {
+        return $this->metaOg;
+    }
+
+    /**
+     * Sets the format for the title of the og meta
+     * @param string $format
+     * @return null
+     */
+    public function setOgTitleFormat($format) {
+        $this->ogTitleFormat = $format;
+    }
+
+    /**
+     * Gets the format for the title of the og meta
+     * @return string
+     */
+    public function getOgTitleFormat() {
+        return $this->ogTitleFormat;
+    }
+
+    /**
+     * Sets the format for the teaser of the og meta
+     * @param string $format
+     * @return null
+     */
+    public function setOgTeaserFormat($format) {
+        $this->ogTeaserFormat = $format;
+    }
+
+    /**
+     * Gets the format for the title of the og meta
+     * @return string
+     */
+    public function getOgTeaserFormat() {
+        return $this->ogTeaserFormat;
+    }
+    /**
+     * Sets the format for the image of the og meta
+     * @param string $format
+     * @return null
+     */
+    public function setOgImageFormat($format) {
+        $this->ogImageFormat = $format;
+    }
+
+    /**
+     * Gets the format for the image of the og meta
+     * @return string
+     */
+    public function getOgImageFormat() {
+        return $this->ogImageFormat;
+    }
+
+    /**
      * Read the properties of the content from the widget properties
      * @param \ride\library\widget\WidgetProperties $properties
      * @return null
@@ -920,6 +1034,10 @@ class ContentProperties {
         $this->showMore = $properties->getWidgetProperty(self::PROPERTY_MORE_SHOW . $locale);
         $this->moreLabel = $properties->getWidgetProperty(self::PROPERTY_MORE_LABEL . $locale);
         $this->moreNode = $properties->getWidgetProperty(self::PROPERTY_MORE_NODE . $locale);
+        $this->metaOg = $properties->getWidgetProperty(self::PROPERTY_META_OG);
+        $this->ogTitleFormat = $properties->getWidgetProperty(self::PROPERTY_FORMAT_TITLE_OG);
+        $this->ogTeaserFormat = $properties->getWidgetProperty(self::PROPERTY_FORMAT_TEASER_OG);
+        $this->ogImageFormat = $properties->getWidgetProperty(self::PROPERTY_FORMAT_IMAGE_OG);
 
         if ($this->parameters && !is_numeric($this->parameters)) {
             $this->parameters = explode(self::SEPARATOR, $this->parameters);
@@ -1008,6 +1126,10 @@ class ContentProperties {
         $properties->setWidgetProperty(self::PROPERTY_FORMAT_DATE, $this->contentDateFormat);
         $properties->setWidgetProperty(self::PROPERTY_TITLE . $locale, $this->title);
         $properties->setWidgetProperty(self::PROPERTY_EMPTY_RESULT_MESSAGE . $locale, $this->emptyResultMessage);
+        $properties->setWidgetProperty(self::PROPERTY_META_OG, $this->metaOg);
+        $properties->setWidgetProperty(self::PROPERTY_FORMAT_TITLE_OG, $this->ogTitleFormat);
+        $properties->setWidgetProperty(self::PROPERTY_FORMAT_TEASER_OG, $this->ogTeaserFormat);
+        $properties->setWidgetProperty(self::PROPERTY_FORMAT_IMAGE_OG, $this->ogImageFormat);
 
         $parameters = $this->parameters;
         if ($parameters) {

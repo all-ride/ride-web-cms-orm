@@ -23,6 +23,10 @@ class ContentDetailComponent extends AbstractContentComponent {
         $result['field-id'] = $data->getIdField();
         $result['primary'] = $data->isPrimaryMapper();
         $result['title'] = $data->getTitle();
+        $result['meta-og'] = $data->getMetaOg();
+        $result['format-title-og'] = $data->getOgTitleFormat();
+        $result['format-teaser-og'] = $data->getOgTeaserFormat();
+        $result['format-image-og'] = $data->getOgImageFormat();
 
         return $result;
     }
@@ -37,6 +41,10 @@ class ContentDetailComponent extends AbstractContentComponent {
         $result->setIdField($data['field-id']);
         $result->setTitle($data['title']);
         $result->setIsPrimaryMapper($data['primary']);
+        $result->setMetaOg($data['meta-og']);
+        $result->setOgTitleFormat($data['format-title-og']);
+        $result->setOgTeaserFormat($data['format-teaser-og']);
+        $result->setOgImageFormat($data['format-image-og']);
 
         return $result;
     }
@@ -74,6 +82,43 @@ class ContentDetailComponent extends AbstractContentComponent {
         $builder->addRow('title', 'boolean', array(
             'label' => $translator->translate('label.title'),
             'description' => $translator->translate('label.title.content.description'),
+        ));
+        $builder->addRow('meta-og', 'boolean', array(
+            'label' => $translator->translate('label.meta.og'),
+            'description' => $translator->translate('label.meta.og.description'),
+            'attributes' => array(
+                'data-toggle-dependant' => 'option-meta-og',
+            ),
+        ));
+        $builder->addRow('format-title-og', 'string', array(
+            'label' => $translator->translate('label.format.title'),
+            'description' => $translator->translate('label.format.title.description'),
+            'attributes' => array(
+                'class' => 'option-meta-og option-meta-og-1',
+            ),
+            'filters' => array(
+                'trim' => array(),
+            ),
+        ));
+        $builder->addRow('format-teaser-og', 'string', array(
+            'label' => $translator->translate('label.format.teaser'),
+            'description' => $translator->translate('label.format.teaser.description'),
+            'attributes' => array(
+                'class' => 'option-meta-og option-meta-og-1',
+            ),
+            'filters' => array(
+                'trim' => array(),
+            ),
+        ));
+        $builder->addRow('format-image-og', 'string', array(
+            'label' => $translator->translate('label.format.image'),
+            'description' => $translator->translate('label.format.image.description'),
+            'attributes' => array(
+                'class' => 'option-meta-og option-meta-og-1',
+            ),
+            'filters' => array(
+                'trim' => array(),
+            ),
         ));
     }
 

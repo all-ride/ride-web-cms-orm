@@ -32,6 +32,8 @@
     "label.format.title.description": "Overschrijf het titel formaat van het model",
     "label.message.result.empty": "Leeg resultaat",
     "label.message.result.empty.description": "Geef een boodschap die getoond moet worden als het resultaat leeg is",
+    "label.meta.og": "Open Graph",
+    "label.meta.og.description": "Voeg Open Graph meta tags toe aan het hoofd van de pagina",
     "label.model": "Model",
     "label.model.description": "Selecteer het model dat je wilt aanspreken",
     "label.more.show": "Toon een <em>meer</em> link",
