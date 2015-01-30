@@ -5,6 +5,7 @@ namespace ride\web\cms\controller\widget;
 use ride\library\cms\content\Content;
 use ride\library\http\Response;
 use ride\library\i18n\I18n;
+use ride\library\image\ImageUrlGenerator;
 use ride\library\orm\definition\ModelTable;
 use ride\library\orm\entry\format\EntryFormatter;
 use ride\library\orm\query\ModelQuery;
@@ -141,6 +142,10 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
 
         $this->setView($contentProperties, $content);
 
+        if ($contentProperties->getMetaOg()) {
+            $this->setMetaOg($contentProperties, $content, $this->dependencyInjector->get('ride\\library\\image\\ImageUrlGenerator'));
+        }
+
         if ($this->properties->isAutoCache()) {
             $this->properties->setCache(true);
             $this->properties->setCacheTtl(60);
@@ -148,6 +153,12 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
 
         if ($this->properties->getWidgetProperty('region')) {
             $this->setIsRegion(true);
+        }
+        if ($this->properties->getWidgetProperty('section')) {
+            $this->setIsSection(true);
+        }
+        if ($this->properties->getWidgetProperty('block')) {
+            $this->setIsBlock(true);
         }
     }
 
@@ -304,6 +315,57 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
         }
 
         return $view;
+    }
+
+    /**
+     * Adds the OG meta tags for the provided content
+     * @param \ride\web\cms\orm\ContentProperties $properties
+     * @param \ride\library\cms\content\Content $content
+     * @param \ride\library\image\ImageUrlGenerator $imageUrlGenerator
+     * @return null
+     */
+    protected function setMetaOg(ContentProperties $contentProperties, $content, ImageUrlGenerator $imageUrlGenerator) {
+        $modelMeta = $this->model->getMeta();
+        $modelTable = $modelMeta->getModelTable();
+
+        // get formats
+        $titleFormat = $contentProperties->getOgTitleFormat();
+        if (!$titleFormat) {
+            $titleFormat = $modelTable->getFormat(EntryFormatter::FORMAT_TITLE, false);
+            if ($titleFormat == null) {
+                $titleFormat = $this->model->getName() . ' #{id}';
+            }
+        }
+
+        $teaserFormat = $contentProperties->getOgTeaserFormat();
+        if (!$teaserFormat && $modelTable->hasFormat(EntryFormatter::FORMAT_TEASER)) {
+            $teaserFormat = $modelTable->getFormat(EntryFormatter::FORMAT_TEASER);
+        }
+
+        $imageFormat = $contentProperties->getOgImageFormat();
+        if (!$imageFormat && $modelTable->hasFormat(EntryFormatter::FORMAT_IMAGE)) {
+            $imageFormat = $modelTable->getFormat(EntryFormatter::FORMAT_IMAGE);
+        }
+
+        // add meta
+        $entryFormatter = $this->model->getOrmManager()->getEntryFormatter();
+
+        $node = $this->properties->getNode();
+        $node->setMeta($this->locale, 'og:title', $entryFormatter->formatEntry($content->data, $titleFormat));
+
+        if ($teaserFormat) {
+            $teaser = $entryFormatter->formatEntry($content->data, $teaserFormat);
+            if ($teaser) {
+                $node->setMeta($this->locale, 'og:description', $teaser);
+            }
+        }
+
+        if ($imageFormat) {
+            $image = $entryFormatter->formatEntry($content->data, $imageFormat);
+            if ($image) {
+                $node->setMeta($this->locale, 'og:image', $imageUrlGenerator->generateUrl($image));
+            }
+        }
     }
 
     /**

@@ -32,6 +32,8 @@
     "label.format.title.description": "Override the title format of the model",
     "label.message.result.empty": "No results",
     "label.message.result.empty.description": "Enter a message shown when the result is empty",
+    "label.meta.og": "Open Graph",
+    "label.meta.og.description": "Add Open Graph meta tags to the head of your page",
     "label.model": "Model",
     "label.model.description": "Select the model you wish to query",
     "label.more.show": "Show more",
