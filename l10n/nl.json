@@ -1,6 +1,8 @@
 {
     "label.condition": "Voorwaarde",
     "label.condition.description": "Voorwaarde expressie van de query",
+    "label.content.mapper.primary": "Primair",
+    "label.content.mapper.primary.description": "Dit detail als standaard pagina gebruiken voor het geselecteerde model.",
     "label.content.overview.filter.calendar": "Kalender (gebruikt altijd de dateStart en dateStop velden)",
     "label.content.overview.filter.date": "Datum waarde",
     "label.content.overview.filter.multi.and": "Meerdere waardes (en)",
@@ -87,6 +89,7 @@
     "template.orm.overview.cloud": "Wolk",
     "template.orm.overview.list": "Lijst",
     "title.condition": "Voorwaarde",
+    "title.content.mapper": "Content Mapping",
     "title.formats.data": "Data Formaten",
     "title.order": "Sortering",
     "title.pagination": "Paginatie",

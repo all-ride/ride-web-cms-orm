@@ -160,6 +160,12 @@
                     ]
                 }
             ]
+        },
+        {
+            "class": "ride\\web\\cms\\orm\\ContentService",
+            "calls": [
+                "setContentFacade"
+            ]
         }
     ]
 }

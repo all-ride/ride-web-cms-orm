@@ -297,7 +297,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             $dateFormat = $modelTable->getFormat(EntryFormatter::FORMAT_DATE);
         }
 
-        return $contentService->getContentForEntries($this->model, $result, $node->getRootNodeId(), $this->locale, $titleFormat, $teaserFormat, $imageFormat, $dateFormat);
+        return $contentService->getContentForEntries($this->model, $result, $node->getRootNodeId(), $this->locale, null, $titleFormat, $teaserFormat, $imageFormat, $dateFormat);
     }
 
     /**

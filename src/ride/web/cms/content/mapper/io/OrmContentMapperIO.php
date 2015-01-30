@@ -3,13 +3,9 @@
 namespace ride\web\cms\content\mapper\io;
 
 use ride\library\cms\content\mapper\io\ContentMapperIO;
-use ride\library\cms\node\NodeModel;
-use ride\library\orm\OrmManager;
+use ride\library\cms\exception\CmsException;
 
-use ride\web\cms\content\mapper\GenericOrmContentMapper;
-use ride\web\cms\content\mapper\SearchableOrmContentMapper;
-use ride\web\cms\orm\model\SearchableModel;
-use ride\web\cms\orm\ContentProperties;
+use ride\web\cms\orm\ContentService;
 
 /**
  * Implementation to load content mappers from the dependency injector
@@ -17,31 +13,18 @@ use ride\web\cms\orm\ContentProperties;
 class OrmContentMapperIO implements ContentMapperIO {
 
     /**
-     * Array with the mappers
-     * @var array
+     * Instance of the content service
+     * @var \ride\web\cms\orm\ContentService
      */
-    protected $mappers;
-
-    /**
-     * Instance of the ORM manager
-     * @var \ride\library\orm\OrmManager
-     */
-    protected $orm;
-
-    /**
-     * Instance of the node model
-     * @var \ride\library\cms\node\NodeModel
-     */
-    protected $nodeMode;
+    protected $contentService;
 
     /**
      * Constructs a new ORM content mapper IO
+     * @param \ride\web\cms\orm\ContentService $contentService
      * @return null
      */
-    public function __construct(OrmManager $orm, NodeModel $nodeModel) {
-        $this->mappers = null;
-        $this->orm = $orm;
-        $this->nodeModel = $nodeModel;
+    public function __construct(ContentService $contentService) {
+        $this->contentService = $contentService;
     }
 
     /**
@@ -49,13 +32,13 @@ class OrmContentMapperIO implements ContentMapperIO {
      * @return \ride\library\cms\content\mapper\ContentMapper|null
      */
     public function getContentMapper($type) {
-        $this->loadMappers();
-
-        if (isset($this->mappers[$type])) {
-            return $this->mappers[$type];
+        try {
+            $contentMapper = $this->contentService->getContentMapper($type);
+        } catch (CmsException $exception) {
+            $contentMapper = null;
         }
 
-        return null;
+        return $contentMapper;
     }
 
     /**
@@ -64,42 +47,7 @@ class OrmContentMapperIO implements ContentMapperIO {
      * @see \ride\library\cms\content\mapper\ContentMapper
      */
     public function getContentMappers() {
-        $this->loadMappers();
-
-        return $this->mappers;
-    }
-
-    /**
-     * Loads the mappers for the detail widget instances
-     * @return null
-     */
-    protected function loadMappers() {
-        if ($this->mappers !== null) {
-            return;
-        }
-
-        $this->mappers = array();
-
-        $entryFormatter = $this->orm->getEntryFormatter();
-
-        $nodes = $this->nodeModel->getNodesForWidget('orm.detail');
-        foreach ($nodes as $node) {
-            $widgetId = $node->getWidgetId();
-            if (!$widgetId) {
-                continue;
-            }
-
-            $widgetProperties = $node->getWidgetProperties($widgetId);
-
-            $modelName = $widgetProperties->getWidgetProperty(ContentProperties::PROPERTY_MODEL_NAME);
-            if (!$modelName) {
-                continue;
-            }
-
-            $model = $this->orm->getModel($modelName);
-
-            $this->mappers[$modelName] = new GenericOrmContentMapper($this->nodeModel, $node, $model, $entryFormatter, $widgetProperties);
-        }
+        return $this->contentService->getContentMappers();
     }
 
 }

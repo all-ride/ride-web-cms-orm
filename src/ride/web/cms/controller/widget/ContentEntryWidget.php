@@ -284,9 +284,6 @@ class ContentEntryWidget extends AbstractWidget implements StyleWidget {
      */
     public function propertiesAction(FieldService $fieldService) {
         $contentProperties = $this->getContentProperties();
-        if (!$contentProperties->getModelName()) {
-            $contentProperties->setTitle(true);
-        }
 
         $viewProcessors = $this->dependencyInjector->getByTag('ride\\web\\cms\\orm\\processor\\ViewProcessor', 'detail');
         foreach ($viewProcessors as $id => $viewProcessors) {
