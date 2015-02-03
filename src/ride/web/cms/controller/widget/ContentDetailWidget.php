@@ -211,32 +211,11 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
         }
 
         $node = $this->properties->getNode();
-        $meta = $this->model->getMeta();
-
-        $modelTable = $meta->getModelTable();
 
         $titleFormat = $contentProperties->getContentTitleFormat();
-        if (!$titleFormat) {
-            $titleFormat = $modelTable->getFormat(EntryFormatter::FORMAT_TITLE, false);
-            if ($titleFormat == null) {
-                $titleFormat = $this->model->getName() . ' #{id}';
-            }
-        }
-
         $teaserFormat = $contentProperties->getContentTeaserFormat();
-        if (!$teaserFormat && $modelTable->hasFormat(EntryFormatter::FORMAT_TEASER)) {
-            $teaserFormat = $modelTable->getFormat(EntryFormatter::FORMAT_TEASER);
-        }
-
         $imageFormat = $contentProperties->getContentImageFormat();
-        if (!$imageFormat && $modelTable->hasFormat(EntryFormatter::FORMAT_IMAGE)) {
-            $imageFormat = $modelTable->getFormat(EntryFormatter::FORMAT_IMAGE);
-        }
-
         $dateFormat = $contentProperties->getContentDateFormat();
-        if (!$dateFormat && $modelTable->hasFormat(EntryFormatter::FORMAT_DATE)) {
-            $dateFormat = $modelTable->getFormat(EntryFormatter::FORMAT_DATE);
-        }
 
         return $contentService->getContentForEntry($this->model, $entry, $node->getRootNodeId(), $this->locale, null, $titleFormat, $teaserFormat, $imageFormat, $dateFormat);
     }
