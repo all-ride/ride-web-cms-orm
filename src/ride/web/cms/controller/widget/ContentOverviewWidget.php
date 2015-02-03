@@ -220,9 +220,9 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             }
         }
 
-        $baseUrl = $this->request->getServerUrl() . $this->request->getPath();
+        $filterUrl = str_replace('?' . $this->request->getQueryParametersAsString(), '', $this->request->getUrl());
         foreach ($this->filters as $filterName => $filter) {
-            $filter['filter']->setVariables($this->filters, $this->model, $filterName, $this->locale, $baseUrl);
+            $filter['filter']->setVariables($this->filters, $this->model, $filterName, $this->locale, $filterUrl);
         }
 
         $this->setContext('orm.overview.' . $this->id, $result);
@@ -236,6 +236,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             'properties' => $contentProperties,
             'title' => $contentProperties->getTitle(),
             'emptyResultMessage' => $contentProperties->getEmptyResultMessage(),
+            'filterUrl' => $filterUrl,
             'filters' => $this->filters,
             'arguments' => $arguments,
             'pagination' => $pagination,
