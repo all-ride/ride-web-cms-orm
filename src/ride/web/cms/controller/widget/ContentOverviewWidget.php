@@ -227,6 +227,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
 
         $this->setContext('orm.overview.' . $this->id, $result);
         $this->setContext('orm.filters.' . $this->id, $this->filters);
+        $this->setContext('orm.filters.' . $this->id . '.url', $filterUrl);
 
         $template = $this->getTemplate(static::TEMPLATE_NAMESPACE . '/block');
         $variables = array(
@@ -270,34 +271,14 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
         }
 
         $node = $this->properties->getNode();
-        $meta = $this->model->getMeta();
 
-        $modelTable = $meta->getModelTable();
-
+        $contentMapper = $contentProperties->getContentMapper();
         $titleFormat = $contentProperties->getContentTitleFormat();
-        if (!$titleFormat) {
-            $titleFormat = $modelTable->getFormat(EntryFormatter::FORMAT_TITLE, false);
-            if ($titleFormat == null) {
-                $titleFormat = $this->model->getName() . ' #{id}';
-            }
-        }
-
         $teaserFormat = $contentProperties->getContentTeaserFormat();
-        if (!$teaserFormat && $modelTable->hasFormat(EntryFormatter::FORMAT_TEASER)) {
-            $teaserFormat = $modelTable->getFormat(EntryFormatter::FORMAT_TEASER);
-        }
-
         $imageFormat = $contentProperties->getContentImageFormat();
-        if (!$imageFormat && $modelTable->hasFormat(EntryFormatter::FORMAT_IMAGE)) {
-            $imageFormat = $modelTable->getFormat(EntryFormatter::FORMAT_IMAGE);
-        }
-
         $dateFormat = $contentProperties->getContentDateFormat();
-        if (!$dateFormat && $modelTable->hasFormat(EntryFormatter::FORMAT_DATE)) {
-            $dateFormat = $modelTable->getFormat(EntryFormatter::FORMAT_DATE);
-        }
 
-        return $contentService->getContentForEntries($this->model, $result, $node->getRootNodeId(), $this->locale, $contentProperties->getContentMapper(), $titleFormat, $teaserFormat, $imageFormat, $dateFormat);
+        return $contentService->getContentForEntries($this->model, $result, $node->getRootNodeId(), $this->locale, $contentMapper, $titleFormat, $teaserFormat, $imageFormat, $dateFormat);
     }
 
     /**

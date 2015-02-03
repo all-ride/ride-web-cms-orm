@@ -6,6 +6,7 @@ use ride\library\cms\exception\CmsException;
 use ride\library\cms\content\ContentFacade;
 use ride\library\cms\content\Content;
 use ride\library\cms\node\NodeModel;
+use ride\library\orm\entry\format\EntryFormatter;
 use ride\library\orm\model\Model;
 use ride\library\orm\OrmManager;
 
@@ -206,7 +207,27 @@ class ContentService {
      */
     public function getContentForEntries(Model $model, array $result, $siteId, $locale, $idContentMapper = null, $titleFormat = null, $teaserFormat = null, $imageFormat = null, $dateFormat = null) {
         $modelName = $model->getName();
+        $modelTable = $model->getMeta()->getModelTable();
         $entryFormatter = $this->orm->getEntryFormatter();
+
+        if (!$titleFormat) {
+            $titleFormat = $modelTable->getFormat(EntryFormatter::FORMAT_TITLE, false);
+            if ($titleFormat == null) {
+                $titleFormat = $this->model->getName() . ' #{id}';
+            }
+        }
+
+        if (!$teaserFormat && $modelTable->hasFormat(EntryFormatter::FORMAT_TEASER)) {
+            $teaserFormat = $modelTable->getFormat(EntryFormatter::FORMAT_TEASER);
+        }
+
+        if (!$imageFormat && $modelTable->hasFormat(EntryFormatter::FORMAT_IMAGE)) {
+            $imageFormat = $modelTable->getFormat(EntryFormatter::FORMAT_IMAGE);
+        }
+
+        if (!$dateFormat && $modelTable->hasFormat(EntryFormatter::FORMAT_DATE)) {
+            $dateFormat = $modelTable->getFormat(EntryFormatter::FORMAT_DATE);
+        }
 
         try {
             $mapper = $this->getContentMapper($modelName, $idContentMapper);
