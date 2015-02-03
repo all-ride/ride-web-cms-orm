@@ -220,8 +220,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             }
         }
 
-        $baseUrl = $this->request->getBaseScript() . $this->properties->getNode()->getRoute($this->locale);
-
+        $baseUrl = $this->request->getServerUrl() . $this->request->getPath();
         foreach ($this->filters as $filterName => $filter) {
             $filter['filter']->setVariables($this->filters, $this->model, $filterName, $this->locale, $baseUrl);
         }

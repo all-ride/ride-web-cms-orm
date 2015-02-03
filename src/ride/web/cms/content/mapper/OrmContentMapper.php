@@ -3,6 +3,7 @@
 namespace ride\web\cms\content\mapper;
 
 use ride\library\cms\content\mapper\AbstractContentMapper;
+use ride\library\cms\content\mapper\SearchableContentMapper;
 use ride\library\cms\content\Content;
 use ride\library\cms\exception\CmsException;
 use ride\library\cms\node\NodeModel;
@@ -13,7 +14,7 @@ use ride\library\orm\model\Model;
 /**
  * Abstract implementation of a ContentMapper for a model of the ORM module
  */
-class OrmContentMapper extends AbstractContentMapper {
+class OrmContentMapper extends AbstractContentMapper implements SearchableContentMapper {
 
 	/**
 	 * Model of the content to map
@@ -201,6 +202,31 @@ class OrmContentMapper extends AbstractContentMapper {
         $this->teaserFormat = $meta->getFormat(EntryFormatter::FORMAT_TEASER);
         $this->imageFormat = $meta->getFormat(EntryFormatter::FORMAT_IMAGE);
         $this->dateFormat = $meta->getFormat(EntryFormatter::FORMAT_DATE);
+    }
+
+    /**
+     * Gets the search results
+     * @param string $site Id of the site
+     * @param string $locale Code of the current locale
+     * @param string $query Full search query
+     * @param string $queryTokens Full search query parsed in tokens
+     * @param integer $page number of the result page (optional)
+     * @param integer $pageItems number of items per page (optional)
+     * @return \ride\library\cms\content\ContentResult
+     * @see \ride\library\cms\content\Content
+     */
+    public function searchContent($site, $locale, $query, array $queryTokens, $page = null, $pageItems = null) {
+        $collection = $this->model->collect(array(
+            'query' => $query,
+            'limit' => $pageItems,
+            'page' => $page,
+        ), $locale);
+
+        foreach ($collection as $entryId => $entry) {
+            $collection[$entryId] = $this->getContentFromEntry($entry);
+        }
+
+        return $collection;
     }
 
 }

@@ -3,7 +3,6 @@
 namespace ride\web\cms\content\mapper;
 
 use ride\library\cms\exception\CmsException;
-use ride\library\cms\content\mapper\SearchableContentMapper;
 use ride\library\cms\node\NodeModel;
 use ride\library\cms\node\Node;
 use ride\library\orm\entry\format\EntryFormatter;
@@ -15,7 +14,7 @@ use ride\web\cms\orm\ContentProperties;
 /**
  * Content mapper for models defined with the detail widget
  */
-class GenericOrmContentMapper extends OrmContentMapper implements SearchableContentMapper {
+class GenericOrmContentMapper extends OrmContentMapper {
 
     /**
      * Property for the URL
