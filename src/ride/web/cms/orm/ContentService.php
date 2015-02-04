@@ -213,7 +213,7 @@ class ContentService {
         if (!$titleFormat) {
             $titleFormat = $modelTable->getFormat(EntryFormatter::FORMAT_TITLE, false);
             if ($titleFormat == null) {
-                $titleFormat = $this->model->getName() . ' #{id}';
+                $titleFormat = $model->getName() . ' #{id}';
             }
         }
 
