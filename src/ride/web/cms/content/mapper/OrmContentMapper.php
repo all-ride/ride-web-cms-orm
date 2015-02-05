@@ -147,7 +147,19 @@ class OrmContentMapper extends AbstractContentMapper implements SearchableConten
             $query->setFetchUnlocalized(true);
         }
 
-        return $query->queryFirst();
+        $entry = $query->queryFirst();
+        if (!$entry && is_numeric($id) && $idField != ModelTable::PRIMARY_KEY) {
+            $query = $this->model->createQuery($locale);
+            $query->setRecursiveDepth($recursiveDepth);
+            $query->addCondition('{' . ModelTable::PRIMARY_KEY . '} = %1%', $id);
+            if ($fetchUnlocalized) {
+                $query->setFetchUnlocalized(true);
+            }
+
+            $entry = $query->queryFirst();
+        }
+
+        return $entry;
     }
 
     /**
