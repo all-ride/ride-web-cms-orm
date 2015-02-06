@@ -54,8 +54,10 @@ class MultiContentOverviewFilter extends SingleContentOverviewFilter {
             return null;
         }
 
-        $options = $this->getOptions($field, $relationModel, $locale);
+        $entries = $this->getEntries($field, $relationModel, $locale);
+        $options = $relationModel->getOptionsFromEntries($entries);
 
+        $filters[$name]['entries'] = $entries;
         $filters[$name]['options'] = $options;
         $filters[$name]['urls'] = array();
         $filters[$name]['values'] = array();
