@@ -32,8 +32,10 @@ class SingleContentOverviewFilter extends AbstractContentOverviewFilter {
             return null;
         }
 
-        $options = $this->getOptions($field, $relationModel, $locale);
+        $entries = $this->getEntries($field, $relationModel, $locale);
+        $options = $relationModel->getOptionsFromEntries($entries);
 
+        $filters[$name]['entries'] = $entries;
         $filters[$name]['options'] = $options;
         $filters[$name]['urls'] = array();
         $filters[$name]['values'] = array();
@@ -89,14 +91,14 @@ class SingleContentOverviewFilter extends AbstractContentOverviewFilter {
     }
 
     /**
-     * Gets the available options for the provided field
+     * Gets the available fiter entries for the provided field
      * @param \ride\library\orm\definition\field\ModelField $field
      * @param \ride\library\orm\model\Model $relationModel
      * @param string $locale Code of the locale
-     * @return array Array with the id of the entry as key and a title for the
-     * entry as value
+     * @return array Array with the id of the entry as key and the entry
+     * instance as value
      */
-    protected function getOptions($field, $relationModel, $locale) {
+    protected function getEntries($field, $relationModel, $locale) {
         $options = array();
 
         $condition = $field->getOption('scaffold.form.condition');
@@ -109,9 +111,7 @@ class SingleContentOverviewFilter extends AbstractContentOverviewFilter {
             $options['condition'] = array('{vocabulary.slug} = "' . $vocabulary . '"');
         }
 
-        $entries = $relationModel->find($options, $locale);
-
-        return $relationModel->getOptionsFromEntries($entries);
+        return $relationModel->find($options, $locale);
     }
 
     /**
