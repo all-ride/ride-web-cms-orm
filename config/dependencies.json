@@ -80,6 +80,11 @@
             "id": "calendar"
         },
         {
+            "interfaces": "ride\\web\\cms\\orm\\filter\\ContentOverviewFilter",
+            "class": "ride\\web\\cms\\orm\\filter\\SingleTaxonomyContentOverviewFilter",
+            "id": "taxonomy"
+        },
+        {
             "class": "ride\\library\\cms\\content\\ContentFacade",
             "extends": "cms",
             "id": "cms",

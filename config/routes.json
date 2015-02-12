@@ -41,6 +41,12 @@
             "controller": "ride\\web\\cms\\controller\\backend\\EntryController",
             "action": "formAction",
             "id": "cms.entry.edit"
+        },
+        {
+            "path": "/api/v1/data/%model%/%locale%/content/%id%",
+            "controller": "ride\\web\\cms\\controller\\OrmServiceController",
+            "action": "contentAction",
+            "id": "api.orm.content"
         }
     ]
 }
