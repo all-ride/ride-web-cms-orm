@@ -13,7 +13,7 @@ class ApplicationListener {
         $locale = $event->getArgument('locale');
         $menu = $event->getArgument('menu');
 
-        $models = $ormManager->getModels(true);
+        $models = $ormManager->getModels();
         foreach ($models as $model) {
             $meta = $model->getMeta();
 
