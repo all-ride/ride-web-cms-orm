@@ -35,14 +35,9 @@ class OrmServiceController extends AbstractController {
             $content->image = $imageUrlGenerator->generateUrl($content->image, $transformation, $options);
         }
 
-        $this->setJsonView(array(
-            'type' => $content->type,
-            'title' => $content->title,
-            'teaser' => $content->teaser,
-            'image' => $content->image,
-            'date' => $content->date,
-            'url' => $content->url,
-        ));
+        unset($content->data);
+
+        $this->setJsonView($content);
     }
 
 }
