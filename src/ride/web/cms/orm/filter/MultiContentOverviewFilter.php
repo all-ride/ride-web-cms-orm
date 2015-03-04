@@ -2,11 +2,6 @@
 
 namespace ride\web\cms\orm\filter;
 
-use ride\library\orm\definition\field\BelongsToField;
-use ride\library\orm\definition\field\HasField;
-use ride\library\orm\definition\field\HasManyField;
-use ride\library\orm\definition\field\PropertyField;
-use ride\library\orm\definition\ModelTable;
 use ride\library\orm\model\Model;
 use ride\library\orm\query\ModelQuery;
 

@@ -2,12 +2,6 @@
 
 namespace ride\web\cms\orm\filter;
 
-use ride\library\orm\definition\field\BelongsToField;
-use ride\library\orm\definition\field\HasField;
-use ride\library\orm\definition\field\HasManyField;
-use ride\library\orm\definition\field\ModelField;
-use ride\library\orm\definition\field\PropertyField;
-use ride\library\orm\definition\ModelTable;
 use ride\library\orm\model\Model;
 use ride\library\orm\query\ModelQuery;
 
@@ -15,6 +9,7 @@ use ride\library\orm\query\ModelQuery;
  * Implementation for a single taxonomy term filter for the content overview widget
  */
 class SingleTaxonomyContentOverviewFilter extends SingleContentOverviewFilter {
+
     /**
      * Applies the filter to the provided query
      * @param \ride\library\orm\model\Model $model
