@@ -2,8 +2,6 @@
 
 namespace ride\web\cms\orm\filter;
 
-use ride\library\orm\definition\field\BelongsToField;
-use ride\library\orm\definition\ModelTable;
 use ride\library\orm\model\Model;
 use ride\library\orm\query\ModelQuery;
 
@@ -23,10 +21,35 @@ class DateContentOverviewFilter extends AbstractContentOverviewFilter {
      * @return null
      */
     public function setVariables(array &$filters, Model $model, $name, $locale, $baseUrl) {
-        $filters[$name]['options'] = array();
+        $filters[$name]['options'] = $this->getMonthOptions($model, $filters[$name]['field'], $locale);
         $filters[$name]['urls'] = array();
         $filters[$name]['values'] = array();
         $filters[$name]['empty'] = $this->getUrl($baseUrl, $filters, $name, null);
+    }
+
+    /**
+     * Gets the options for the date field
+     * @param \ride\library\orm\model\Model $model
+     * @param string $fieldName Name of the field
+     * @param string $locale Code of the current locale
+     * @return array
+     */
+    protected function getMonthOptions(Model $model, $fieldName, $locale) {
+        $field = null;
+        $relationModel = null;
+        if (!$this->parseRelationField($model, $fieldName, $field, $relationModel)) {
+            $query = $model->createQuery($locale);
+        } else {
+            $query = $relationModel->createQuery($locale);
+        }
+
+        $query->setDistinct(true);
+        $query->setFields('DATE_FORMAT(FROM_UNIXTIME({' . $field->getName() . '}), \'%Y-%m\') AS monthYear');
+        $query->addOrderBy('monthYear DESC');
+
+        $months = array_keys($query->query('monthYear'));
+
+        return array_combine($months, $months);
     }
 
     /**

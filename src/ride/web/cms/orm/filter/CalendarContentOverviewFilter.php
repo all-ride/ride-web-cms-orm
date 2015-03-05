@@ -2,8 +2,6 @@
 
 namespace ride\web\cms\orm\filter;
 
-use ride\library\orm\definition\field\BelongsToField;
-use ride\library\orm\definition\ModelTable;
 use ride\library\orm\model\Model;
 use ride\library\orm\query\ModelQuery;
 
@@ -11,6 +9,24 @@ use ride\library\orm\query\ModelQuery;
  * Hardcoded implementation for the calendar filter for the content overview widget
  */
 class CalendarContentOverviewFilter extends DateContentOverviewFilter {
+
+    /**
+     * Gets the options for the date field
+     * @param \ride\library\orm\model\Model $model
+     * @param string $fieldName Name of the field
+     * @param string $locale Code of the current locale
+     * @return array
+     */
+    protected function getMonthOptions(Model $model, $fieldName, $locale) {
+        $query = $model->createQuery($locale);
+        $query->setDistinct(true);
+        $query->setFields('DATE_FORMAT(FROM_UNIXTIME({dateStart}), \'%Y-%m\') AS monthYear');
+        $query->addOrderBy('monthYear DESC');
+
+        $months = array_keys($query->query('monthYear'));
+
+        return array_combine($months, $months);
+    }
 
     /**
      * Applies the filter to the provided query
