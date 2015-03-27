@@ -44,7 +44,7 @@ class ContentProperties {
      * Name of the condition setting
      * @var string
      */
-    const PROPERTY_CONDITION = 'condition.';
+    const PROPERTY_CONDITION = 'condition';
 
     /**
      * Name of the order setting
@@ -86,19 +86,19 @@ class ContentProperties {
      * Name of the more enabled setting
      * @var string
      */
-    const PROPERTY_MORE_SHOW = 'more.show.';
+    const PROPERTY_MORE_SHOW = 'more.show';
 
     /**
      * Name of the more node setting
      * @var string
      */
-    const PROPERTY_MORE_NODE = 'more.node.';
+    const PROPERTY_MORE_NODE = 'more.node';
 
     /**
      * Name of the more label setting
      * @var string
      */
-    const PROPERTY_MORE_LABEL = 'more.label.';
+    const PROPERTY_MORE_LABEL = 'more.label';
 
     /**
      * Name of the parameters type setting
@@ -194,7 +194,7 @@ class ContentProperties {
      * Name of the title setting
      * @var string
      */
-    const PROPERTY_TITLE = 'title.';
+    const PROPERTY_TITLE = 'title';
 
     /**
      * Name of the meta og setting
@@ -203,10 +203,16 @@ class ContentProperties {
     const PROPERTY_META_OG = 'meta.og';
 
     /**
+     * Name of the empty result view setting
+     * @var string
+     */
+    const PROPERTY_EMPTY_RESULT_VIEW = 'view.result.empty';
+
+    /**
      * Name of the empty result message setting
      * @var string
      */
-    const PROPERTY_EMPTY_RESULT_MESSAGE = 'message.result.empty.';
+    const PROPERTY_EMPTY_RESULT_MESSAGE = 'message.result.empty';
 
     /**
      * Separator a list property
@@ -406,6 +412,12 @@ class ContentProperties {
      * @var string
      */
     private $title;
+
+    /**
+     * Return a view when the result is empty
+     * @var boolean
+     */
+    private $emptyResultView;
 
     /**
      * Message when the result is empty
@@ -918,6 +930,23 @@ class ContentProperties {
     }
 
     /**
+     * Sets the whether the widget has an empty result
+     * @param boolean $hasEmptyResultView
+     * @return null
+     */
+    public function setHasEmptyResultView($hasEmptyResultView) {
+        $this->emptyResultView = $hasEmptyResultView;
+    }
+
+    /**
+     * Gets the whether the widget has an empty result view
+     * @return boolean
+     */
+    public function hasEmptyResultView() {
+        return $this->emptyResultView;
+    }
+
+    /**
      * Sets the message for an empty result
      * @param string $message
      * @return null
@@ -1014,7 +1043,7 @@ class ContentProperties {
         $this->isPaginationEnabled = $properties->getWidgetProperty(self::PROPERTY_PAGINATION_ENABLE);
         $this->paginationRows = $properties->getWidgetProperty(self::PROPERTY_PAGINATION_ROWS);
         $this->paginationOffset = $properties->getWidgetProperty(self::PROPERTY_PAGINATION_OFFSET);
-        $this->condition = $properties->getWidgetProperty(self::PROPERTY_CONDITION . $locale, $properties->getWidgetProperty('condition'));
+        $this->condition = $properties->getLocalizedWidgetProperty($locale, self::PROPERTY_CONDITION);
         $this->order = $properties->getWidgetProperty(self::PROPERTY_ORDER);
         $this->parameters = $properties->getWidgetProperty(self::PROPERTY_PARAMETERS);
         $this->parametersNone = $properties->getWidgetProperty(self::PROPERTY_PARAMETERS_NONE);
@@ -1027,13 +1056,14 @@ class ContentProperties {
         $this->contentTeaserFormat = $properties->getWidgetProperty(self::PROPERTY_FORMAT_TEASER);
         $this->contentImageFormat = $properties->getWidgetProperty(self::PROPERTY_FORMAT_IMAGE);
         $this->contentDateFormat = $properties->getWidgetProperty(self::PROPERTY_FORMAT_DATE);
-        $this->title = $properties->getWidgetProperty(self::PROPERTY_TITLE . $locale);
-        $this->emptyResultMessage = $properties->getWidgetProperty(self::PROPERTY_EMPTY_RESULT_MESSAGE . $locale);
+        $this->title = $properties->getLocalizedWidgetProperty($locale, self::PROPERTY_TITLE);
+        $this->emptyResultView = $properties->getWidgetProperty(self::PROPERTY_EMPTY_RESULT_VIEW, true);
+        $this->emptyResultMessage = $properties->getLocalizedWidgetProperty($locale, self::PROPERTY_EMPTY_RESULT_MESSAGE);
         $this->showPagination = $properties->getWidgetProperty(self::PROPERTY_PAGINATION_SHOW);
         $this->useAjaxForPagination = $properties->getWidgetProperty(self::PROPERTY_PAGINATION_AJAX);
-        $this->showMore = $properties->getWidgetProperty(self::PROPERTY_MORE_SHOW . $locale);
-        $this->moreLabel = $properties->getWidgetProperty(self::PROPERTY_MORE_LABEL . $locale);
-        $this->moreNode = $properties->getWidgetProperty(self::PROPERTY_MORE_NODE . $locale);
+        $this->showMore = $properties->getLocalizedWidgetProperty($locale, self::PROPERTY_MORE_SHOW);
+        $this->moreLabel = $properties->getLocalizedWidgetProperty($locale, self::PROPERTY_MORE_LABEL);
+        $this->moreNode = $properties->getLocalizedWidgetProperty($locale, self::PROPERTY_MORE_NODE);
         $this->metaOg = $properties->getWidgetProperty(self::PROPERTY_META_OG);
         $this->ogTitleFormat = $properties->getWidgetProperty(self::PROPERTY_FORMAT_TITLE_OG);
         $this->ogTeaserFormat = $properties->getWidgetProperty(self::PROPERTY_FORMAT_TEASER_OG);
@@ -1088,7 +1118,7 @@ class ContentProperties {
         $properties->setWidgetProperty(self::PROPERTY_MODEL_FIELDS, $fields);
         $properties->setWidgetProperty(self::PROPERTY_RECURSIVE_DEPTH, $this->recursiveDepth);
         $properties->setWidgetProperty(self::PROPERTY_INCLUDE_UNLOCALIZED, $this->includeUnlocalized);
-        $properties->setWidgetProperty(self::PROPERTY_CONDITION . $locale, $this->condition);
+        $properties->setLocalizedWidgetProperty($locale, self::PROPERTY_CONDITION, $this->condition);
         $properties->setWidgetProperty(self::PROPERTY_ORDER, $this->order);
         $properties->setWidgetProperty(self::PROPERTY_PAGINATION_ENABLE, $this->isPaginationEnabled);
         if ($this->isPaginationEnabled) {
@@ -1097,22 +1127,22 @@ class ContentProperties {
             $properties->setWidgetProperty(self::PROPERTY_PAGINATION_SHOW, $this->showPagination);
             $properties->setWidgetProperty(self::PROPERTY_PAGINATION_AJAX, $this->useAjaxForPagination);
             if ($this->showMore) {
-                $properties->setWidgetProperty(self::PROPERTY_MORE_SHOW . $locale, $this->showMore);
-                $properties->setWidgetProperty(self::PROPERTY_MORE_LABEL . $locale, $this->moreLabel);
-                $properties->setWidgetProperty(self::PROPERTY_MORE_NODE . $locale, $this->moreNode);
+                $properties->setLocalizedWidgetProperty($locale, self::PROPERTY_MORE_SHOW, $this->showMore);
+                $properties->setLocalizedWidgetProperty($locale, self::PROPERTY_MORE_LABEL, $this->moreLabel);
+                $properties->setLocalizedWidgetProperty($locale, self::PROPERTY_MORE_NODE, $this->moreNode);
             } else {
-                $properties->setWidgetProperty(self::PROPERTY_MORE_SHOW . $locale, null);
-                $properties->setWidgetProperty(self::PROPERTY_MORE_LABEL . $locale, null);
-                $properties->setWidgetProperty(self::PROPERTY_MORE_NODE . $locale, null);
+                $properties->setLocalizedWidgetProperty($locale, self::PROPERTY_MORE_SHOW, null);
+                $properties->setLocalizedWidgetProperty($locale, self::PROPERTY_MORE_LABEL, null);
+                $properties->setLocalizedWidgetProperty($locale, self::PROPERTY_MORE_NODE, null);
             }
         } else {
             $properties->setWidgetProperty(self::PROPERTY_PAGINATION_ROWS, null);
             $properties->setWidgetProperty(self::PROPERTY_PAGINATION_OFFSET, null);
             $properties->setWidgetProperty(self::PROPERTY_PAGINATION_SHOW, null);
             $properties->setWidgetProperty(self::PROPERTY_PAGINATION_AJAX, null);
-            $properties->setWidgetProperty(self::PROPERTY_MORE_SHOW . $locale, null);
-            $properties->setWidgetProperty(self::PROPERTY_MORE_LABEL . $locale, null);
-            $properties->setWidgetProperty(self::PROPERTY_MORE_NODE . $locale, null);
+            $properties->setLocalizedWidgetProperty($locale, self::PROPERTY_MORE_SHOW, null);
+            $properties->setLocalizedWidgetProperty($locale, self::PROPERTY_MORE_LABEL, null);
+            $properties->setLocalizedWidgetProperty($locale, self::PROPERTY_MORE_NODE, null);
         }
 
         $properties->setWidgetProperty(self::PROPERTY_ID_FIELD, $this->idField);
@@ -1124,8 +1154,9 @@ class ContentProperties {
         $properties->setWidgetProperty(self::PROPERTY_FORMAT_TEASER, $this->contentTeaserFormat);
         $properties->setWidgetProperty(self::PROPERTY_FORMAT_IMAGE, $this->contentImageFormat);
         $properties->setWidgetProperty(self::PROPERTY_FORMAT_DATE, $this->contentDateFormat);
-        $properties->setWidgetProperty(self::PROPERTY_TITLE . $locale, $this->title);
-        $properties->setWidgetProperty(self::PROPERTY_EMPTY_RESULT_MESSAGE . $locale, $this->emptyResultMessage);
+        $properties->setLocalizedWidgetProperty($locale, self::PROPERTY_TITLE, $this->title);
+        $properties->setWidgetProperty(self::PROPERTY_EMPTY_RESULT_VIEW, $this->emptyResultView ? '1' : '0');
+        $properties->setLocalizedWidgetProperty($locale, self::PROPERTY_EMPTY_RESULT_MESSAGE, $this->emptyResultMessage);
         $properties->setWidgetProperty(self::PROPERTY_META_OG, $this->metaOg);
         $properties->setWidgetProperty(self::PROPERTY_FORMAT_TITLE_OG, $this->ogTitleFormat);
         $properties->setWidgetProperty(self::PROPERTY_FORMAT_TEASER_OG, $this->ogTeaserFormat);
