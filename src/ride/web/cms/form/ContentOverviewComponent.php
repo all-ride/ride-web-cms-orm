@@ -93,6 +93,7 @@ class ContentOverviewComponent extends AbstractContentComponent {
         $result['pagination-ajax'] = $data->useAjaxForPagination();
         $result['content-mapper'] = $data->getContentMapper();
         $result['title'] = $data->getTitle();
+        $result['empty-result-view'] = $data->hasEmptyResultView();
         $result['empty-result-message'] = $data->getEmptyResultMessage();
         $result['more-show'] = $data->willShowMoreLink();
         $result['more-label'] = $data->getMoreLabel();
@@ -134,6 +135,7 @@ class ContentOverviewComponent extends AbstractContentComponent {
         $result->setUseAjaxForPagination($data['pagination-ajax']);
         $result->setContentMapper($data['content-mapper']);
         $result->setTitle($data['title']);
+        $result->setHasEmptyResultView($data['empty-result-view']);
         $result->setEmptyResultMessage($data['empty-result-message']);
         $result->setWillShowMoreLink($data['more-show']);
         $result->setMoreLabel($data['more-label']);
@@ -247,9 +249,19 @@ class ContentOverviewComponent extends AbstractContentComponent {
             'label' => $translator->translate('label.filters'),
             'description' => $translator->translate('label.filters.exposed.description'),
         ));
+        $builder->addRow('empty-result-view', 'boolean', array(
+            'label' => $translator->translate('label.result.empty'),
+            'description' => $translator->translate('label.view.result.empty.description'),
+            'attributes' => array(
+                'data-toggle-dependant' => 'option-empty-result',
+            ),
+        ));
         $builder->addRow('empty-result-message', 'wysiwyg', array(
-            'label' => $translator->translate('label.message.result.empty'),
+            'label' => $translator->translate('label.message'),
             'description' => $translator->translate('label.message.result.empty.description'),
+            'attributes' => array(
+                'class' => 'option-empty-result option-empty-result-1',
+            ),
         ));
         $builder->addRow('more-show', 'option', array(
             'label' => $translator->translate('label.more.show'),

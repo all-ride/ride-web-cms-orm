@@ -157,7 +157,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
         $this->entryFormatter = $orm->getEntryFormatter();
         $this->model = $orm->getModel($modelName);
 
-        $query = $this->getModelQuery($contentProperties, $this->locale, $page, $arguments);
+        $query = $this->getModelQuery($contentProperties, $this->locale, $page, $arguments, $isFiltered);
 
         if ($contentProperties->willShowPagination()) {
             $rows = max(0, $query->count() - $contentProperties->getPaginationOffset());
@@ -169,6 +169,10 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
         }
 
         $result = $this->getResult($contentProperties, $contentService, $query);
+
+        if (!$contentProperties->hasEmptyResultView() && !$isFiltered && !$result) {
+            return;
+        }
 
         $this->setView($contentProperties, $result, $pages, $page, $arguments);
 
@@ -290,7 +294,9 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
      * @param array $arguments Arguments for the condition
      * @return \ride\library\orm\query\ModelQuery
      */
-    public function getModelQuery(ContentProperties $contentProperties, $locale, $page = 1, array $arguments) {
+    public function getModelQuery(ContentProperties $contentProperties, $locale, $page = 1, array $arguments, &$isFiltered = null) {
+        $isFiltered = false;
+
         $query = $this->model->createQuery($locale);
         $query->setRecursiveDepth($contentProperties->getRecursiveDepth());
         $query->setFetchUnlocalized($contentProperties->getIncludeUnlocalized());
@@ -306,6 +312,8 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
         if ($condition) {
             $arguments = $this->parseContextVariables($condition, $arguments);
             if ($arguments) {
+                $isFiltered = true;
+
                 $query->addConditionWithVariables($condition, $arguments);
             } else {
                 $query->addCondition($condition);
@@ -317,6 +325,9 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
         $filters = $contentProperties->getFilters();
         foreach ($filters as $filter) {
             $filterValue = $this->request->getQueryParameter($filter['name']);
+            if ($filterValue) {
+                $isFiltered = true;
+            }
 
             $this->filters[$filter['name']] = array(
                 'type' => $filter['type'],
