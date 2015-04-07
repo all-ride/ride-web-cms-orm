@@ -182,6 +182,10 @@ class OrmContentMapper extends AbstractContentMapper implements SearchableConten
             $title = $this->entryFormatter->formatEntry($entry, $this->titleFormat);
         }
 
+        if (!$title) {
+            $title = $this->model->getName() . ' #' . $entry->getId();
+        }
+
         if ($teaserFormat) {
             $teaser = $this->entryFormatter->formatEntry($entry, $teaserFormat);
         } elseif ($this->teaserFormat) {
