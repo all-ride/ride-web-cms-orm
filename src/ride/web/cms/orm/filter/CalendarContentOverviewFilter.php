@@ -37,7 +37,7 @@ class CalendarContentOverviewFilter extends DateContentOverviewFilter {
      * @return string|array Value of the filter
      */
     public function applyQuery(Model $model, ModelQuery $query, $fieldName, $value = null) {
-        if ($value === null || (is_array($value) && !$value)) {
+        if ($value === null || $value === '' || (is_array($value) && !$value)) {
             return null;
         }
 

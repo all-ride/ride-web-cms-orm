@@ -51,7 +51,7 @@ class SingleContentOverviewFilter extends AbstractContentOverviewFilter {
      */
     public function applyQuery(Model $model, ModelQuery $query, $fieldName, $value = null) {
         $isArray = is_array($value);
-        if ($value === null || ($isArray && !$value)) {
+        if ($value === null || $value === '' || ($isArray && !$value)) {
             return null;
         }
 
