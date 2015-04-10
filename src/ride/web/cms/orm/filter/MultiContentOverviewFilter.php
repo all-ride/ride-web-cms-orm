@@ -96,7 +96,7 @@ class MultiContentOverviewFilter extends SingleContentOverviewFilter {
      */
     public function applyQuery(Model $model, ModelQuery $query, $fieldName, $value = null) {
         $isArray = is_array($value);
-        if ($value === null || ($isArray && !$value)) {
+        if ($value === null || $value === '' || ($isArray && !$value)) {
             return null;
         }
 
@@ -112,10 +112,16 @@ class MultiContentOverviewFilter extends SingleContentOverviewFilter {
         if ($this->operator == 'AND') {
             $conditions = array();
             foreach ($value as $index => $v) {
+                if ($v === '') {
+                    continue;
+                }
+
                 $conditions[] = '{' . $conditionField . '} = %' . $index . '%';
             }
 
-            $query->addConditionWithVariables(implode(' ' . $this->operator . ' ', $conditions), $value);
+            if ($conditions) {
+                $query->addConditionWithVariables(implode(' ' . $this->operator . ' ', $conditions), $value);
+            }
         } else {
             $query->addCondition('{' . $conditionField . '} IN %1%', $value);
         }
