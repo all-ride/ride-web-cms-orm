@@ -81,11 +81,6 @@ class ContentEntryWidget extends ContentDetailWidget {
 
         $this->setView($contentProperties, $content);
 
-        if ($this->properties->isAutoCache()) {
-            $this->properties->setCache(true);
-            $this->properties->setCacheTtl(60);
-        }
-
         if ($this->properties->getWidgetProperty('region')) {
             $this->setIsRegion(true);
         }

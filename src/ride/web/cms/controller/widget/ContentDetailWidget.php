@@ -146,11 +146,6 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
             $this->setMetaOg($contentProperties, $content, $this->dependencyInjector->get('ride\\library\\image\\ImageUrlGenerator'));
         }
 
-        if ($this->properties->isAutoCache()) {
-            $this->properties->setCache(true);
-            $this->properties->setCacheTtl(60);
-        }
-
         if ($this->properties->getWidgetProperty('region')) {
             $this->setIsRegion(true);
         }
