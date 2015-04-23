@@ -175,11 +175,6 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
         }
 
         $this->setView($contentProperties, $result, $pages, $page, $arguments);
-
-        if ($this->properties->isAutoCache()) {
-            $this->properties->setCache(true);
-            $this->properties->setCacheTtl(60);
-        }
     }
 
     /**
