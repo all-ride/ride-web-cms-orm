@@ -8,6 +8,7 @@ use ride\library\i18n\translator\Translator;
 use ride\library\mvc\message\Message;
 use ride\library\mvc\view\View;
 use ride\library\mvc\Response;
+use ride\library\orm\entry\Entry;
 use ride\library\orm\OrmManager;
 use ride\library\widget\WidgetProperties;
 
@@ -154,6 +155,7 @@ class OrmTextIO extends AbstractTextIO {
 
         if ($submittedData['existing-new']) {
             $widgetProperties->setWidgetProperty(TextWidget::PROPERTY_TEXT, 0);
+            $text->setEntryState(Entry::STATE_NEW);
             $version = 0;
         } elseif ($submittedData['existing']) {
             $widgetProperties->setWidgetProperty(TextWidget::PROPERTY_TEXT, $submittedData['existing']);
