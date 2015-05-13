@@ -180,8 +180,12 @@ class OrmTextIO extends AbstractTextIO {
             $cta = array();
             if (isset($submittedData[TextWidget::PROPERTY_CTA])) {
                 foreach ($submittedData[TextWidget::PROPERTY_CTA] as $index => $action) {
-                    $ctaEntry = $ctaModel->createEntry();
-                    $ctaEntry->setId($action['id']);
+                    if ($action['id']) {
+                        $ctaEntry = $ctaModel->getById($action['id'], $locale, true);
+                    } else {
+                        $ctaEntry = $ctaModel->createEntry();
+                    }
+
                     $ctaEntry->setLabel($action['label']);
                     $ctaEntry->setUrl($action['url']);
                     $ctaEntry->setLocale($locale);
