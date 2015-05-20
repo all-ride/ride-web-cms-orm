@@ -25,6 +25,11 @@ class DateContentOverviewFilter extends AbstractContentOverviewFilter {
         $filters[$name]['urls'] = array();
         $filters[$name]['values'] = array();
         $filters[$name]['empty'] = $this->getUrl($baseUrl, $filters, $name, null);
+
+        foreach ($filters[$name]['options'] as $id => $label) {
+            $filters[$name]['urls'][$label] = $this->getUrl($baseUrl, $filters, $name, $id);
+            $filters[$name]['values'][$label] = $id;
+        }
     }
 
     /**
@@ -48,6 +53,11 @@ class DateContentOverviewFilter extends AbstractContentOverviewFilter {
         $query->addOrderBy('monthYear DESC');
 
         $months = array_keys($query->query('monthYear'));
+        foreach ($months as $key => $month) {
+            if (!$month) {
+                unset($months[$key]);
+            }
+        }
 
         return array_combine($months, $months);
     }
