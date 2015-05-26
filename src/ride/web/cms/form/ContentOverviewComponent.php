@@ -83,6 +83,7 @@ class ContentOverviewComponent extends AbstractContentComponent {
         }
 
         $result = parent::parseSetData($data);
+        $result['search'] = $data->hasSearch();
         $result['condition'] = $data->getCondition();
         $result['filters'] = $data->getFilters();
         $result['order'] = $data->getOrder();
@@ -125,6 +126,7 @@ class ContentOverviewComponent extends AbstractContentComponent {
     public function parseGetData(array $data) {
         $result = parent::parseGetData($data);
 
+        $result->setHasSearch($data['search']);
         $result->setCondition($data['condition']);;
         $result->setFilters($data['filters']);
         $result->setOrder($data['order']);
@@ -240,6 +242,10 @@ class ContentOverviewComponent extends AbstractContentComponent {
         $builder->addRow('title', 'string', array(
             'label' => $translator->translate('label.title'),
             'description' => $translator->translate('label.title.query.description'),
+        ));
+        $builder->addRow('search', 'boolean', array(
+            'label' => $translator->translate('label.search.expose'),
+            'description' => $translator->translate('label.search.expose.description'),
         ));
         $builder->addRow('filters', 'collection', array(
             'type' => 'component',

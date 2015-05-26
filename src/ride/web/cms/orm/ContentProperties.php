@@ -131,6 +131,12 @@ class ContentProperties {
     const PROPERTY_MAPPER = 'mapper';
 
     /**
+     * Name of the search setting
+     * @var string
+     */
+    const PROPERTY_SEARCH = 'search';
+
+    /**
      * Name of the filters field setting
      * @var string
      */
@@ -279,6 +285,12 @@ class ContentProperties {
      * @var string
      */
     private $condition;
+
+    /**
+     * Flag to see if a search query is exposed
+     * @var boolean
+     */
+    private $hasSearch;
 
     /**
      * Exposed filter fields
@@ -549,6 +561,23 @@ class ContentProperties {
      */
     public function getCondition() {
         return $this->condition;
+    }
+
+    /**
+     * Sets whether a search query is exposed
+     * @param boolean $hasSearch
+     * @return null
+     */
+    public function setHasSearch($hasSearch) {
+        $this->hasSearch = $hasSearch;
+    }
+
+    /**
+     * Gets whether a search query is exposed
+     * @return boolean
+     */
+    public function hasSearch() {
+        return $this->hasSearch;
     }
 
     /**
@@ -1043,6 +1072,7 @@ class ContentProperties {
         $this->isPaginationEnabled = $properties->getWidgetProperty(self::PROPERTY_PAGINATION_ENABLE);
         $this->paginationRows = $properties->getWidgetProperty(self::PROPERTY_PAGINATION_ROWS);
         $this->paginationOffset = $properties->getWidgetProperty(self::PROPERTY_PAGINATION_OFFSET);
+        $this->hasSearch = $properties->getWidgetProperty(self::PROPERTY_SEARCH);
         $this->condition = $properties->getLocalizedWidgetProperty($locale, self::PROPERTY_CONDITION);
         $this->order = $properties->getWidgetProperty(self::PROPERTY_ORDER);
         $this->parameters = $properties->getWidgetProperty(self::PROPERTY_PARAMETERS);
@@ -1118,6 +1148,7 @@ class ContentProperties {
         $properties->setWidgetProperty(self::PROPERTY_MODEL_FIELDS, $fields);
         $properties->setWidgetProperty(self::PROPERTY_RECURSIVE_DEPTH, $this->recursiveDepth);
         $properties->setWidgetProperty(self::PROPERTY_INCLUDE_UNLOCALIZED, $this->includeUnlocalized);
+        $properties->setWidgetProperty(self::PROPERTY_SEARCH, $this->hasSearch ? '1' : '0');
         $properties->setLocalizedWidgetProperty($locale, self::PROPERTY_CONDITION, $this->condition);
         $properties->setWidgetProperty(self::PROPERTY_ORDER, $this->order);
         $properties->setWidgetProperty(self::PROPERTY_PAGINATION_ENABLE, $this->isPaginationEnabled);
