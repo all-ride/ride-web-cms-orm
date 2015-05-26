@@ -77,6 +77,8 @@
     "label.processor.view.description": "Select a processor if your data needs to be processed before rendering the template",
     "label.properties.unset": "No properties have been set for this widget.",
     "label.result.empty": "Empty result",
+    "label.search.expose": "Search",
+    "label.search.expose.description": "Add a search form",
     "label.text.existing": "Existing text",
     "label.text.existing.new": "Create a new text based on the existing text",
     "label.title": "Title",

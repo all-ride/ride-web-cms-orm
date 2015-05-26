@@ -103,6 +103,43 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             return;
         }
 
+        // handle search
+        $searchForm = null;
+        if ($contentProperties->hasSearch()) {
+            $searchForm = $this->createFormBuilder();
+            $searchForm->setAction('search' . $this->id);
+            $searchForm->addRow('query', 'string', array(
+                'label' => $this->getTranslator()->translate('label.search'),
+                'default' => $this->request->getQueryParameter('query'),
+            ));
+            $searchForm = $searchForm->build();
+
+            if ($searchForm->isSubmitted()) {
+                // redirect the search
+                $data = $searchForm->getData();
+
+                $queryParameters = $this->request->getQueryParameters();
+                $queryParameters['query'] = $data['query'];
+                foreach ($queryParameters as $queryParameter => $queryValue) {
+                    if ($queryParameter === self::PARAM_PAGE) {
+                        $queryValue = 1;
+                    }
+
+                    $queryParameters[$queryParameter] = $queryParameter . '=' . urlencode($queryValue);
+                }
+
+                $url = $this->request->getUrl(true);
+                $url .= '?' . implode('&', $queryParameters);
+
+                $this->response->setRedirect($url);
+
+                return;
+            }
+
+            $searchForm = $searchForm->getView();
+        }
+
+        // process parameters
         $action = $contentProperties->getNoParametersAction();
         $parameters = $contentProperties->getParameters();
         $arguments = func_get_args();
@@ -145,6 +182,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             $arguments = array();
         }
 
+        // process pagination parameters
         $page = 1;
         $pages = 1;
         if ($contentProperties->willShowPagination()) {
@@ -154,39 +192,50 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             }
         }
 
+        // create the query
         $this->entryFormatter = $orm->getEntryFormatter();
         $this->model = $orm->getModel($modelName);
 
         $query = $this->getModelQuery($contentProperties, $this->locale, $page, $arguments, $isFiltered);
 
+        // apply pagination
+        $numRows = -1;
         if ($contentProperties->willShowPagination()) {
-            $rows = max(0, $query->count() - $contentProperties->getPaginationOffset());
-            $pages = ceil($rows / $contentProperties->getPaginationRows());
+            $numRows = max(0, $query->count() - $contentProperties->getPaginationOffset());
+            $pages = ceil($numRows / $contentProperties->getPaginationRows());
 
             if ($contentProperties->useAjaxForPagination() && $this->request->isXmlHttpRequest()) {
                 $this->setIsContent(true);
             }
         }
 
+        // fetch the result
         $result = $this->getResult($contentProperties, $contentService, $query);
+        if ($numRows == -1) {
+            $numRows = count($result);
+        }
 
         if (!$contentProperties->hasEmptyResultView() && !$isFiltered && !$result) {
+            // no view requested when no result
             return;
         }
 
-        $this->setView($contentProperties, $result, $pages, $page, $arguments);
+        // set the view
+        $this->setView($contentProperties, $result, $searchForm, $numRows, $pages, $page, $arguments);
     }
 
     /**
      * Gets the view
      * @param array $result
      * @param \ride\web\cms\orm\ContentProperties $properties
+     * @param \ride\library\form\view\FormView|null $searchForm
+     * @param integer $numRows
      * @param integer $pages
      * @param integer $page
      * @param array $arguments
      * @return \ride\library\mvc\view\View
      */
-    private function setView(ContentProperties $contentProperties, array $result, $pages = 1, $page = 1, array $arguments = array()) {
+    private function setView(ContentProperties $contentProperties, array $result, $searchForm, $numRows, $pages = 1, $page = 1, array $arguments = array()) {
         $pagination = null;
         if ($contentProperties->willShowPagination()) {
             $query = null;
@@ -227,17 +276,21 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
         $this->setContext('orm.overview.' . $this->id, $result);
         $this->setContext('orm.filters.' . $this->id, $this->filters);
         $this->setContext('orm.filters.' . $this->id . '.url', $filterUrl);
+        $this->setContext('orm.search.' . $this->id, $searchForm);
+        $this->setContext('orm.num.rows.' . $this->id, $numRows);
 
         $template = $this->getTemplate(static::TEMPLATE_NAMESPACE . '/block');
         $variables = array(
             'locale' => $this->locale,
             'widgetId' => $this->id,
             'result' => $result,
+            'numRows' => $numRows,
             'properties' => $contentProperties,
             'title' => $contentProperties->getTitle(),
             'emptyResultMessage' => $contentProperties->getEmptyResultMessage(),
             'filterUrl' => $filterUrl,
             'filters' => $this->filters,
+            'searchForm' => $searchForm,
             'arguments' => $arguments,
             'pagination' => $pagination,
             'moreUrl' => $moreUrl,
@@ -292,10 +345,12 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
     public function getModelQuery(ContentProperties $contentProperties, $locale, $page = 1, array $arguments, &$isFiltered = null) {
         $isFiltered = false;
 
+        // create query
         $query = $this->model->createQuery($locale);
         $query->setRecursiveDepth($contentProperties->getRecursiveDepth());
         $query->setFetchUnlocalized($contentProperties->getIncludeUnlocalized());
 
+        // select fields
         $modelFields = $contentProperties->getModelFields();
         if ($modelFields) {
             foreach ($modelFields as $fieldName) {
@@ -303,6 +358,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             }
         }
 
+        // apply condition
         $condition = $contentProperties->getCondition();
         if ($condition) {
             $arguments = $this->parseContextVariables($condition, $arguments);
@@ -315,6 +371,29 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             }
         }
 
+        // apply search
+        if ($contentProperties->hasSearch()) {
+            $searchQuery = $this->request->getQueryParameter('query');
+            if ($searchQuery) {
+                $conditions = array();
+
+                $fields = $this->model->getMeta()->getProperties();
+                foreach ($fields as $fieldName => $field) {
+                    if ($field->getOption('scaffold.search')) {
+                        $conditions[] = '{' . $fieldName . '} LIKE %1%';
+                    }
+                }
+
+                if ($conditions) {
+                    $condition = implode(' OR ', $conditions);
+                    $searchQuery = '%' . $searchQuery . '%';
+
+                    $query->addCondition($condition, $searchQuery);
+                }
+            }
+        }
+
+        // apply filters
         $this->filters = array();
 
         $filters = $contentProperties->getFilters();
@@ -332,11 +411,13 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             $this->filters[$filter['name']]['value'] = $this->filters[$filter['name']]['filter']->applyQuery($this->model, $query, $filter['field'], $filterValue);
         }
 
+        // apply order
         $order = $contentProperties->getOrder();
         if ($order) {
             $query->addOrderBy($order);
         }
 
+        // apply pagination
         if ($contentProperties->isPaginationEnabled()) {
             $paginationOffset = $contentProperties->getPaginationOffset();
 
@@ -445,6 +526,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
 
             $preview .= '<strong>' . $translator->translate('label.filters') . '</strong>: <ul>' . implode('', $filters) . '</ul>';
         }
+        $preview .= '<strong>' . $translator->translate('label.search.expose') . '</strong>: ' . $translator->translate($contentProperties->hasSearch() ? 'label.yes' : 'label.no') . '<br />';
 
         $order = $contentProperties->getOrder();
         if ($order) {

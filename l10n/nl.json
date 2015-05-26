@@ -78,6 +78,8 @@
     "label.processor.view.description": "Selecteer een verwerker indien je data nog extra verwerking nodig heeft alvorens de template te renderen",
     "label.properties.unset": "Deze widget is nog niet ingesteld.",
     "label.result.empty": "Leeg resultaat",
+    "label.search.expose": "Zoeken",
+    "label.search.expose.description": "Voeg een zoekformulier toe",
     "label.text.existing": "Bestaande tekst",
     "label.text.existing.new": "Maak een nieuwe tekst gebaseerd op de bestaande tekst",
     "label.title": "Titel",
