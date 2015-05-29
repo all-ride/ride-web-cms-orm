@@ -71,6 +71,11 @@
         },
         {
             "interfaces": "ride\\web\\cms\\orm\\filter\\ContentOverviewFilter",
+            "class": "ride\\web\\cms\\orm\\filter\\BooleanContentOverviewFilter",
+            "id": "boolean"
+        },
+        {
+            "interfaces": "ride\\web\\cms\\orm\\filter\\ContentOverviewFilter",
             "class": "ride\\web\\cms\\orm\\filter\\DateContentOverviewFilter",
             "id": "date"
         },
