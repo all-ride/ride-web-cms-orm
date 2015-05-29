@@ -5,6 +5,7 @@
     "label.content.mapper.primary.description": "This detail should be the default for the selected model.",
     "label.content.mapper.select": "Content Mapper",
     "label.content.mapper.select.description": "Select the content mapper to use, leave empty for the default mapper.",
+    "label.content.overview.filter.boolean": "Boolean value",
     "label.content.overview.filter.calendar": "Calendar (always uses fields dateStart and dateStop)",
     "label.content.overview.filter.date": "Date value",
     "label.content.overview.filter.multi.and": "Multiple values (and)",

@@ -29,9 +29,11 @@ abstract class AbstractContentOverviewFilter implements ContentOverviewFilter {
 
         foreach ($filters as $filterName => $filter) {
             if ($filterName == $name) {
-                $queryValue = $this->getQueryValue($filter, $filterName, $value);
-                if ($queryValue) {
-                    $query[$filterName] = $queryValue;
+                if ($filter['value'] != $value) {
+                    $queryValue = $this->getQueryValue($filter, $filterName, $value);
+                    if ($queryValue) {
+                        $query[$filterName] = $queryValue;
+                    }
                 }
             } elseif (isset($filter['value'])) {
                 $queryValue = $this->getQueryValue($filter, $filterName, $filter['value']);
@@ -58,12 +60,14 @@ abstract class AbstractContentOverviewFilter implements ContentOverviewFilter {
     protected function getQueryValue($filter, $name, $value) {
         $query = null;
 
-        if ($value && is_array($value)) {
+        if ($value === '' || $value === null) {
+            return $query;
+        } elseif (is_array($value)) {
             $query = '';
             foreach ($value as $filterValue) {
                 $query .= ($query ? '&' : '') . $name . '[]=' . $filterValue;
             }
-        } elseif ($value && $filter['value'] != $value) {
+        } else {
             $query = $name . '=' . $value;
         }
 
