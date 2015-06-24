@@ -589,6 +589,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
                 $form->validate();
 
                 $contentProperties = $form->getData();
+
                 $contentProperties->setToWidgetProperties($this->properties, $this->locale);
 
                 return true;

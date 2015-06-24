@@ -239,6 +239,12 @@ class ContentProperties {
     const NONE_IGNORE = 'ignore';
 
     /**
+     * Ignore no parameters action
+     * @var string
+     */
+    const NONE_RENDER = 'render';
+
+    /**
      * Predefined view type
      * @var string
      */
