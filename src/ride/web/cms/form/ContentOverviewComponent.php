@@ -224,6 +224,7 @@ class ContentOverviewComponent extends AbstractContentComponent {
             'label' => $translator->translate('label.parameters.type'),
             'description' => $translator->translate('label.parameters.type.description'),
             'options' => $this->getParametersTypeOptions($translator),
+            'default' => 'render'
         ));
         $builder->addRow('parameters-number', 'select', array(
             'label' => $translator->translate('label.parameters.number'),
@@ -318,7 +319,7 @@ class ContentOverviewComponent extends AbstractContentComponent {
         return array(
             ContentProperties::NONE_404 => $translator->translate('label.parameters.none.404'),
             ContentProperties::NONE_IGNORE => $translator->translate('label.parameters.none.ignore'),
-            '' => $translator->translate('label.parameters.none.render'),
+            ContentProperties::NONE_RENDER => $translator->translate('label.parameters.none.render'),
         );
     }
 
