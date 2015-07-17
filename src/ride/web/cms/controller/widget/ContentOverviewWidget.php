@@ -220,6 +220,10 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             return;
         }
 
+        if ($this->properties->getWidgetProperty('content')) {
+            $this->setIsContent(true);
+        }
+
         // set the view
         $this->setView($contentProperties, $result, $searchForm, $numRows, $pages, $page, $arguments);
     }
