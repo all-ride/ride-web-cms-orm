@@ -188,6 +188,13 @@ class OrmTextIO extends AbstractTextIO {
 
                     $ctaEntry->setLabel($action['label']);
                     $ctaEntry->setUrl($action['url']);
+                    $suffix = $action['suffix'];
+                    // check if suffix is set
+                    if (strlen($suffix)) {
+                        // check if it starts with # or ?. If not, prepend default #
+                        $suffix =  substr($action['suffix'], 0, 1) === '?' || substr($action['suffix'], 0, 1) === '#' ? $action['suffix'] : '#' . $action['suffix'];
+                    }
+                    $ctaEntry->setSuffix($suffix);
                     $ctaEntry->setLocale($locale);
 
                     if (isset($action['node'])) {
