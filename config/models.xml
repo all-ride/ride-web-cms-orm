@@ -66,6 +66,9 @@
             <option name="label" value="label.url" />
             <option name="scaffold.search" value="1" />
         </field>
+        <field name="suffix" type="string" localized="true">
+            <option name="label" value="label.url.suffix" />
+        </field>
         <field name="type" type="string">
             <option name="label" value="label.type" />
             <option name="scaffold.search" value="1" />
