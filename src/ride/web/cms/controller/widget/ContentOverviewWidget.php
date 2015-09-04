@@ -79,6 +79,11 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             return null;
         }
 
+        $parameters = $this->getContentProperties()->getParameters();
+        if ($parameters === null) {
+            return null;
+        }
+
         $route = new Route('/', array($this, 'indexAction'), null, array('head', 'get'));
         $route->setIsDynamic(true);
 
