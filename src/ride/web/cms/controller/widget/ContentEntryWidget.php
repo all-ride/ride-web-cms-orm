@@ -30,6 +30,12 @@ class ContentEntryWidget extends ContentDetailWidget {
     const NAME = 'orm.entry';
 
     /**
+     * Namespace for the templates of this widget
+     * @var string
+     */
+    const TEMPLATE_NAMESPACE = 'cms/widget/orm-entry';
+
+    /**
      * Gets the additional sub routes for this widget
      * @return array|null Array with a route path as key and the action method
      * as value
