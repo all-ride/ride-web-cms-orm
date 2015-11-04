@@ -1,4 +1,6 @@
 {
+    "label.breadcrumb.add": "Breadcrumb",
+    "label.breadcrumb.add.description": "Toon deze entry in de breadcrumbs",
     "label.condition": "Voorwaarde",
     "label.condition.description": "Voorwaarde expressie van de query",
     "label.content.mapper.primary": "Primair",

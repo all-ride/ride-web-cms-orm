@@ -221,6 +221,12 @@ class ContentProperties {
     const PROPERTY_EMPTY_RESULT_MESSAGE = 'message.result.empty';
 
     /**
+     * Name of the add to breadcrumb setting
+     * @var string
+     */
+    const PROPERTY_BREADCRUMB = 'breadcrumb';
+
+    /**
      * Separator a list property
      * @var string
      */
@@ -466,6 +472,12 @@ class ContentProperties {
      * @var string
      */
     private $ogImageFormat;
+
+    /**
+     * Flag to see if this should be added to the breadcrumb
+     * @var boolean
+     */
+    private $breadcrumb;
 
     /**
      * Sets the model name
@@ -1065,6 +1077,22 @@ class ContentProperties {
     }
 
     /**
+     * Sets the flag to see if this should be added to breadcrumb
+     * @param boolean $ogMeta
+     */
+    public function setBreadcrumb($breadcrumb) {
+        $this->breadcrumb = $breadcrumb;
+    }
+
+    /**
+     * Gets the flag to see if this should be added to breadcrumb
+     * @return boolean
+     */
+    public function getBreadcrumb() {
+        return $this->breadcrumb;
+    }
+
+    /**
      * Read the properties of the content from the widget properties
      * @param \ride\library\widget\WidgetProperties $properties
      * @return null
@@ -1104,6 +1132,7 @@ class ContentProperties {
         $this->ogTitleFormat = $properties->getWidgetProperty(self::PROPERTY_FORMAT_TITLE_OG);
         $this->ogTeaserFormat = $properties->getWidgetProperty(self::PROPERTY_FORMAT_TEASER_OG);
         $this->ogImageFormat = $properties->getWidgetProperty(self::PROPERTY_FORMAT_IMAGE_OG);
+        $this->breadcrumb = $properties->getWidgetProperty(self::PROPERTY_BREADCRUMB);
 
         if ($this->parameters && !is_numeric($this->parameters)) {
             $this->parameters = explode(self::SEPARATOR, $this->parameters);
@@ -1198,7 +1227,8 @@ class ContentProperties {
         $properties->setWidgetProperty(self::PROPERTY_FORMAT_TITLE_OG, $this->ogTitleFormat);
         $properties->setWidgetProperty(self::PROPERTY_FORMAT_TEASER_OG, $this->ogTeaserFormat);
         $properties->setWidgetProperty(self::PROPERTY_FORMAT_IMAGE_OG, $this->ogImageFormat);
-
+        $properties->setWidgetProperty(self::PROPERTY_BREADCRUMB, $this->breadcrumb ? '1' : '0');
+        
         $parameters = $this->parameters;
         if ($parameters) {
             if (is_array($parameters)) {

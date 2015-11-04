@@ -78,8 +78,10 @@ class ContentEntryWidget extends ContentDetailWidget {
 
         $this->setContext('orm.entry.' . $this->id, $content);
 
-        $url = $this->request->getBaseScript() . $this->properties->getNode()->getRoute($this->locale) . '/' . $id;
-        $this->addBreadcrumb($url, $content->title);
+        if ($contentProperties->getBreadcrumb()) {
+            $url = $this->request->getBaseScript() . $this->properties->getNode()->getRoute($this->locale) . '/' . $id;
+            $this->addBreadcrumb($url, $content->title);
+        }
 
         if ($contentProperties->getTitle()) {
             $this->setPageTitle($content->title);
