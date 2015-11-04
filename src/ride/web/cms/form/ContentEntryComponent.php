@@ -37,6 +37,7 @@ class ContentEntryComponent extends AbstractContentComponent {
         $result = parent::parseSetData($data);
         $result['entry'] = $data->getEntryId();
         $result['title'] = $data->getTitle();
+        $result['breadcrumb'] = $data->getBreadcrumb();
 
         return $result;
     }
@@ -50,6 +51,7 @@ class ContentEntryComponent extends AbstractContentComponent {
         $result = parent::parseGetData($data);
         $result->setEntryId($data['entry']);
         $result->setTitle($data['title']);
+        $result->setBreadcrumb($data['breadcrumb']);
 
         return $result;
     }
@@ -84,6 +86,10 @@ class ContentEntryComponent extends AbstractContentComponent {
             'label' => $translator->translate('label.entry'),
             'description' => $translator->translate('label.entry.description'),
             'options' => $entryOptions,
+        ));
+        $builder->addRow('breadcrumb', 'boolean', array(
+            'label' => $translator->translate('label.breadcrumb.add'),
+            'description' => $translator->translate('label.breadcrumb.add.description'),
         ));
         $builder->addRow('title', 'boolean', array(
             'label' => $translator->translate('label.title'),

@@ -1,4 +1,6 @@
 {
+    "label.breadcrumb.add": "Breadcrumb",
+    "label.breadcrumb.add.description": "Show this entry in the breadcrumbs",
     "label.condition": "Condition",
     "label.condition.description": "ORM condition expression for the query",
     "label.content.mapper.primary": "Primary",
