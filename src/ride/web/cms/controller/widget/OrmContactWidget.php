@@ -17,6 +17,13 @@ class OrmContactWidget extends ContactWidget {
         $this->model = $model;
     }
 
+    /**
+     * Function to handle the sending of contact Email
+     * @param $data
+     * @param $recipient
+     * @param Transport $transport
+     * @throws \ride\library\mail\exception\MailException
+     */
     public function sendMail($data, $recipient, Transport $transport) {
        parent::sendMail($data, $recipient, $transport);
 
