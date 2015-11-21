@@ -100,7 +100,7 @@
     "template.orm.overview.cloud": "Wolk",
     "template.orm.overview.list": "Lijst",
     "title.condition": "Voorwaarde",
-    "title.contact": "Contact"
+    "title.contact": "Contact Formulier",
     "title.content.mapper": "Content Mapping",
     "title.formats.data": "Data Formaten",
     "title.order": "Sortering",
@@ -112,5 +112,5 @@
     "warning.cms.text.used": "Deze tekst wordt ook gebruikt in andere tekst blokken. Het wijzigen van deze tekst zal ook die blokken treffen.",
     "widget.orm.detail": "Data detail",
     "widget.orm.entry": "Data Entry",
-    "widget.orm.overview": "Data overzicht",
+    "widget.orm.overview": "Data overzicht"
 }
