@@ -54,7 +54,7 @@
     "label.pagination": "Pagination",
     "label.pagination.ajax": "Use Ajax",
     "label.pagination.ajax.description": "Use Ajax for the pagination to give a cleaner user impression.",
-    "label.pagination.description": "Pagination: %rows% per page with an offset of %offset%",
+    "label.pagination.description": "<strong>Pagination</strong>: %rows% per page with an offset of %offset%",
     "label.pagination.enabled": "Enable",
     "label.pagination.enabled.description": "Divide the query result over different pages.",
     "label.pagination.rows": "Rows per page",

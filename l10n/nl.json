@@ -55,7 +55,7 @@
     "label.pagination": "Paginatie",
     "label.pagination.ajax": "Gebruik Ajax",
     "label.pagination.ajax.description": "Gebruik Ajax om de paginatie vlotter in te laten.",
-    "label.pagination.description": "Paginatie: %rows% rijen per pagina, beginnend vanaf rij %offset%",
+    "label.pagination.description": "<strong>Paginatie</strong>: %rows% rijen per pagina, beginnend vanaf rij %offset%",
     "label.pagination.enabled": "Inschakelen",
     "label.pagination.enabled.description": "Splits het resultaat over meerdere pagina's.",
     "label.pagination.offset": "Offset",
