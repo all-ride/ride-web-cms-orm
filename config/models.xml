@@ -79,4 +79,26 @@
 
         <option name="behaviour.log" value="true" />
     </model>
+    <model name="Contact">
+        <field name="name" type="string">
+            <option name="label.name" value="label.name"/>
+            <validation name="required"/>
+        </field>
+        <field name="email" type="email">
+            <option name="label.name" value="label.email"/>
+            <validation name="required"/>
+        </field>
+        <field name="message" type="text">
+            <option name="label.name" value="label.message"/>
+        </field>
+
+        <format name="title">{name} - {email}</format>
+        <format name="teaser">{message|truncate:250}</format>
+
+        <option name="behaviour.log" value="true"/>
+        <option name="behaviour.date" value="true"/>
+        <option name="order.field" value="dateAdded" />
+        <option name="scaffold.expose" value="true" />
+        <option name="scaffold.title" value="title.contact" />
+    </model>
 </models>
