@@ -176,6 +176,26 @@
             "calls": [
                 "setContentFacade"
             ]
+        },
+        {
+            "interfaces": "ride\\library\\cms\\widget\\Widget",
+            "class": "ride\\web\\cms\\controller\\widget\\OrmContactWidget",
+            "id": "contact",
+            "calls": [
+                {
+                    "method": "__construct",
+                    "arguments": [
+                        {
+                            "name": "model",
+                            "type": "call",
+                            "properties": {
+                                "interface": "ride\\library\\orm\\OrmManager",
+                                "method": "getContactModel"
+                            }
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }
