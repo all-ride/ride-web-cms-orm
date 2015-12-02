@@ -10,6 +10,8 @@ use ride\library\orm\entry\format\EntryFormatter;
 use ride\library\orm\model\Model;
 use ride\library\orm\OrmManager;
 
+use ride\service\RouterService;
+
 use ride\web\cms\content\mapper\OrmContentMapper;
 use ride\web\cms\content\mapper\GenericOrmContentMapper;
 
@@ -28,18 +30,26 @@ class ContentService {
 
     /**
      * Instance of the node model
-     * @param \ride\library\cms\node\NodeModel
+     * @var \ride\library\cms\node\NodeModel
      */
     protected $nodeModel;
+
+    /**
+     * Instance of the router service
+     * @var \ride\service\RouterService
+     */
+    protected $routerService;
 
     /**
      * Constructs a new field service
      * @param \ride\library\orm\OrmManager $orm
      * @param \ride\library\cms\node\NodeModel $nodeModel
+     * @param \ride\service\RouterService $routerService
      */
-    public function __construct(OrmManager $orm, NodeModel $nodeModel) {
+    public function __construct(OrmManager $orm, NodeModel $nodeModel, RouterService $routerService) {
         $this->orm = $orm;
         $this->nodeModel = $nodeModel;
+        $this->routerService = $routerService;
 
         $this->mappers = null;
         $this->defaultMappers = null;
@@ -86,7 +96,7 @@ class ContentService {
 
             $mapperId = $node->getId() . '-' . $widgetId;
 
-            $this->mappers[$modelName][$mapperId] = new GenericOrmContentMapper($this->nodeModel, $node, $model, $entryFormatter, $widgetProperties);
+            $this->mappers[$modelName][$mapperId] = new GenericOrmContentMapper($this->nodeModel, $node, $model, $entryFormatter, $widgetProperties, $this->routerService);
 
             if ($widgetProperties->getWidgetProperty(ContentProperties::PROPERTY_PRIMARY)) {
                 $this->defaultMappers[$modelName] = $mapperId;
