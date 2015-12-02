@@ -9,6 +9,8 @@ use ride\library\orm\entry\format\EntryFormatter;
 use ride\library\orm\model\Model;
 use ride\library\widget\WidgetProperties;
 
+use ride\service\RouterService;
+
 use ride\web\cms\orm\ContentProperties;
 
 /**
@@ -41,19 +43,27 @@ class GenericOrmContentMapper extends OrmContentMapper {
     protected $arguments;
 
     /**
+     * Instance of the router service
+     * @var \ride\service\RouterService
+     */
+    protected $routerService;
+
+    /**
      * Constructs a new content mapper for a detail widget
      * @param \ride\library\cms\node\NodeModel $nodeModel
      * @param \ride\library\cms\node\Node $node
      * @param \ride\library\orm\model\Model $model
      * @param \ride\library\orm\entry\format\EntryFormatter $entryFormatter
      * @param \ride\library\widget\WidgetProperties $properties
+     * @param \ride\service\RouterService $routerService
      * @return null
      */
-    public function __construct(NodeModel $nodeModel, Node $node, Model $model, EntryFormatter $entryFormatter, WidgetProperties $properties) {
+    public function __construct(NodeModel $nodeModel, Node $node, Model $model, EntryFormatter $entryFormatter, WidgetProperties $properties, RouterService $routerService) {
         parent::__construct($nodeModel, $model, $entryFormatter);
 
         $this->node = $node;
         $this->properties = $properties;
+        $this->routerService = $routerService;
 
         $this->arguments = array();
     }
@@ -118,7 +128,7 @@ class GenericOrmContentMapper extends OrmContentMapper {
             ContentProperties::PROPERTY_FORMAT_TEASER => $properties->getContentTeaserFormat(),
             ContentProperties::PROPERTY_FORMAT_IMAGE => $properties->getContentImageFormat(),
             ContentProperties::PROPERTY_FORMAT_DATE => $properties->getContentDateFormat(),
-            self::PROPERTY_URL => rtrim($this->node->getUrl($locale, $this->baseScript), '/') . '/',
+            self::PROPERTY_URL => rtrim($this->routerService->getUrl($this->baseScript, 'cms.front.' . $site . '.' . $this->node->getId() . '.' . $locale), '/') . '/',
         );
     }
 
