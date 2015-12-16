@@ -24,8 +24,8 @@ class OrmContactWidget extends ContactWidget {
      * @param Transport $transport
      * @throws \ride\library\mail\exception\MailException
      */
-    public function sendMail($data, $recipient, Transport $transport) {
-       parent::sendMail($data, $recipient, $transport);
+    public function sendMail($data, $recipient) {
+       parent::sendMail($data, $recipient);
 
        $contactEntry = $this->model->createEntry($data);
        $this->model->save($contactEntry);
