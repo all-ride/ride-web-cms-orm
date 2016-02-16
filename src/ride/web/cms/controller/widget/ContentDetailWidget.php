@@ -5,6 +5,7 @@ namespace ride\web\cms\controller\widget;
 use ride\library\cms\content\Content;
 use ride\library\http\Response;
 use ride\library\i18n\I18n;
+use ride\library\image\exception\ImageException;
 use ride\library\image\ImageUrlGenerator;
 use ride\library\orm\definition\ModelTable;
 use ride\library\orm\entry\format\EntryFormatter;
@@ -337,7 +338,11 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
         if ($imageFormat) {
             $image = $entryFormatter->formatEntry($content->data, $imageFormat);
             if ($image) {
-                $node->setMeta($this->locale, 'og:image', $imageUrlGenerator->generateUrl($image));
+                try {
+                    $node->setMeta($this->locale, 'og:image', $imageUrlGenerator->generateUrl($image));
+                } catch (ImageException $exception) {
+                    $this->getLog()->logException($exception);
+                }
             }
         }
     }
