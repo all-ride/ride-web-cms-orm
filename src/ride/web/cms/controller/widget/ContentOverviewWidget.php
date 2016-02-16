@@ -384,21 +384,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
         if ($contentProperties->hasSearch()) {
             $searchQuery = $this->request->getQueryParameter('query');
             if ($searchQuery) {
-                $conditions = array();
-
-                $fields = $this->model->getMeta()->getProperties();
-                foreach ($fields as $fieldName => $field) {
-                    if ($field->getOption('scaffold.search')) {
-                        $conditions[] = '{' . $fieldName . '} LIKE %1%';
-                    }
-                }
-
-                if ($conditions) {
-                    $condition = implode(' OR ', $conditions);
-                    $searchQuery = '%' . $searchQuery . '%';
-
-                    $query->addCondition($condition, $searchQuery);
-                }
+                $this->model->applySearch($query, array('query' => $searchQuery);
             }
         }
 
@@ -616,7 +602,8 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
         ));
         $view->addJavascript('js/cms/orm.js');
         $view->addInlineJavascript('joppaContentInitializeOverviewProperties("' . $orderFieldsAction . '", "' . $filterFieldsAction . '", "' . $modelMappersAction . '");');
-        $form = $form->processView($view);
+
+        $form->processView($view);
 
         return false;
     }

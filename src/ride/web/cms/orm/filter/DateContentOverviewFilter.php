@@ -130,7 +130,7 @@ class DateContentOverviewFilter extends AbstractContentOverviewFilter {
             }
 
             $untilValue = array_shift($value);
-            $tokens = explode('-', $fromValue);
+            $tokens = explode('-', $untilValue);
 
             if (isset($tokens[2])) { // day
                 $until = mktime(23, 59, 59, $tokens[1], $tokens[2], $tokens[0]);
