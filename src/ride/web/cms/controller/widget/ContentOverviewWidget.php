@@ -384,7 +384,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
         if ($contentProperties->hasSearch()) {
             $searchQuery = $this->request->getQueryParameter('query');
             if ($searchQuery) {
-                $this->model->applySearch($query, array('query' => $searchQuery);
+                $this->model->applySearch($query, array('query' => $searchQuery));
             }
         }
 
