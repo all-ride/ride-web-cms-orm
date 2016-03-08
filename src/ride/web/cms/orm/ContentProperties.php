@@ -1101,7 +1101,7 @@ class ContentProperties {
     public function getFromWidgetProperties(WidgetProperties $properties, $locale) {
         $this->modelName = $properties->getWidgetProperty(self::PROPERTY_MODEL_NAME);
         $this->entryId = $properties->getWidgetProperty(self::PROPERTY_ENTRY);
-        $this->recursiveDepth = $properties->getWidgetProperty(self::PROPERTY_RECURSIVE_DEPTH);
+        $this->recursiveDepth = $properties->getWidgetProperty(self::PROPERTY_RECURSIVE_DEPTH, 0);
         $this->includeUnlocalized = $properties->getWidgetProperty(self::PROPERTY_INCLUDE_UNLOCALIZED);
         $this->isPaginationEnabled = $properties->getWidgetProperty(self::PROPERTY_PAGINATION_ENABLE);
         $this->paginationRows = $properties->getWidgetProperty(self::PROPERTY_PAGINATION_ROWS);
@@ -1179,19 +1179,19 @@ class ContentProperties {
         }
 
         $properties->setWidgetProperty(self::PROPERTY_MODEL_NAME, $this->modelName);
-        $properties->setWidgetProperty(self::PROPERTY_ENTRY, $this->entryId);
-        $properties->setWidgetProperty(self::PROPERTY_MODEL_FIELDS, $fields);
-        $properties->setWidgetProperty(self::PROPERTY_RECURSIVE_DEPTH, $this->recursiveDepth);
-        $properties->setWidgetProperty(self::PROPERTY_INCLUDE_UNLOCALIZED, $this->includeUnlocalized);
-        $properties->setWidgetProperty(self::PROPERTY_SEARCH, $this->hasSearch ? '1' : '0');
+        $properties->setWidgetProperty(self::PROPERTY_ENTRY, $this->entryId ? $this->entryId : null);
+        $properties->setWidgetProperty(self::PROPERTY_MODEL_FIELDS, $fields ? $fields : null);
+        $properties->setWidgetProperty(self::PROPERTY_RECURSIVE_DEPTH, $this->recursiveDepth === null || $this->recursiveDepth == 0 ? null : $this->recursiveDepth);
+        $properties->setWidgetProperty(self::PROPERTY_INCLUDE_UNLOCALIZED, $this->includeUnlocalized ? $this->includeUnlocalized : null);
+        $properties->setWidgetProperty(self::PROPERTY_SEARCH, $this->hasSearch ? '1' : null);
         $properties->setLocalizedWidgetProperty($locale, self::PROPERTY_CONDITION, $this->condition);
-        $properties->setWidgetProperty(self::PROPERTY_ORDER, $this->order);
-        $properties->setWidgetProperty(self::PROPERTY_PAGINATION_ENABLE, $this->isPaginationEnabled);
+        $properties->setWidgetProperty(self::PROPERTY_ORDER, $this->order ? $this->order : null);
+        $properties->setWidgetProperty(self::PROPERTY_PAGINATION_ENABLE, $this->isPaginationEnabled ? '1' : null);
         if ($this->isPaginationEnabled) {
             $properties->setWidgetProperty(self::PROPERTY_PAGINATION_ROWS, $this->paginationRows);
             $properties->setWidgetProperty(self::PROPERTY_PAGINATION_OFFSET, $this->paginationOffset);
-            $properties->setWidgetProperty(self::PROPERTY_PAGINATION_SHOW, $this->showPagination);
-            $properties->setWidgetProperty(self::PROPERTY_PAGINATION_AJAX, $this->useAjaxForPagination);
+            $properties->setWidgetProperty(self::PROPERTY_PAGINATION_SHOW, $this->showPagination ? '1' : null);
+            $properties->setWidgetProperty(self::PROPERTY_PAGINATION_AJAX, $this->useAjaxForPagination ? '1' : null);
             if ($this->showMore) {
                 $properties->setLocalizedWidgetProperty($locale, self::PROPERTY_MORE_SHOW, $this->showMore);
                 $properties->setLocalizedWidgetProperty($locale, self::PROPERTY_MORE_LABEL, $this->moreLabel);
@@ -1211,24 +1211,24 @@ class ContentProperties {
             $properties->setLocalizedWidgetProperty($locale, self::PROPERTY_MORE_NODE, null);
         }
 
-        $properties->setWidgetProperty(self::PROPERTY_ID_FIELD, $this->idField);
-        $properties->setWidgetProperty(self::PROPERTY_PRIMARY, $this->isPrimaryMapper);
-        $properties->setWidgetProperty(self::PROPERTY_MAPPER, $this->contentMapper);
+        $properties->setWidgetProperty(self::PROPERTY_ID_FIELD, $this->idField ? $this->idField : null);
+        $properties->setWidgetProperty(self::PROPERTY_PRIMARY, $this->isPrimaryMapper ? '1' : null);
+        $properties->setWidgetProperty(self::PROPERTY_MAPPER, $this->contentMapper ? $this->contentMapper : null);
         $properties->setWidgetProperty(self::PROPERTY_TEMPLATE, $this->template);
-        $properties->setWidgetProperty(self::PROPERTY_VIEW_PROCESSOR, $this->viewProcessor);
-        $properties->setWidgetProperty(self::PROPERTY_FORMAT_TITLE, $this->contentTitleFormat);
-        $properties->setWidgetProperty(self::PROPERTY_FORMAT_TEASER, $this->contentTeaserFormat);
-        $properties->setWidgetProperty(self::PROPERTY_FORMAT_IMAGE, $this->contentImageFormat);
-        $properties->setWidgetProperty(self::PROPERTY_FORMAT_DATE, $this->contentDateFormat);
+        $properties->setWidgetProperty(self::PROPERTY_VIEW_PROCESSOR, $this->viewProcessor ? $this->viewProcessor : null);
+        $properties->setWidgetProperty(self::PROPERTY_FORMAT_TITLE, $this->contentTitleFormat ? $this->contentTitleFormat : null);
+        $properties->setWidgetProperty(self::PROPERTY_FORMAT_TEASER, $this->contentTeaserFormat ? $this->contentTeaserFormat : null);
+        $properties->setWidgetProperty(self::PROPERTY_FORMAT_IMAGE, $this->contentImageFormat ? $this->contentImageFormat : null);
+        $properties->setWidgetProperty(self::PROPERTY_FORMAT_DATE, $this->contentDateFormat ? $this->contentDateFormat : null);
         $properties->setLocalizedWidgetProperty($locale, self::PROPERTY_TITLE, $this->title);
-        $properties->setWidgetProperty(self::PROPERTY_EMPTY_RESULT_VIEW, $this->emptyResultView ? '1' : '0');
+        $properties->setWidgetProperty(self::PROPERTY_EMPTY_RESULT_VIEW, $this->emptyResultView ? '1' : null);
         $properties->setLocalizedWidgetProperty($locale, self::PROPERTY_EMPTY_RESULT_MESSAGE, $this->emptyResultMessage);
-        $properties->setWidgetProperty(self::PROPERTY_META_OG, $this->metaOg);
-        $properties->setWidgetProperty(self::PROPERTY_FORMAT_TITLE_OG, $this->ogTitleFormat);
-        $properties->setWidgetProperty(self::PROPERTY_FORMAT_TEASER_OG, $this->ogTeaserFormat);
-        $properties->setWidgetProperty(self::PROPERTY_FORMAT_IMAGE_OG, $this->ogImageFormat);
-        $properties->setWidgetProperty(self::PROPERTY_BREADCRUMB, $this->breadcrumb ? '1' : '0');
-        
+        $properties->setWidgetProperty(self::PROPERTY_META_OG, $this->metaOg ? 1 : null);
+        $properties->setWidgetProperty(self::PROPERTY_FORMAT_TITLE_OG, $this->ogTitleFormat ? $this->ogTitleFormat : null);
+        $properties->setWidgetProperty(self::PROPERTY_FORMAT_TEASER_OG, $this->ogTeaserFormat ? $this->ogTeaserFormat : null);
+        $properties->setWidgetProperty(self::PROPERTY_FORMAT_IMAGE_OG, $this->ogImageFormat ? $this->ogImageFormat : null);
+        $properties->setWidgetProperty(self::PROPERTY_BREADCRUMB, $this->breadcrumb ? '1' : null);
+
         $parameters = $this->parameters;
         if ($parameters) {
             if (is_array($parameters)) {
@@ -1243,7 +1243,7 @@ class ContentProperties {
         $properties->setWidgetProperty(self::PROPERTY_PARAMETERS_NONE, $this->parametersNone);
 
         $filters = $this->filters;
-        if (is_array($filters)) {
+        if (is_array($filters) && $filters) {
             $filterValues = array();
             foreach ($filters as $filter) {
                 $filterValues[] = $filter['name'] . ':' . $filter['type'] . ':' . $filter['field'];
