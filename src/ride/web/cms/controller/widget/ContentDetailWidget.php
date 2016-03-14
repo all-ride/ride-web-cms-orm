@@ -380,7 +380,9 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
             $preview .= '<strong>' . $translator->translate('label.field.id') . '</strong>: ' . $idField . '<br />';
         }
 
-        $preview .= '<strong>' . $translator->translate('label.template') . '</strong>: ' . $this->getTemplate(static::TEMPLATE_NAMESPACE . '/block') . '<br>';
+        if ($this->getSecurityManager()->isPermissionGranted('widget.template.view')) {
+            $preview .= '<strong>' . $translator->translate('label.template') . '</strong>: ' . $this->getTemplate(static::TEMPLATE_NAMESPACE . '/block') . '<br>';
+        }
 
         return $preview;
     }
