@@ -371,6 +371,8 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
         $condition = $contentProperties->getCondition();
         if ($condition) {
             $arguments = $this->parseContextVariables($condition, $arguments);
+            $arguments = $this->parseNodeVariables($condition, $arguments);
+
             if ($arguments) {
                 $isFiltered = true;
 
@@ -471,6 +473,35 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             } while ($tokens);
 
             $arguments[substr($variable, 1, -1)] = $value;
+        }
+
+        return $arguments;
+    }
+
+    /**
+     * Parses the node properties into the arguments
+     * @param string $condition Condition string
+     * @param array $arguments Already set arguments
+     * @return array Provided arguments with the resolved node arguments
+     * @throws Exception when the node arguments could not be parsed
+     */
+    public function parseNodeVariables($condition, array $arguments) {
+        if (strpos($condition, '%node') === false) {
+            return $arguments;
+        }
+
+        $matches = array();
+
+        preg_match_all('(%node([A-Za-z0-9]|\\.)*%)', $condition, $matches);
+        if (!$matches[0]) {
+            throw new Exception('Could not parse context argument: no arguments matched');
+        }
+
+        $node = $this->properties->getNode();
+        foreach ($matches[0] as $variable) {
+            $variable = trim($variable, '%');
+
+            $arguments[$variable] = $node->get(str_replace('node.', '', $variable));
         }
 
         return $arguments;
