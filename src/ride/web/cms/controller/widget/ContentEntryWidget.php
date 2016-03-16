@@ -180,6 +180,7 @@ class ContentEntryWidget extends ContentDetailWidget {
         $view = $this->setTemplateView(static::TEMPLATE_NAMESPACE . '/properties.entry', array(
             'form' => $form->getView(),
         ));
+        $view->addJavascript('js/form.js');
         $view->addJavascript('js/cms/orm.js');
         $view->addInlineJavascript('joppaContentInitializeEntryProperties("' . $entriesAction . '");');
 
