@@ -568,7 +568,9 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             $preview .= $translator->translate('label.pagination.description', $parameters) . '<br />';
         }
 
-        $preview .= '<strong>' . $translator->translate('label.template') . '</strong>: ' . $this->getTemplate(static::TEMPLATE_NAMESPACE . '/block') . '<br>';
+        if ($this->getSecurityManager()->isPermissionGranted('widget.template.view')) {
+            $preview .= '<strong>' . $translator->translate('label.template') . '</strong>: ' . $this->getTemplate(static::TEMPLATE_NAMESPACE . '/block') . '<br>';
+        }
 
         return $preview;
     }
