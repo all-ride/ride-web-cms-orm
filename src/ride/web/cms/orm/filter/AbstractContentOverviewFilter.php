@@ -46,7 +46,13 @@ abstract class AbstractContentOverviewFilter implements ContentOverviewFilter {
         if (!$query) {
             return $baseUrl;
         } else {
-            return $baseUrl . '?' . implode('&', $query);
+            if (!strpos($baseUrl, '?')) {
+                $baseUrl .= '?';
+            } else {
+                $baseUrl .= '&';
+            }
+
+            return $baseUrl . implode('&', $query);
         }
     }
 

@@ -2,11 +2,15 @@
     "name": "ride/web-cms-orm",
     "description": "ORM integration with the CMS application of the Ride framework",
     "license": "MIT",
-    "version": "0.23.7",
+    "version": "0.23.8",
     "authors": [
         {
             "name": "Joris Vandeweerd",
             "email": "joris@statik.be"
+        },
+        {
+            "name": "Brent Roose",
+            "email": "brent@statik.be"
         }
     ],
     "require": {
