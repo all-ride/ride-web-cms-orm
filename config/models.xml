@@ -99,6 +99,7 @@
         <option name="behaviour.date" value="true"/>
         <option name="order.field" value="dateAdded" />
         <option name="scaffold.expose" value="true" />
+        <option name="scaffold.menu" value="submissions.menu" />
         <option name="scaffold.title" value="title.contact" />
     </model>
 </models>
