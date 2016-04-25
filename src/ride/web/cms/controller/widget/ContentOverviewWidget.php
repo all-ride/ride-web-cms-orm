@@ -531,7 +531,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
     public function getPropertiesPreview() {
         $translator = $this->getTranslator();
         $contentProperties = $this->getContentProperties();
-        $isPermissionGranted = $this->getSecurityManager()->isPermissionGranted('cms.widget.advanced.view');
+        $isPermissionGranted = $this->getSecurityManager()->isPermissionGranted('cms.advanced');
 
         $modelName = $contentProperties->getModelName();
         if (!$modelName) {
@@ -605,6 +605,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
      */
     public function propertiesAction(NodeModel $nodeModel, FieldService $fieldService, ContentService $contentService) {
         $contentProperties = $this->getContentProperties();
+        $isPermissionGranted = $this->getSecurityManager()->isPermissionGranted('cms.advanced');
         if (!$contentProperties->getModelName()) {
             $contentProperties->setRecursiveDepth(0);
             $contentProperties->setTemplate(static::TEMPLATE_NAMESPACE . '/block');
@@ -624,7 +625,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
         }
         $viewProcessors = array('' => '---') + $viewProcessors;
 
-        $component = new ContentOverviewComponent($fieldService);
+        $component = new ContentOverviewComponent($fieldService, $isPermissionGranted);
         $component->setContentService($contentService);
         $component->setNodeOptions($nodeOptions);
         $component->setContentOverviewFilters($contentOverviewFilters);

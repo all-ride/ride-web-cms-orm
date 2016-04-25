@@ -354,7 +354,7 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
     public function getPropertiesPreview() {
         $translator = $this->getTranslator();
         $contentProperties = $this->getContentProperties();
-        $isPermissionGranted = $this->getSecurityManager()->isPermissionGranted('cms.widget.advanced.view');
+        $isPermissionGranted = $this->getSecurityManager()->isPermissionGranted('cms.advanced');
 
         $modelName = $contentProperties->getModelName();
         if (!$modelName) {
@@ -399,6 +399,8 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
      */
     public function propertiesAction(FieldService $fieldService) {
         $contentProperties = $this->getContentProperties();
+        $isPermissionGranted = $this->getSecurityManager()->isPermissionGranted('cms.advanced');
+
         if (!$contentProperties->getModelName()) {
             $contentProperties->setTitle(true);
             $contentProperties->setMetaOg(true);
@@ -410,7 +412,7 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
         }
         $viewProcessors = array('' => '---') + $viewProcessors;
 
-        $component = new ContentDetailComponent($fieldService);
+        $component = new ContentDetailComponent($fieldService, $isPermissionGranted);
         $component->setTemplates($this->getAvailableTemplates(static::TEMPLATE_NAMESPACE));
         $component->setViewProcessors($viewProcessors);
 

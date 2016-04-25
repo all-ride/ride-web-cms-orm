@@ -1121,7 +1121,7 @@ class ContentProperties {
         $this->contentImageFormat = $properties->getLocalizedWidgetProperty($locale, self::PROPERTY_FORMAT_IMAGE);
         $this->contentDateFormat = $properties->getLocalizedWidgetProperty($locale, self::PROPERTY_FORMAT_DATE);
         $this->title = $properties->getLocalizedWidgetProperty($locale, self::PROPERTY_TITLE);
-        $this->emptyResultView = $properties->getWidgetProperty(self::PROPERTY_EMPTY_RESULT_VIEW, true);
+        $this->emptyResultView = $properties->getWidgetProperty(self::PROPERTY_EMPTY_RESULT_VIEW);
         $this->emptyResultMessage = $properties->getLocalizedWidgetProperty($locale, self::PROPERTY_EMPTY_RESULT_MESSAGE);
         $this->showPagination = $properties->getWidgetProperty(self::PROPERTY_PAGINATION_SHOW);
         $this->useAjaxForPagination = $properties->getWidgetProperty(self::PROPERTY_PAGINATION_AJAX);

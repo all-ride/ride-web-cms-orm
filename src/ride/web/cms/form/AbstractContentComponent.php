@@ -19,6 +19,11 @@ abstract class AbstractContentComponent extends AbstractComponent {
      * @var \ride\web\cms\orm\FieldService
      */
     protected $fieldService;
+    /**
+     * Boolean to check is permission is granted or not
+     * @var Boolean
+     */
+    protected $isPermissionGranted;
 
     /**
      * Instance of the content data
@@ -43,8 +48,9 @@ abstract class AbstractContentComponent extends AbstractComponent {
      * @param \ride\web\cms\orm\FieldService $fieldService
      * @return null
      */
-    public function __construct(FieldService $fieldService) {
+    public function __construct(FieldService $fieldService, $isPermissionGranted) {
         $this->fieldService = $fieldService;
+        $this->isPermissionGranted = $isPermissionGranted;
     }
 
     /**
@@ -116,16 +122,17 @@ abstract class AbstractContentComponent extends AbstractComponent {
         if (!$this->data) {
             $this->data = new ContentProperties();
         }
-
-        $this->data->setModelName($data['model']);
-        $this->data->setIncludeUnlocalized($data['include-unlocalized']);
-        $this->data->setNoParametersAction($data['parameters-none']);
-        $this->data->setTemplate($data['template']);
-        $this->data->setViewProcessor($data['view-processor']);
-        $this->data->setContentTitleFormat($data['format-title']);
-        $this->data->setContentTeaserFormat($data['format-teaser']);
-        $this->data->setContentImageFormat($data['format-image']);
-        $this->data->setContentDateFormat($data['format-date']);
+        if ($this->isPermissionGranted) {
+            $this->data->setModelName($data['model']);
+            $this->data->setIncludeUnlocalized($data['include-unlocalized']);
+            $this->data->setNoParametersAction($data['parameters-none']);
+            $this->data->setTemplate($data['template']);
+            $this->data->setViewProcessor($data['view-processor']);
+            $this->data->setContentTitleFormat($data['format-title']);
+            $this->data->setContentTeaserFormat($data['format-teaser']);
+            $this->data->setContentImageFormat($data['format-image']);
+            $this->data->setContentDateFormat($data['format-date']);
+        }
 
         return $this->data;
     }
@@ -146,59 +153,61 @@ abstract class AbstractContentComponent extends AbstractComponent {
         } else {
             $modelName = null;
         }
+        if ($this->isPermissionGranted){
+            $builder->addRow('model', 'select', array(
+                'label' => $translator->translate('label.model'),
+                'description' => $translator->translate('label.model.description'),
+                'options' => $this->getModelOptions(),
+            ));
+            $builder->addRow('include-unlocalized', 'boolean', array(
+                'label' => $translator->translate('label.unlocalized'),
+                'description' => $translator->translate('label.unlocalized.description'),
+            ));
+            $builder->addRow('template', 'select', array(
+                'label' => $translator->translate('label.template'),
+                'description' => $translator->translate('label.template.widget.description'),
+                'options' => $this->templates,
+            ));
+            $builder->addRow('view-processor', 'select', array(
+                'label' => $translator->translate('label.processor.view'),
+                'description' => $translator->translate('label.processor.view.description'),
+                'options' => $this->viewProcessors,
+            ));
+            $builder->addRow('format-title', 'string', array(
+                'label' => $translator->translate('label.format.title'),
+                'description' => $translator->translate('label.format.title.description'),
+                'filters' => array(
+                    'trim' => array(),
+                ),
+            ));
+            $builder->addRow('format-teaser', 'string', array(
+                'label' => $translator->translate('label.format.teaser'),
+                'description' => $translator->translate('label.format.teaser.description'),
+                'filters' => array(
+                    'trim' => array(),
+                ),
+            ));
+            $builder->addRow('format-image', 'string', array(
+                'label' => $translator->translate('label.format.image'),
+                'description' => $translator->translate('label.format.image.description'),
+                'filters' => array(
+                    'trim' => array(),
+                ),
+            ));
+            $builder->addRow('format-date', 'string', array(
+                'label' => $translator->translate('label.format.date'),
+                'description' => $translator->translate('label.format.date.description'),
+                'filters' => array(
+                    'trim' => array(),
+                ),
+            ));
+            $builder->addRow('parameters-none', 'select', array(
+                'label' => $translator->translate('label.parameters.none'),
+                'description' => $translator->translate('label.parameters.none.description'),
+                'options' => $this->getParametersNoneOptions($translator),
+            ));
 
-        $builder->addRow('model', 'select', array(
-            'label' => $translator->translate('label.model'),
-            'description' => $translator->translate('label.model.description'),
-            'options' => $this->getModelOptions(),
-        ));
-        $builder->addRow('include-unlocalized', 'boolean', array(
-            'label' => $translator->translate('label.unlocalized'),
-            'description' => $translator->translate('label.unlocalized.description'),
-        ));
-        $builder->addRow('template', 'select', array(
-            'label' => $translator->translate('label.template'),
-            'description' => $translator->translate('label.template.widget.description'),
-            'options' => $this->templates,
-        ));
-        $builder->addRow('view-processor', 'select', array(
-            'label' => $translator->translate('label.processor.view'),
-            'description' => $translator->translate('label.processor.view.description'),
-            'options' => $this->viewProcessors,
-        ));
-        $builder->addRow('format-title', 'string', array(
-            'label' => $translator->translate('label.format.title'),
-            'description' => $translator->translate('label.format.title.description'),
-            'filters' => array(
-                'trim' => array(),
-            ),
-        ));
-        $builder->addRow('format-teaser', 'string', array(
-            'label' => $translator->translate('label.format.teaser'),
-            'description' => $translator->translate('label.format.teaser.description'),
-            'filters' => array(
-                'trim' => array(),
-            ),
-        ));
-        $builder->addRow('format-image', 'string', array(
-            'label' => $translator->translate('label.format.image'),
-            'description' => $translator->translate('label.format.image.description'),
-            'filters' => array(
-                'trim' => array(),
-            ),
-        ));
-        $builder->addRow('format-date', 'string', array(
-            'label' => $translator->translate('label.format.date'),
-            'description' => $translator->translate('label.format.date.description'),
-            'filters' => array(
-                'trim' => array(),
-            ),
-        ));
-        $builder->addRow('parameters-none', 'select', array(
-            'label' => $translator->translate('label.parameters.none'),
-            'description' => $translator->translate('label.parameters.none.description'),
-            'options' => $this->getParametersNoneOptions($translator),
-        ));
+        }
     }
 
     /**
