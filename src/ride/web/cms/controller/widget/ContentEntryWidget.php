@@ -107,7 +107,7 @@ class ContentEntryWidget extends ContentDetailWidget {
     public function getPropertiesPreview() {
         $translator = $this->getTranslator();
         $contentProperties = $this->getContentProperties();
-        $isPermissionGranted = $this->getSecurityManager()->isPermissionGranted('cms.widget.advanced.view');
+        $isPermissionGranted = $this->getSecurityManager()->isPermissionGranted('cms.advanced');
 
         $modelName = $contentProperties->getModelName();
         if (!$modelName) {
@@ -153,6 +153,7 @@ class ContentEntryWidget extends ContentDetailWidget {
      */
     public function propertiesAction(FieldService $fieldService) {
         $contentProperties = $this->getContentProperties();
+        $isPermissionGranted = $this->getSecurityManager()->isPermissionGranted('cms.advanced');
 
         $viewProcessors = $this->dependencyInjector->getByTag('ride\\web\\cms\\orm\\processor\\ViewProcessor', 'detail');
         foreach ($viewProcessors as $id => $viewProcessors) {
@@ -160,7 +161,7 @@ class ContentEntryWidget extends ContentDetailWidget {
         }
         $viewProcessors = array('' => '---') + $viewProcessors;
 
-        $component = new ContentEntryComponent($fieldService);
+        $component = new ContentEntryComponent($fieldService, $isPermissionGranted);
         $component->setLocale($this->locale);
         $component->setTemplates($this->getAvailableTemplates(static::TEMPLATE_NAMESPACE));
         $component->setViewProcessors($viewProcessors);
