@@ -82,10 +82,12 @@
     <model name="Contact">
         <field name="name" type="string">
             <option name="label.name" value="label.name"/>
+            <option name="scaffold.search" value="1" />
             <validation name="required"/>
         </field>
         <field name="email" type="email">
             <option name="label.name" value="label.email"/>
+            <option name="scaffold.search" value="1" />
             <validation name="required"/>
         </field>
         <field name="message" type="text">
