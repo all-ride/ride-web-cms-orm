@@ -260,6 +260,7 @@ class ContentOverviewComponent extends AbstractContentComponent {
                 'options' => array(
                     'component' => $filterComponent,
                 ),
+                'order' => true,
                 'label' => $translator->translate('label.filters'),
                 'description' => $translator->translate('label.filters.exposed.description'),
             ));
