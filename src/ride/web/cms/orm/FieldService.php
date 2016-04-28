@@ -122,6 +122,10 @@ class FieldService {
             $options[$fieldName] = $fieldName;
         }
 
+        if (isset($fields['slug'])) {
+            $options['slug'] = 'slug';
+        }
+
         return $options;
     }
 
