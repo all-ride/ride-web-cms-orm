@@ -116,7 +116,7 @@
     "template.orm.overview.cloud": "Cloud",
     "template.orm.overview.list": "List",
     "title.condition": "Condition",
-    "title.contact": "Submissions Contact Form",
+    "title.contact": "Contact Form",
     "title.content.mapper": "Content Mapping",
     "title.formats.data": "Data Formats",
     "title.order": "Order",
@@ -129,4 +129,4 @@
     "widget.orm.detail": "Content Detail",
     "widget.orm.entry": "Content Entry",
     "widget.orm.overview": "Content Overview"
-    }
+}
