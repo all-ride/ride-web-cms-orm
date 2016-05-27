@@ -186,6 +186,7 @@ class OrmTextIO extends AbstractTextIO {
                         $ctaEntry = $ctaModel->createEntry();
                     }
 
+                    $ctaEntry->setEntryState(Entry::STATE_NEW);
                     $ctaEntry->setLabel($action['label']);
                     $ctaEntry->setUrl($action['url']);
                     $suffix = $action['suffix'];
