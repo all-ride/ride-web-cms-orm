@@ -16,7 +16,7 @@ class TextUsageDecorator implements Decorator {
      * @return null
      */
     public function __construct(NodeModel $nodeModel, $locale, $nodeUrl) {
-        $this->nodes = $nodeModel->getNodesForWidget('text');
+        $this->nodes = $nodeModel->getNodesForWidget('text', null, 'draft');
         $this->locale = $locale;
         $this->url = $nodeUrl;
     }
