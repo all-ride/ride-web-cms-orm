@@ -2,7 +2,7 @@
     "name": "ride/web-cms-orm",
     "description": "ORM integration with the CMS application of the Ride framework",
     "license": "MIT",
-    "version": "0.23.20",
+    "version": "0.23.21",
     "authors": [
         {
             "name": "Joris Vandeweerd",
