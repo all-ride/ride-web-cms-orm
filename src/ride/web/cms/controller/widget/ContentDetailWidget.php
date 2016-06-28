@@ -354,6 +354,7 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
     public function getPropertiesPreview() {
         $translator = $this->getTranslator();
         $contentProperties = $this->getContentProperties();
+        $isPermissionGranted = $this->getSecurityManager()->isPermissionGranted('cms.advanced');
 
         $modelName = $contentProperties->getModelName();
         if (!$modelName) {
@@ -368,21 +369,26 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
         }
 
         $recursiveDepth = $contentProperties->getRecursiveDepth();
-        if ($recursiveDepth) {
+        if ($recursiveDepth && $isPermissionGranted) {
             $preview .= '<strong>' . $translator->translate('label.depth.recursive') . '</strong>: ' . $recursiveDepth . '<br />';
         }
 
         $includeUnlocalized = $contentProperties->getIncludeUnlocalized();
-        $preview .= '<strong>' . $translator->translate('label.unlocalized') . '</strong>: ' . $translator->translate($includeUnlocalized ? 'label.yes' : 'label.no') . '<br />';
+        if ($isPermissionGranted) {
+            $preview .= '<strong>' . $translator->translate('label.unlocalized') . '</strong>: ' . $translator->translate($includeUnlocalized ? 'label.yes' : 'label.no') . '<br />';
+        }
 
         $idField = $contentProperties->getIdField();
-        if ($idField && $idField != ModelTable::PRIMARY_KEY) {
+        if ($idField && $idField != ModelTable::PRIMARY_KEY && $isPermissionGranted) {
             $preview .= '<strong>' . $translator->translate('label.field.id') . '</strong>: ' . $idField . '<br />';
         }
 
-        if ($this->getSecurityManager()->isPermissionGranted('widget.template.view')) {
-            $preview .= '<strong>' . $translator->translate('label.template') . '</strong>: ' . $this->getTemplate(static::TEMPLATE_NAMESPACE . '/block') . '<br>';
+        if ($isPermissionGranted) {
+            $template = $this->getTemplate(static::TEMPLATE_NAMESPACE . '/default');
+        } else {
+            $template = $this->getTemplateName($this->getTemplate(static::TEMPLATE_NAMESPACE . '/default'));
         }
+        $preview .= '<strong>' . $translator->translate('label.template') . '</strong>: ' . $template . '<br>';
 
         return $preview;
     }
@@ -393,6 +399,8 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
      */
     public function propertiesAction(FieldService $fieldService) {
         $contentProperties = $this->getContentProperties();
+        $isPermissionGranted = $this->getSecurityManager()->isPermissionGranted('cms.advanced');
+
         if (!$contentProperties->getModelName()) {
             $contentProperties->setTitle(true);
             $contentProperties->setMetaOg(true);
@@ -404,7 +412,7 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
         }
         $viewProcessors = array('' => '---') + $viewProcessors;
 
-        $component = new ContentDetailComponent($fieldService);
+        $component = new ContentDetailComponent($fieldService, $isPermissionGranted);
         $component->setTemplates($this->getAvailableTemplates(static::TEMPLATE_NAMESPACE));
         $component->setViewProcessors($viewProcessors);
 

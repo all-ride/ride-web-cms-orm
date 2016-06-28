@@ -107,6 +107,7 @@ class ContentEntryWidget extends ContentDetailWidget {
     public function getPropertiesPreview() {
         $translator = $this->getTranslator();
         $contentProperties = $this->getContentProperties();
+        $isPermissionGranted = $this->getSecurityManager()->isPermissionGranted('cms.advanced');
 
         $modelName = $contentProperties->getModelName();
         if (!$modelName) {
@@ -122,19 +123,26 @@ class ContentEntryWidget extends ContentDetailWidget {
         }
 
         $recursiveDepth = $contentProperties->getRecursiveDepth();
-        if ($recursiveDepth) {
+        if ($recursiveDepth && $isPermissionGranted) {
             $preview .= '<strong>' . $translator->translate('label.depth.recursive') . '</strong>: ' . $recursiveDepth . '<br />';
         }
 
         $includeUnlocalized = $contentProperties->getIncludeUnlocalized();
-        $preview .= '<strong>' . $translator->translate('label.unlocalized') . '</strong>: ' . $translator->translate($includeUnlocalized ? 'label.yes' : 'label.no') . '<br />';
+        if ($isPermissionGranted) {
+            $preview .= '<strong>' . $translator->translate('label.unlocalized') . '</strong>: ' . $translator->translate($includeUnlocalized ? 'label.yes' : 'label.no') . '<br />';
+        }
 
         $idField = $contentProperties->getIdField();
         if ($idField && $idField != ModelTable::PRIMARY_KEY) {
             $preview .= '<strong>' . $translator->translate('label.field.id') . '</strong>: ' . $idField . '<br />';
         }
 
-        $preview .= '<strong>' . $translator->translate('label.template') . '</strong>: ' . $this->getTemplate(static::TEMPLATE_NAMESPACE . '/block') . '<br>';
+        if ($isPermissionGranted) {
+            $template = $this->getTemplate(static::TEMPLATE_NAMESPACE . '/default');
+        } else {
+            $template = $this->getTemplateName($this->getTemplate(static::TEMPLATE_NAMESPACE . '/default'));
+        }
+        $preview .= '<strong>' . $translator->translate('label.template') . '</strong>: ' . $template . '<br>';
 
         return $preview;
     }
@@ -145,6 +153,7 @@ class ContentEntryWidget extends ContentDetailWidget {
      */
     public function propertiesAction(FieldService $fieldService) {
         $contentProperties = $this->getContentProperties();
+        $isPermissionGranted = $this->getSecurityManager()->isPermissionGranted('cms.advanced');
 
         $viewProcessors = $this->dependencyInjector->getByTag('ride\\web\\cms\\orm\\processor\\ViewProcessor', 'detail');
         foreach ($viewProcessors as $id => $viewProcessors) {
@@ -152,7 +161,7 @@ class ContentEntryWidget extends ContentDetailWidget {
         }
         $viewProcessors = array('' => '---') + $viewProcessors;
 
-        $component = new ContentEntryComponent($fieldService);
+        $component = new ContentEntryComponent($fieldService, $isPermissionGranted);
         $component->setLocale($this->locale);
         $component->setTemplates($this->getAvailableTemplates(static::TEMPLATE_NAMESPACE));
         $component->setViewProcessors($viewProcessors);

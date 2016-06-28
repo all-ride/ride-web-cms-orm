@@ -1116,12 +1116,12 @@ class ContentProperties {
         $this->contentMapper = $properties->getWidgetProperty(self::PROPERTY_MAPPER);
         $this->template = $properties->getWidgetProperty(self::PROPERTY_TEMPLATE);
         $this->viewProcessor = $properties->getWidgetProperty(self::PROPERTY_VIEW_PROCESSOR);
-        $this->contentTitleFormat = $properties->getWidgetProperty(self::PROPERTY_FORMAT_TITLE);
-        $this->contentTeaserFormat = $properties->getWidgetProperty(self::PROPERTY_FORMAT_TEASER);
-        $this->contentImageFormat = $properties->getWidgetProperty(self::PROPERTY_FORMAT_IMAGE);
-        $this->contentDateFormat = $properties->getWidgetProperty(self::PROPERTY_FORMAT_DATE);
+        $this->contentTitleFormat = $properties->getLocalizedWidgetProperty($locale, self::PROPERTY_FORMAT_TITLE);
+        $this->contentTeaserFormat = $properties->getLocalizedWidgetProperty($locale, self::PROPERTY_FORMAT_TEASER);
+        $this->contentImageFormat = $properties->getLocalizedWidgetProperty($locale, self::PROPERTY_FORMAT_IMAGE);
+        $this->contentDateFormat = $properties->getLocalizedWidgetProperty($locale, self::PROPERTY_FORMAT_DATE);
         $this->title = $properties->getLocalizedWidgetProperty($locale, self::PROPERTY_TITLE);
-        $this->emptyResultView = $properties->getWidgetProperty(self::PROPERTY_EMPTY_RESULT_VIEW, true);
+        $this->emptyResultView = $properties->getWidgetProperty(self::PROPERTY_EMPTY_RESULT_VIEW);
         $this->emptyResultMessage = $properties->getLocalizedWidgetProperty($locale, self::PROPERTY_EMPTY_RESULT_MESSAGE);
         $this->showPagination = $properties->getWidgetProperty(self::PROPERTY_PAGINATION_SHOW);
         $this->useAjaxForPagination = $properties->getWidgetProperty(self::PROPERTY_PAGINATION_AJAX);
@@ -1129,9 +1129,9 @@ class ContentProperties {
         $this->moreLabel = $properties->getLocalizedWidgetProperty($locale, self::PROPERTY_MORE_LABEL);
         $this->moreNode = $properties->getLocalizedWidgetProperty($locale, self::PROPERTY_MORE_NODE);
         $this->metaOg = $properties->getWidgetProperty(self::PROPERTY_META_OG);
-        $this->ogTitleFormat = $properties->getWidgetProperty(self::PROPERTY_FORMAT_TITLE_OG);
-        $this->ogTeaserFormat = $properties->getWidgetProperty(self::PROPERTY_FORMAT_TEASER_OG);
-        $this->ogImageFormat = $properties->getWidgetProperty(self::PROPERTY_FORMAT_IMAGE_OG);
+        $this->ogTitleFormat = $properties->getLocalizedWidgetProperty($locale, self::PROPERTY_FORMAT_TITLE_OG);
+        $this->ogTeaserFormat = $properties->getLocalizedWidgetProperty($locale, self::PROPERTY_FORMAT_TEASER_OG);
+        $this->ogImageFormat = $properties->getLocalizedWidgetProperty($locale, self::PROPERTY_FORMAT_IMAGE_OG);
         $this->breadcrumb = $properties->getWidgetProperty(self::PROPERTY_BREADCRUMB);
 
         if ($this->parameters && !is_numeric($this->parameters)) {
@@ -1216,17 +1216,17 @@ class ContentProperties {
         $properties->setWidgetProperty(self::PROPERTY_MAPPER, $this->contentMapper ? $this->contentMapper : null);
         $properties->setWidgetProperty(self::PROPERTY_TEMPLATE, $this->template);
         $properties->setWidgetProperty(self::PROPERTY_VIEW_PROCESSOR, $this->viewProcessor ? $this->viewProcessor : null);
-        $properties->setWidgetProperty(self::PROPERTY_FORMAT_TITLE, $this->contentTitleFormat ? $this->contentTitleFormat : null);
-        $properties->setWidgetProperty(self::PROPERTY_FORMAT_TEASER, $this->contentTeaserFormat ? $this->contentTeaserFormat : null);
-        $properties->setWidgetProperty(self::PROPERTY_FORMAT_IMAGE, $this->contentImageFormat ? $this->contentImageFormat : null);
-        $properties->setWidgetProperty(self::PROPERTY_FORMAT_DATE, $this->contentDateFormat ? $this->contentDateFormat : null);
+        $properties->setLocalizedWidgetProperty($locale, self::PROPERTY_FORMAT_TITLE, $this->contentTitleFormat ? $this->contentTitleFormat : null);
+        $properties->setLocalizedWidgetProperty($locale, self::PROPERTY_FORMAT_TEASER, $this->contentTeaserFormat ? $this->contentTeaserFormat : null);
+        $properties->setLocalizedWidgetProperty($locale, self::PROPERTY_FORMAT_IMAGE, $this->contentImageFormat ? $this->contentImageFormat : null);
+        $properties->setLocalizedWidgetProperty($locale, self::PROPERTY_FORMAT_DATE, $this->contentDateFormat ? $this->contentDateFormat : null);
         $properties->setLocalizedWidgetProperty($locale, self::PROPERTY_TITLE, $this->title);
         $properties->setWidgetProperty(self::PROPERTY_EMPTY_RESULT_VIEW, $this->emptyResultView ? '1' : null);
         $properties->setLocalizedWidgetProperty($locale, self::PROPERTY_EMPTY_RESULT_MESSAGE, $this->emptyResultMessage);
         $properties->setWidgetProperty(self::PROPERTY_META_OG, $this->metaOg ? 1 : null);
-        $properties->setWidgetProperty(self::PROPERTY_FORMAT_TITLE_OG, $this->ogTitleFormat ? $this->ogTitleFormat : null);
-        $properties->setWidgetProperty(self::PROPERTY_FORMAT_TEASER_OG, $this->ogTeaserFormat ? $this->ogTeaserFormat : null);
-        $properties->setWidgetProperty(self::PROPERTY_FORMAT_IMAGE_OG, $this->ogImageFormat ? $this->ogImageFormat : null);
+        $properties->setLocalizedWidgetProperty($locale, self::PROPERTY_FORMAT_TITLE_OG, $this->ogTitleFormat ? $this->ogTitleFormat : null);
+        $properties->setLocalizedWidgetProperty($locale, self::PROPERTY_FORMAT_TEASER_OG, $this->ogTeaserFormat ? $this->ogTeaserFormat : null);
+        $properties->setLocalizedWidgetProperty($locale, self::PROPERTY_FORMAT_IMAGE_OG, $this->ogImageFormat ? $this->ogImageFormat : null);
         $properties->setWidgetProperty(self::PROPERTY_BREADCRUMB, $this->breadcrumb ? '1' : null);
 
         $parameters = $this->parameters;

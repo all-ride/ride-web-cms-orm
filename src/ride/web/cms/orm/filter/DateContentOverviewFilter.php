@@ -135,7 +135,7 @@ class DateContentOverviewFilter extends AbstractContentOverviewFilter {
             if (isset($tokens[2])) { // day
                 $until = mktime(23, 59, 59, $tokens[1], $tokens[2], $tokens[0]);
             } elseif (isset($tokens[1])) { // month
-                $until = mktime(23, 59, 59, $tokens[1], date('t', date(0, 0, 0, $tokens[1], 1, $tokens[0])), $tokens[0]);
+                $until = mktime(23, 59, 59, $tokens[1], date('t', mktime(0, 0, 0, $tokens[1], 1, $tokens[0])), $tokens[0]);
             } elseif (isset($tokens[0])) { // year
                 $until = mktime(23, 59, 59, 12, 31, $tokens[0]);
             }

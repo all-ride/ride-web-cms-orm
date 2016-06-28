@@ -126,31 +126,35 @@ class ContentOverviewComponent extends AbstractContentComponent {
     public function parseGetData(array $data) {
         $result = parent::parseGetData($data);
 
-        $result->setHasSearch($data['search']);
-        $result->setCondition($data['condition']);;
-        $result->setFilters($data['filters']);
-        $result->setOrder($data['order']);
-        $result->setIsPaginationEnabled($data['pagination-enable']);
-        $result->setPaginationRows($data['pagination-rows']);
-        $result->setPaginationOffset($data['pagination-offset']);
-        $result->setWillShowPagination($data['pagination-show']);
-        $result->setUseAjaxForPagination($data['pagination-ajax']);
-        $result->setContentMapper($data['content-mapper']);
-        $result->setTitle($data['title']);
-        $result->setHasEmptyResultView($data['empty-result-view']);
-        $result->setEmptyResultMessage($data['empty-result-message']);
-        $result->setWillShowMoreLink($data['more-show']);
-        $result->setMoreLabel($data['more-label']);
-        $result->setMoreNode($data['more-node']);
+        if ($this->isPermissionGranted) {
+            $result->setHasSearch($data['search']);
+            $result->setCondition($data['condition']);;
+            $result->setFilters($data['filters']);
+            $result->setOrder($data['order']);
+            $result->setIsPaginationEnabled($data['pagination-enable']);
+            $result->setPaginationRows($data['pagination-rows']);
+            $result->setPaginationOffset($data['pagination-offset']);
+            $result->setWillShowPagination($data['pagination-show']);
+            $result->setUseAjaxForPagination($data['pagination-ajax']);
+            $result->setContentMapper($data['content-mapper']);
+            $result->setHasEmptyResultView($data['empty-result-view'] ? true : false);
+            $result->setWillShowMoreLink($data['more-show']);
+            $result->setMoreLabel($data['more-label']);
+            $result->setMoreNode($data['more-node']);
 
-        if ($data['parameters-type'] == self::PARAMETERS_TYPE_NAMED) {
-            $parameters = $data['parameters-name'];
-        } elseif ($data['parameters-type'] == self::PARAMETERS_TYPE_NUMERIC) {
-            $parameters = $data['parameters-number'];
-        } else {
-            $parameters = null;
+            if ($data['parameters-type'] == self::PARAMETERS_TYPE_NAMED) {
+                $parameters = $data['parameters-name'];
+            } elseif ($data['parameters-type'] == self::PARAMETERS_TYPE_NUMERIC) {
+                $parameters = $data['parameters-number'];
+            } else {
+                $parameters = null;
+            }
+            $result->setParameters($parameters);
         }
-        $result->setParameters($parameters);
+        $result->setTitle($data['title']);
+        if ($result->hasEmptyResultView()) {
+            $result->setEmptyResultMessage($data['empty-result-message']);
+        }
 
         return $result;
     }
@@ -180,109 +184,118 @@ class ContentOverviewComponent extends AbstractContentComponent {
         $filterComponent->setFields($this->fieldService->getFields($modelName, true, true, 2));
         $filterComponent->setTypes($this->contentOverviewFilters);
 
-        $builder->addRow('condition', 'text', array(
-            'label' => $translator->translate('label.condition'),
-            'description' => $translator->translate('label.condition.description'),
-        ));
-        $builder->addRow('order-field', 'select', array(
-            'label' => $translator->translate('label.order.field'),
-            'description' => $translator->translate('label.order.field.description'),
-            'options' => $this->fieldService->getFields($modelName, true, false, 1),
-        ));
-        $builder->addRow('order-direction', 'select', array(
-            'label' => $translator->translate('label.order.direction'),
-            'description' => $translator->translate('label.order.direction.description'),
-            'options' => $this->getOrderDirectionOptions($translator),
-        ));
-        $builder->addRow('order', 'text', array(
-            'label' => $translator->translate('label.order'),
-            'description' => $translator->translate('label.order.description'),
-        ));
-        $builder->addRow('pagination-enable', 'option', array(
-            'label' => $translator->translate('label.pagination.enabled'),
-            'description' => $translator->translate('label.pagination.enabled.description'),
-        ));
-        $builder->addRow('pagination-rows', 'select', array(
-            'label' => $translator->translate('label.pagination.rows'),
-            'description' => $translator->translate('label.pagination.rows.description'),
-            'options' => $this->getNumericOptions(1, 50),
-        ));
-        $builder->addRow('pagination-offset', 'select', array(
-            'label' => $translator->translate('label.pagination.offset'),
-            'description' => $translator->translate('label.pagination.offset.description'),
-            'options' => $this->getNumericOptions(0, 50),
-        ));
-        $builder->addRow('pagination-show', 'option', array(
-            'label' => $translator->translate('label.pagination.show'),
-            'description' => $translator->translate('label.pagination.show.description'),
-        ));
-        $builder->addRow('pagination-ajax', 'option', array(
-            'label' => $translator->translate('label.pagination.ajax'),
-            'description' => $translator->translate('label.pagination.ajax.description'),
-        ));
-        $builder->addRow('parameters-type', 'option', array(
-            'label' => $translator->translate('label.parameters.type'),
-            'description' => $translator->translate('label.parameters.type.description'),
-            'options' => $this->getParametersTypeOptions($translator),
-            'default' => 'render'
-        ));
-        $builder->addRow('parameters-number', 'select', array(
-            'label' => $translator->translate('label.parameters.number'),
-            'description' => $translator->translate('label.parameters.number.description'),
-            'options' => $this->getNumericOptions(1, 5),
-        ));
-        $builder->addRow('parameters-name', 'collection', array(
-            'type' => 'string',
-            'label' => $translator->translate('label.parameter'),
-        ));
-        $builder->addRow('content-mapper', 'select', array(
-            'label' => $translator->translate('label.content.mapper.select'),
-            'description' => $translator->translate('label.content.mapper.select.description'),
-            'options' => $this->getContentMapperOptions($modelName),
-        ));
+        if ($this->isPermissionGranted) {
+            $builder->addRow('condition', 'text', array(
+                'label' => $translator->translate('label.condition'),
+                'description' => $translator->translate('label.condition.description'),
+            ));
+            $builder->addRow('order-field', 'select', array(
+                'label' => $translator->translate('label.order.field'),
+                'description' => $translator->translate('label.order.field.description'),
+                'options' => $this->fieldService->getFields($modelName, true, false, 1),
+            ));
+            $builder->addRow('order-direction', 'select', array(
+                'label' => $translator->translate('label.order.direction'),
+                'description' => $translator->translate('label.order.direction.description'),
+                'options' => $this->getOrderDirectionOptions($translator),
+            ));
+            $builder->addRow('order', 'text', array(
+                'label' => $translator->translate('label.order'),
+                'description' => $translator->translate('label.order.description'),
+            ));
+            $builder->addRow('pagination-enable', 'option', array(
+                'label' => $translator->translate('label.pagination.enabled'),
+                'description' => $translator->translate('label.pagination.enabled.description'),
+            ));
+            $builder->addRow('pagination-rows', 'select', array(
+                'label' => $translator->translate('label.pagination.rows'),
+                'description' => $translator->translate('label.pagination.rows.description'),
+                'options' => $this->getNumericOptions(1, 50),
+            ));
+            $builder->addRow('pagination-offset', 'select', array(
+                'label' => $translator->translate('label.pagination.offset'),
+                'description' => $translator->translate('label.pagination.offset.description'),
+                'options' => $this->getNumericOptions(0, 50),
+            ));
+            $builder->addRow('pagination-show', 'option', array(
+                'label' => $translator->translate('label.pagination.show'),
+                'description' => $translator->translate('label.pagination.show.description'),
+            ));
+            $builder->addRow('pagination-ajax', 'option', array(
+                'label' => $translator->translate('label.pagination.ajax'),
+                'description' => $translator->translate('label.pagination.ajax.description'),
+            ));
+            $builder->addRow('parameters-type', 'option', array(
+                'label' => $translator->translate('label.parameters.type'),
+                'description' => $translator->translate('label.parameters.type.description'),
+                'options' => $this->getParametersTypeOptions($translator),
+                'default' => 'render'
+            ));
+            $builder->addRow('parameters-number', 'select', array(
+                'label' => $translator->translate('label.parameters.number'),
+                'description' => $translator->translate('label.parameters.number.description'),
+                'options' => $this->getNumericOptions(1, 5),
+            ));
+            $builder->addRow('parameters-name', 'collection', array(
+                'type' => 'string',
+                'label' => $translator->translate('label.parameter'),
+            ));
+            $builder->addRow('content-mapper', 'select', array(
+                'label' => $translator->translate('label.content.mapper.select'),
+                'description' => $translator->translate('label.content.mapper.select.description'),
+                'options' => $this->getContentMapperOptions($modelName),
+            ));
+        }
         $builder->addRow('title', 'string', array(
             'label' => $translator->translate('label.title'),
             'description' => $translator->translate('label.title.query.description'),
         ));
-        $builder->addRow('search', 'boolean', array(
-            'label' => $translator->translate('label.search.expose'),
-            'description' => $translator->translate('label.search.expose.description'),
-        ));
-        $builder->addRow('filters', 'collection', array(
-            'type' => 'component',
-            'options' => array(
-                'component' => $filterComponent,
-            ),
-            'label' => $translator->translate('label.filters'),
-            'description' => $translator->translate('label.filters.exposed.description'),
-        ));
-        $builder->addRow('empty-result-view', 'boolean', array(
-            'label' => $translator->translate('label.result.empty'),
-            'description' => $translator->translate('label.view.result.empty.description'),
-            'attributes' => array(
-                'data-toggle-dependant' => 'option-empty-result',
-            ),
-        ));
-        $builder->addRow('empty-result-message', 'wysiwyg', array(
-            'label' => $translator->translate('label.message'),
-            'description' => $translator->translate('label.message.result.empty.description'),
-            'attributes' => array(
-                'class' => 'option-empty-result option-empty-result-1',
-            ),
-        ));
-        $builder->addRow('more-show', 'option', array(
-            'label' => $translator->translate('label.more.show'),
-            'description' => $translator->translate('label.more.show.description'),
-        ));
-        $builder->addRow('more-node', 'select', array(
-            'label' => $translator->translate('label.more.node'),
-            'description' => $translator->translate('label.more.node.description'),
-            'options' => $this->nodeOptions,
-        ));
-        $builder->addRow('more-label', 'string', array(
-            'label' => $translator->translate('label.more.label'),
-            'description' => $translator->translate('label.more.label.description'),
-        ));
+        if ($this->isPermissionGranted) {
+            $builder->addRow('search', 'boolean', array(
+                'label' => $translator->translate('label.search.expose'),
+                'description' => $translator->translate('label.search.expose.description'),
+            ));
+            $builder->addRow('filters', 'collection', array(
+                'type' => 'component',
+                'options' => array(
+                    'component' => $filterComponent,
+                ),
+                'order' => true,
+                'label' => $translator->translate('label.filters'),
+                'description' => $translator->translate('label.filters.exposed.description'),
+            ));
+            $builder->addRow('empty-result-view', 'boolean', array(
+                'label' => $translator->translate('label.result.empty'),
+                'description' => $translator->translate('label.view.result.empty.description'),
+                'attributes' => array(
+                    'data-toggle-dependant' => 'option-empty-result',
+                ),
+            ));
+        }
+        if ($data->hasEmptyResultView()) {
+            $builder->addRow('empty-result-message', 'wysiwyg', array(
+                'label' => $translator->translate('label.message'),
+                'description' => $translator->translate('label.message.result.empty.description'),
+                'attributes' => array(
+                    'class' => 'option-empty-result option-empty-result-1',
+                ),
+            ));
+        }
+        if ($this->isPermissionGranted) {
+            $builder->addRow('more-show', 'option', array(
+                'label' => $translator->translate('label.more.show'),
+                'description' => $translator->translate('label.more.show.description'),
+            ));
+            $builder->addRow('more-node', 'select', array(
+                'label' => $translator->translate('label.more.node'),
+                'description' => $translator->translate('label.more.node.description'),
+                'options' => $this->nodeOptions,
+            ));
+            $builder->addRow('more-label', 'string', array(
+                'label' => $translator->translate('label.more.label'),
+                'description' => $translator->translate('label.more.label.description'),
+            ));
+        }
     }
 
     /**

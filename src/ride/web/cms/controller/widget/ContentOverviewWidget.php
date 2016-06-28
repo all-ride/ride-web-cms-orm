@@ -541,6 +541,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
     public function getPropertiesPreview() {
         $translator = $this->getTranslator();
         $contentProperties = $this->getContentProperties();
+        $isPermissionGranted = $this->getSecurityManager()->isPermissionGranted('cms.advanced');
 
         $modelName = $contentProperties->getModelName();
         if (!$modelName) {
@@ -555,38 +556,40 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
         }
 
         $recursiveDepth = $contentProperties->getRecursiveDepth();
-        if ($recursiveDepth) {
+        if ($recursiveDepth && $isPermissionGranted) {
             $preview .= '<strong>' . $translator->translate('label.depth.recursive') . '</strong>: ' . $recursiveDepth . '<br />';
         }
 
         $includeUnlocalized = $contentProperties->getIncludeUnlocalized();
-        if ($includeUnlocalized) {
+        if ($includeUnlocalized && $isPermissionGranted) {
             $preview .= '<strong>' . $translator->translate('label.unlocalized') . '</strong>: ' . $translator->translate('label.yes') . '<br />';
-        } else {
+        } elseif ($isPermissionGranted) {
             $preview .= '<strong>' . $translator->translate('label.unlocalized') . '</strong>: ' . $translator->translate('label.no') . '<br />';
         }
 
         $condition = $contentProperties->getCondition();
-        if ($condition) {
+        if ($condition && $isPermissionGranted) {
             $preview .= '<strong>' . $translator->translate('label.condition') . '</strong>: ' . $condition . '<br />';
         }
 
         $filters = $contentProperties->getFilters();
-        if ($filters) {
+        if ($filters && $isPermissionGranted) {
             foreach ($filters as $index => $filter) {
                 $filters[$index] = '<li>' . $filter['name'] . ': ' . $translator->translate('label.content.overview.filter.' . $filter['type']) . ' (' . $filter['field'] . ')</li>';
             }
 
             $preview .= '<strong>' . $translator->translate('label.filters') . '</strong>: <ul>' . implode('', $filters) . '</ul>';
         }
-        $preview .= '<strong>' . $translator->translate('label.search.expose') . '</strong>: ' . $translator->translate($contentProperties->hasSearch() ? 'label.yes' : 'label.no') . '<br />';
+        if ($isPermissionGranted) {
+            $preview .= '<strong>' . $translator->translate('label.search.expose') . '</strong>: ' . $translator->translate($contentProperties->hasSearch() ? 'label.yes' : 'label.no') . '<br />';
+        }
 
         $order = $contentProperties->getOrder();
         if ($order) {
             $preview .= '<strong>' . $translator->translate('label.order') . '</strong>: ' . $order . '<br />';
         }
 
-        if ($contentProperties->isPaginationEnabled()) {
+        if ($contentProperties->isPaginationEnabled() && $isPermissionGranted) {
             $parameters = array(
                 'rows' => $contentProperties->getPaginationRows(),
                 'offset' => $contentProperties->getPaginationOffset(),
@@ -595,9 +598,13 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             $preview .= $translator->translate('label.pagination.description', $parameters) . '<br />';
         }
 
-        if ($this->getSecurityManager()->isPermissionGranted('widget.template.view')) {
-            $preview .= '<strong>' . $translator->translate('label.template') . '</strong>: ' . $this->getTemplate(static::TEMPLATE_NAMESPACE . '/block') . '<br>';
+        if ($isPermissionGranted) {
+            $template = $this->getTemplate(static::TEMPLATE_NAMESPACE . '/default');
+        } else {
+            $template = $this->getTemplateName($this->getTemplate(static::TEMPLATE_NAMESPACE . '/default'));
         }
+        $preview .= '<strong>' . $translator->translate('label.template') . '</strong>: ' . $template . '<br>';
+
 
         return $preview;
     }
@@ -608,6 +615,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
      */
     public function propertiesAction(NodeModel $nodeModel, FieldService $fieldService, ContentService $contentService) {
         $contentProperties = $this->getContentProperties();
+        $isPermissionGranted = $this->getSecurityManager()->isPermissionGranted('cms.advanced');
         if (!$contentProperties->getModelName()) {
             $contentProperties->setRecursiveDepth(0);
             $contentProperties->setTemplate(static::TEMPLATE_NAMESPACE . '/block');
@@ -627,7 +635,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
         }
         $viewProcessors = array('' => '---') + $viewProcessors;
 
-        $component = new ContentOverviewComponent($fieldService);
+        $component = new ContentOverviewComponent($fieldService, $isPermissionGranted);
         $component->setContentService($contentService);
         $component->setNodeOptions($nodeOptions);
         $component->setContentOverviewFilters($contentOverviewFilters);
