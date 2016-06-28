@@ -130,7 +130,17 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
                         $queryValue = 1;
                     }
 
-                    $queryParameters[$queryParameter] = $queryParameter . '=' . urlencode($queryValue);
+                    if (is_array($queryValue)) {
+                        $queryResult = array();
+
+                        foreach ($queryValue as $value) {
+                            $queryResult[] = $queryParameter . '[]=' . urlencode($value);
+                        }
+
+                        $queryParameters[$queryParameter] = implode('&', $queryResult);
+                    } else {
+                        $queryParameters[$queryParameter] = $queryParameter . '=' . urlencode($queryValue);
+                    }
                 }
 
                 $url = $this->request->getUrl(true);
