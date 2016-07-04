@@ -130,17 +130,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
                         $queryValue = 1;
                     }
 
-                    if (is_array($queryValue)) {
-                        $queryResult = array();
-
-                        foreach ($queryValue as $value) {
-                            $queryResult[] = $queryParameter . '[]=' . urlencode($value);
-                        }
-
-                        $queryParameters[$queryParameter] = implode('&', $queryResult);
-                    } else {
-                        $queryParameters[$queryParameter] = $queryParameter . '=' . urlencode($queryValue);
-                    }
+                    $queryParameters[$queryParameter] = $queryParameter . '=' . urlencode($queryValue);
                 }
 
                 $url = $this->request->getUrl(true);
@@ -293,6 +283,11 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             $defaultQueryParameters = $this->request->getQueryParameters();
 
             foreach ($defaultQueryParameters as $key => $value) {
+
+                //This will remove the page parameter from url when filtering (will send you back to first page)
+                if ($key == "page") {
+                    break;
+                }
                 if (isset($this->filters[$key])) {
                     continue;
                 }
