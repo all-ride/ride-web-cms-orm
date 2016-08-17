@@ -272,7 +272,7 @@ class ContentOverviewComponent extends AbstractContentComponent {
                 ),
             ));
         }
-        if ($data->hasEmptyResultView()) {
+        if ($data->hasEmptyResultView() || $this->isPermissionGranted) {
             $builder->addRow('empty-result-message', 'wysiwyg', array(
                 'label' => $translator->translate('label.message'),
                 'description' => $translator->translate('label.message.result.empty.description'),
