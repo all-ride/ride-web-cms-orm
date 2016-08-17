@@ -268,7 +268,7 @@ class ContentOverviewComponent extends AbstractContentComponent {
                 'label' => $translator->translate('label.result.empty'),
                 'description' => $translator->translate('label.view.result.empty.description'),
                 'attributes' => array(
-                    'data-toggle-dependant' => 'empty-result-message',
+                    'data-toggle-dependant' => 'option-empty-result',
                 ),
             ));
         }
