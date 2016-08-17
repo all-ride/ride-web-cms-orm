@@ -268,11 +268,11 @@ class ContentOverviewComponent extends AbstractContentComponent {
                 'label' => $translator->translate('label.result.empty'),
                 'description' => $translator->translate('label.view.result.empty.description'),
                 'attributes' => array(
-                    'data-toggle-dependant' => 'option-empty-result',
+                    'data-toggle-dependant' => 'empty-result-message',
                 ),
             ));
         }
-        if ($data->hasEmptyResultView()) {
+        if ($data->hasEmptyResultView() || $this->isPermissionGranted) {
             $builder->addRow('empty-result-message', 'wysiwyg', array(
                 'label' => $translator->translate('label.message'),
                 'description' => $translator->translate('label.message.result.empty.description'),
