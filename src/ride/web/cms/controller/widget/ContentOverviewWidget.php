@@ -271,6 +271,8 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
 
             $pagination = new Pagination($pages, $page);
             $pagination->setHref($paginationUrl);
+
+            $this->setContext('pagination', $pagination);
         }
 
         $moreUrl = null;
