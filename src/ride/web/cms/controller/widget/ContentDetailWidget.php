@@ -3,6 +3,7 @@
 namespace ride\web\cms\controller\widget;
 
 use ride\library\cms\content\Content;
+use ride\library\cms\sitemap\SiteMapUrl;
 use ride\library\http\Response;
 use ride\library\i18n\I18n;
 use ride\library\image\exception\ImageException;
@@ -45,6 +46,10 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
      */
     const TEMPLATE_NAMESPACE = 'cms/widget/orm-detail';
 
+    public function __construct(OrmManager $orm) {
+        $this->orm = $orm;
+    }
+
     /**
      * Gets the additional sub routes for this widget
      * @return array|null Array with a route path as key and the action method
@@ -61,6 +66,62 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
         return array(
             new Route('/%id%', array($this, 'indexAction'), 'detail', array('head', 'get', 'post')),
         );
+    }
+
+    /**
+     * Gets all the URL's offered by this widget
+     * @param string $locale Code of the locale
+     * @param string $baseUrl Default base URL
+     * @return array Array with the URL as key and as value. Prefix an URL with
+     * ! to omit it from the site map
+     */
+    public function getSiteMapUrls($locale, $baseUrl) {
+        $urls = array();
+
+        $contentProperties = $this->getContentProperties();
+
+        $modelName = $contentProperties->getModelName();
+        if (!$modelName) {
+            return $urls;
+        }
+
+        $idField = $contentProperties->getIdField();
+        if (!$idField) {
+            return $urls;
+        }
+
+        $this->model = $this->orm->getModel($modelName);
+
+        $hasDateModified = $this->model->getMeta()->hasField('dateModified');
+
+        $reflectionHelper = $this->model->getReflectionHelper();
+        $baseUrl = $baseUrl . $this->properties->getNode()->getRoute($locale);
+
+        $urls['!' . $baseUrl] = '!' . $baseUrl;
+
+        $query = $this->getModelQuery($contentProperties, $locale);
+        $page = 1;
+        $limit = 1000;
+        do {
+            $query->setLimit($limit, ($page - 1) * $limit);
+            $entries = $query->query();
+
+            foreach ($entries as $entry) {
+                $id = $reflectionHelper->getProperty($entry, $idField);
+                $url = $baseUrl . '/' . $id;
+
+                $dateModified = null;
+                if ($hasDateModified) {
+                    $dateModified = $reflectionHelper->getProperty($entry, 'dateModified');
+                }
+
+                $urls[$url] = new SiteMapUrl($url, $dateModified);
+            }
+
+            $page++;
+        } while ($entries);
+
+        return $urls;
     }
 
      /**
@@ -166,7 +227,7 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
      * @param string $id The id of the record to fetch
      * @return \ride\library\orm\query\ModelQuery
      */
-    protected function getModelQuery(ContentProperties $contentProperties, $locale, $id) {
+    protected function getModelQuery(ContentProperties $contentProperties, $locale, $id = null) {
         $query = $this->model->createQuery($locale);
         $query->setRecursiveDepth($contentProperties->getRecursiveDepth());
         $query->setFetchUnlocalized($contentProperties->getIncludeUnlocalized());
@@ -178,8 +239,10 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
             }
         }
 
-        $idField = $contentProperties->getIdField();
-        $query->addCondition('{' . $idField . '} = %1%', $id);
+        if ($id) {
+            $idField = $contentProperties->getIdField();
+            $query->addCondition('{' . $idField . '} = %1%', $id);
+        }
 
         $condition = $contentProperties->getCondition();
         if ($condition) {
