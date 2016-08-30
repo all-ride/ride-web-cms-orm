@@ -294,11 +294,11 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
             $defaultQueryParameters = $this->request->getQueryParameters();
 
             foreach ($defaultQueryParameters as $key => $value) {
-
                 //This will remove the page parameter from url when filtering (will send you back to first page)
                 if ($key == "page") {
                     break;
                 }
+
                 if (isset($this->filters[$key])) {
                     continue;
                 }
