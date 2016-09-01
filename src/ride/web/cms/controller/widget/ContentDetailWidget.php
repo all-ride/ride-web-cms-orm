@@ -193,10 +193,11 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
             return;
         }
 
-        $this->setContext('content', $content);
-
         $url = $this->request->getBaseScript() . $this->properties->getNode()->getRoute($this->locale) . '/' . $id;
         $this->addBreadcrumb($url, $content->title);
+
+        $this->setContext('content', $content);
+        $this->setContext('canonical', $url);
 
         if ($contentProperties->getTitle()) {
             $this->setPageTitle($content->title);
