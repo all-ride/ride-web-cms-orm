@@ -99,9 +99,9 @@ abstract class AbstractContentOverviewFilter implements ContentOverviewFilter {
         $vocabulary = $field->getOption('taxonomy.vocabulary');
         if ($vocabulary && $relationModel->getName() == 'TaxonomyTerm') {
             if (is_numeric($vocabulary)) {
-                $options['condition'] = array('{vocabulary.id} = "' . $vocabulary . '"');
+                $options['condition'] = array(array('{vocabulary.id} = %0%', $vocabulary));
             } else {
-                $options['condition'] = array('{vocabulary.slug} = "' . $vocabulary . '"');
+                $options['condition'] = array(array('{vocabulary.slug} = %0%', $vocabulary));
             }
         }
 
