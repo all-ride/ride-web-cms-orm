@@ -471,7 +471,7 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
         }
 
         $viewProcessors = $this->dependencyInjector->getByTag('ride\\web\\cms\\orm\\processor\\ViewProcessor', 'detail');
-        foreach ($viewProcessors as $id => $viewProcessors) {
+        foreach ($viewProcessors as $id => $viewProcessor) {
             $viewProcessors[$id] = $id;
         }
         $viewProcessors = array('' => '---') + $viewProcessors;
