@@ -105,7 +105,7 @@ abstract class AbstractContentComponent extends AbstractComponent {
             'include-unlocalized' => $data->getIncludeUnlocalized(),
             'parameters-none' => $data->getNoParametersAction(),
             'template' => $data->getTemplate(),
-            'viewProcessor' => $data->getViewProcessor(),
+            'view-processor' => $data->getViewProcessor(),
             'format-title' => $data->getContentTitleFormat(),
             'format-teaser' => $data->getContentTeaserFormat(),
             'format-image' => $data->getContentImageFormat(),

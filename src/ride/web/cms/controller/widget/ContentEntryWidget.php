@@ -156,7 +156,7 @@ class ContentEntryWidget extends ContentDetailWidget {
         $isPermissionGranted = $this->getSecurityManager()->isPermissionGranted('cms.advanced');
 
         $viewProcessors = $this->dependencyInjector->getByTag('ride\\web\\cms\\orm\\processor\\ViewProcessor', 'detail');
-        foreach ($viewProcessors as $id => $viewProcessors) {
+        foreach ($viewProcessors as $id => $viewProcessor) {
             $viewProcessors[$id] = $id;
         }
         $viewProcessors = array('' => '---') + $viewProcessors;
