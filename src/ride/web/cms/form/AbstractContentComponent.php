@@ -7,6 +7,7 @@ use ride\library\form\FormBuilder;
 use ride\library\i18n\translator\Translator;
 
 use ride\web\cms\orm\ContentProperties;
+use ride\web\cms\orm\ContentService;
 use ride\web\cms\orm\FieldService;
 
 /**
@@ -15,10 +16,17 @@ use ride\web\cms\orm\FieldService;
 abstract class AbstractContentComponent extends AbstractComponent {
 
     /**
+     * Instance of the content service
+     * @var \ride\web\cms\orm\ContentService
+     */
+    protected $contentService;
+
+    /**
      * Instance of the field service
      * @var \ride\web\cms\orm\FieldService
      */
     protected $fieldService;
+
     /**
      * Boolean to check is permission is granted or not
      * @var Boolean
@@ -51,6 +59,15 @@ abstract class AbstractContentComponent extends AbstractComponent {
     public function __construct(FieldService $fieldService, $isPermissionGranted) {
         $this->fieldService = $fieldService;
         $this->isPermissionGranted = $isPermissionGranted;
+    }
+
+    /**
+     * Sets the content service to this component
+     * @param \ride\web\cms\orm\ContentService $contentService
+     * @return null
+     */
+    public function setContentService(ContentService $contentService) {
+        $this->contentService = $contentService;
     }
 
     /**
@@ -252,6 +269,21 @@ abstract class AbstractContentComponent extends AbstractComponent {
             ContentProperties::NONE_404 => $translator->translate('label.parameters.none.404'),
             ContentProperties::NONE_IGNORE => $translator->translate('label.parameters.none.ignore'),
         );
+    }
+
+    /**
+     * Gets the options for the content mappers
+     * @return array
+     */
+    protected function getContentMapperOptions($modelName) {
+        $contentMappers = $this->contentService->getContentMappersForType($modelName);
+        foreach ($contentMappers as $id => $contentMapper) {
+            $contentMappers[$id] = $id;
+        }
+
+        $contentMappers = array('' => '---') + $contentMappers;
+
+        return $contentMappers;
     }
 
 }

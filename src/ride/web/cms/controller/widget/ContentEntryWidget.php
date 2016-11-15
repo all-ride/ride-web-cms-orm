@@ -151,7 +151,7 @@ class ContentEntryWidget extends ContentDetailWidget {
      * Action to show and edit the properties of this widget
      * @return null
      */
-    public function propertiesAction(FieldService $fieldService) {
+    public function propertiesAction(FieldService $fieldService, ContentService $contentService) {
         $contentProperties = $this->getContentProperties();
         $isPermissionGranted = $this->getSecurityManager()->isPermissionGranted('cms.advanced');
 
@@ -162,6 +162,7 @@ class ContentEntryWidget extends ContentDetailWidget {
         $viewProcessors = array('' => '---') + $viewProcessors;
 
         $component = new ContentEntryComponent($fieldService, $isPermissionGranted);
+        $component->setContentService($contentService);
         $component->setLocale($this->locale);
         $component->setTemplates($this->getAvailableTemplates(static::TEMPLATE_NAMESPACE));
         $component->setViewProcessors($viewProcessors);
