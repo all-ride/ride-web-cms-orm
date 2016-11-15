@@ -38,6 +38,9 @@ class ContentEntryComponent extends AbstractContentComponent {
         $result['entry'] = $data->getEntryId();
         $result['title'] = $data->getTitle();
         $result['breadcrumb'] = $data->getBreadcrumb();
+        if ($this->isPermissionGranted) {
+            $result['content-mapper'] = $data->getContentMapper();
+        }
 
         return $result;
     }
@@ -52,6 +55,9 @@ class ContentEntryComponent extends AbstractContentComponent {
         $result->setEntryId($data['entry']);
         $result->setTitle($data['title']);
         $result->setBreadcrumb($data['breadcrumb']);
+        if ($this->isPermissionGranted) {
+            $result->setContentMapper($data['content-mapper']);
+        }
 
         return $result;
     }
@@ -91,6 +97,13 @@ class ContentEntryComponent extends AbstractContentComponent {
             'label' => $translator->translate('label.breadcrumb.add'),
             'description' => $translator->translate('label.breadcrumb.add.description'),
         ));
+        if ($this->isPermissionGranted) {
+            $builder->addRow('content-mapper', 'select', array(
+                'label' => $translator->translate('label.content.mapper.select'),
+                'description' => $translator->translate('label.content.mapper.select.description'),
+                'options' => $this->getContentMapperOptions($modelName),
+            ));
+        }
         $builder->addRow('title', 'boolean', array(
             'label' => $translator->translate('label.title'),
             'description' => $translator->translate('label.title.content.description'),

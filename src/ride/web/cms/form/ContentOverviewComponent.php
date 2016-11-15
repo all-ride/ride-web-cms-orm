@@ -33,25 +33,10 @@ class ContentOverviewComponent extends AbstractContentComponent {
     const PARAMETERS_TYPE_NONE = 'none';
 
     /**
-     * Instance of the content service
-     * @var \ride\web\cms\orm\ContentService
-     */
-    protected $contentService;
-
-    /**
      * Array with node options
      * @var array
      */
     protected $nodeOptions;
-
-    /**
-     * Sets the content service to this component
-     * @param \ride\web\cms\orm\ContentService $contentService
-     * @return null
-     */
-    public function setContentService(ContentService $contentService) {
-        $this->contentService = $contentService;
-    }
 
     /**
      * Set the available nodes
@@ -334,21 +319,6 @@ class ContentOverviewComponent extends AbstractContentComponent {
             ContentProperties::NONE_IGNORE => $translator->translate('label.parameters.none.ignore'),
             ContentProperties::NONE_RENDER => $translator->translate('label.parameters.none.render'),
         );
-    }
-
-    /**
-     * Gets the options for the content mappers
-     * @return array
-     */
-    protected function getContentMapperOptions($modelName) {
-        $contentMappers = $this->contentService->getContentMappersForType($modelName);
-        foreach ($contentMappers as $id => $contentMapper) {
-            $contentMappers[$id] = $id;
-        }
-
-        $contentMappers = array('' => '---') + $contentMappers;
-
-        return $contentMappers;
     }
 
 }

@@ -272,6 +272,7 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
 
         $node = $this->properties->getNode();
 
+        $contentMapper = $contentProperties->getContentMapper();
         $titleFormat = $contentProperties->getContentTitleFormat();
         $teaserFormat = $contentProperties->getContentTeaserFormat();
         $imageFormat = $contentProperties->getContentImageFormat();
@@ -461,7 +462,7 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
      * Action to show and edit the properties of this widget
      * @return null
      */
-    public function propertiesAction(FieldService $fieldService) {
+    public function propertiesAction(FieldService $fieldService, ContentService $contentService) {
         $contentProperties = $this->getContentProperties();
         $isPermissionGranted = $this->getSecurityManager()->isPermissionGranted('cms.advanced');
 
