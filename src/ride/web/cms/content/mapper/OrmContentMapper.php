@@ -106,11 +106,11 @@ class OrmContentMapper extends AbstractContentMapper implements SearchableConten
         return $this->getContentFromEntry($entry);
     }
 
-	/**
+    /**
      * Get an entry from the model
      * @param integer|object $entry
      * @return mixed
-	 */
+     */
     protected function getEntry($site, $locale, $recursiveDepth, $fetchUnlocalized, $entry, $idField = null) {
         $entryLocale = null;
         if ($entry instanceof LocalizedEntry) {
@@ -136,8 +136,10 @@ class OrmContentMapper extends AbstractContentMapper implements SearchableConten
             $id = $entry;
         }
 
-        if ($idField == ModelTable::PRIMARY_KEY) {
-            return $this->model->createProxy($id, $locale);
+        if ($idField == ModelTable::PRIMARY_KEY && $fetchUnlocalized) {
+            $entry = $this->model->createProxy($id, $locale);
+
+            return $entry;
         }
 
         $query = $this->model->createQuery($locale);
@@ -157,6 +159,10 @@ class OrmContentMapper extends AbstractContentMapper implements SearchableConten
             }
 
             $entry = $query->queryFirst();
+        }
+
+        if (!$fetchUnlocalized && (!$entry || !$entry->isLocalized())) {
+            return null;
         }
 
         return $entry;
