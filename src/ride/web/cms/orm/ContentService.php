@@ -41,6 +41,12 @@ class ContentService {
     protected $routerService;
 
     /**
+     * Instance of the content facade
+     * @var \ride\library\cms\content\ContentFacade
+     */
+    protected $contentFacade;
+
+    /**
      * Constructs a new field service
      * @param \ride\library\orm\OrmManager $orm
      * @param \ride\library\cms\node\NodeModel $nodeModel
@@ -164,6 +170,10 @@ class ContentService {
         }
 
         if (!$id) {
+            if ($this->contentFacade) {
+                return $this->contentFacade->getContentMapper($type);
+            }
+
             if (isset($this->defaultMappers[$type])) {
                 $id = $this->defaultMappers[$type];
             } else {
