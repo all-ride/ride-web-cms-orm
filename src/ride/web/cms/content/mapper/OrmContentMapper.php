@@ -161,7 +161,7 @@ class OrmContentMapper extends AbstractContentMapper implements SearchableConten
             $entry = $query->queryFirst();
         }
 
-        if (!$fetchUnlocalized && (!$entry || !$entry->isLocalized())) {
+        if (!$fetchUnlocalized && (!$entry || ($entry instanceof LocalizedEntry && !$entry->isLocalized()))) {
             return null;
         }
 
