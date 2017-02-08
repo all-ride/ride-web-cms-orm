@@ -33,7 +33,7 @@ class OrmContentMapperIO implements ContentMapperIO {
      */
     public function getContentMapper($type) {
         try {
-            $contentMapper = $this->contentService->getContentMapper($type);
+            $contentMapper = $this->contentService->getContentMapper($type, false);
         } catch (CmsException $exception) {
             $contentMapper = null;
         }

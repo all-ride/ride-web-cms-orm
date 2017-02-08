@@ -170,7 +170,7 @@ class ContentService {
         }
 
         if (!$id) {
-            if ($this->contentFacade) {
+            if ($id !== false && $this->contentFacade) {
                 return $this->contentFacade->getContentMapper($type);
             }
 
