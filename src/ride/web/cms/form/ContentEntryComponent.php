@@ -77,16 +77,19 @@ class ContentEntryComponent extends AbstractContentComponent {
         $orm = $this->fieldService->getOrm();
 
         $modelName = $data->getModelName();
-        if (!$modelName) {
+        if (!$modelName && $this->isPermissionGranted) {
             $modelOptions = $builder->getRow('model')->getOption('options');
             $modelName = reset($modelOptions);
         }
 
         $entryOptions = array('' => '---');
-        $model = $orm->getModel($modelName);
 
-        $entries = $model->find(null, $this->locale);
-        $entryOptions += $model->getOptionsFromEntries($entries);
+        if ($modelName) {
+            $model = $orm->getModel($modelName);
+
+            $entries = $model->find(null, $this->locale);
+            $entryOptions += $model->getOptionsFromEntries($entries);
+        }
 
         $builder->addRow('entry', 'select', array(
             'label' => $translator->translate('label.entry'),
