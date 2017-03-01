@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - implemented behaviour processors with publish as first implementation
 
+## [1.2.5] - 2017-02-24
+### Added
+- add dateAdded to contact teaser
+
 ## [1.2.4] - 2017-02-16
 ### Updated
 - fixed unconfigured data entry properties with limited permissions
