@@ -95,7 +95,7 @@
         </field>
 
         <format name="title">{name} - {email}</format>
-        <format name="teaser">{message|truncate:250}</format>
+        <format name="teaser">{dateAdded|date:d-m-Y}: {message|truncate:250}</format>
 
         <option name="behaviour.log" value="true"/>
         <option name="behaviour.date" value="true"/>
