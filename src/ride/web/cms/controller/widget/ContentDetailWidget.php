@@ -26,7 +26,7 @@ use \Exception;
 /**
  * Widget to show the detail of a content type
  */
-class ContentDetailWidget extends AbstractWidget implements StyleWidget {
+class ContentDetailWidget extends AbstractOrmWidget implements StyleWidget {
 
     /**
      * Machine name of this widget
@@ -229,16 +229,7 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
      * @return \ride\library\orm\query\ModelQuery
      */
     protected function getModelQuery(ContentProperties $contentProperties, $locale, $id = null) {
-        $query = $this->model->createQuery($locale);
-        $query->setRecursiveDepth($contentProperties->getRecursiveDepth());
-        $query->setFetchUnlocalized($contentProperties->getIncludeUnlocalized());
-
-        $modelFields = $contentProperties->getModelFields();
-        if ($modelFields) {
-            foreach ($modelFields as $fieldName) {
-                $query->addFields('{' . $fieldName . '}');
-            }
-        }
+        $query = $this->createQuery($contentProperties, $locale);
 
         if ($id) {
             $idField = $contentProperties->getIdField();
@@ -248,11 +239,6 @@ class ContentDetailWidget extends AbstractWidget implements StyleWidget {
         $condition = $contentProperties->getCondition();
         if ($condition) {
             $query->addCondition($condition);
-        }
-
-        $order = $contentProperties->getOrder();
-        if ($order) {
-            $query->addOrderBy($order);
         }
 
         return $query;
