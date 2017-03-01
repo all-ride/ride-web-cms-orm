@@ -23,7 +23,7 @@ use \Exception;
 /**
  * Widget to show a overview of a content type
  */
-class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
+class ContentOverviewWidget extends AbstractOrmWidget implements StyleWidget {
 
     /**
      * Machine name of this widget
@@ -48,12 +48,6 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
      * @var string
      */
     const PARAM_PAGE = 'page';
-
-    /**
-     * Instance of the model
-     * @var \ride\library\orm\model\Model
-     */
-    private $model;
 
     /**
      * Formatter for ORM entries
@@ -387,18 +381,7 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
     public function getModelQuery(ContentProperties $contentProperties, $locale, $page = 1, array $arguments, &$isFiltered = null) {
         $isFiltered = false;
 
-        // create query
-        $query = $this->model->createQuery($locale);
-        $query->setRecursiveDepth($contentProperties->getRecursiveDepth());
-        $query->setFetchUnlocalized($contentProperties->getIncludeUnlocalized());
-
-        // select fields
-        $modelFields = $contentProperties->getModelFields();
-        if ($modelFields) {
-            foreach ($modelFields as $fieldName) {
-                $query->addFields('{' . $fieldName . '}');
-            }
-        }
+        $query = $this->createQuery($contentProperties, $locale);
 
         // apply condition
         $condition = $contentProperties->getCondition();
@@ -439,12 +422,6 @@ class ContentOverviewWidget extends AbstractWidget implements StyleWidget {
                 'filter' => $this->dependencyInjector->get('ride\\web\\cms\\orm\\filter\\ContentOverviewFilter', $filter['type']),
             );
             $this->filters[$filter['name']]['value'] = $this->filters[$filter['name']]['filter']->applyQuery($this->model, $query, $filter['field'], $filterValue);
-        }
-
-        // apply order
-        $order = $contentProperties->getOrder();
-        if ($order) {
-            $query->addOrderBy($order);
         }
 
         // apply pagination

@@ -21,6 +21,11 @@
             "id": "orm.entry"
         },
         {
+            "interfaces": "ride\\web\\cms\\orm\\processor\\BehaviourProcessor",
+            "class": "ride\\web\\cms\\orm\\processor\\PublishBehaviourProcessor",
+            "id": "publish"
+        },
+        {
             "interfaces": "ride\\web\\cms\\orm\\processor\\ViewProcessor",
             "class": "ride\\web\\cms\\orm\\processor\\CloudViewProcessor",
             "id": "cloud",
