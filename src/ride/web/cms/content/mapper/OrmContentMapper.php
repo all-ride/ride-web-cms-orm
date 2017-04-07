@@ -239,6 +239,7 @@ class OrmContentMapper extends AbstractContentMapper implements SearchableConten
      */
     public function searchContent($site, $locale, $query, array $queryTokens, $page = null, $pageItems = null) {
         $collection = $this->model->collect(array(
+            'distinct' => true,
             'query' => $query,
             'limit' => $pageItems,
             'page' => $page,

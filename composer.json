@@ -23,7 +23,7 @@
         "ride/lib-http": "^1.0.0",
         "ride/lib-i18n": "^1.0.0",
         "ride/lib-mvc": "^1.0.0",
-        "ride/lib-orm": "^1.0.0",
+        "ride/lib-orm": "^1.1.0",
         "ride/lib-router": "^1.0.0",
         "ride/lib-template": "^1.0.0",
         "ride/lib-validation": "^1.0.0",
