@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+
+## [1.3.2] - 2017-04-11
+### Updated
+- fixed distinct for generic content mapper
+
 ## [1.3.1] - 2017-04-07
 ### Updated
 - content mappers will set distinct to true when performing a search
