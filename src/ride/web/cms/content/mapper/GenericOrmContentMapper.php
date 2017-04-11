@@ -159,6 +159,7 @@ class GenericOrmContentMapper extends OrmContentMapper {
         $dateFormat = $this->arguments[$index][ContentProperties::PROPERTY_FORMAT_DATE];
 
         $collection = $this->model->collect(array(
+            'distinct' => true,
             'query' => $query,
             'limit' => $pageItems,
             'page' => $page,
