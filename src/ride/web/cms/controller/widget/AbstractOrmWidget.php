@@ -68,6 +68,10 @@ class AbstractOrmWidget extends AbstractWidget {
 
             $behaviour = substr($key, 10);
 
+            if (!$this->properties->getWidgetProperty($key, true)) {
+                continue;
+            }
+
             try {
                 $processor = $this->dependencyInjector->get('ride\\web\\cms\\orm\\processor\\BehaviourProcessor', $behaviour);
             } catch (DependencyNotFoundException $exception) {
