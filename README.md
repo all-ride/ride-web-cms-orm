@@ -2,6 +2,15 @@
 
 ORM integration for the CMS of a Ride web application.
 
+## Behaviour Processors
+
+When the selected model in the widget has active behaviours, a behaviour processor can be defined to enable extra logic for that behaviour.
+For example, the publish behaviour has a processor to check on the publish state and publication dates automatically without you having to write the condition.
+
+Behaviour processors are automatically enabled and should be defined in the dependency injector with the `ride\web\cms\orm\processor\BehaviourProcessor` interface.
+
+You can set a widget property to disable a specific behaviour. Eg behaviour.publish = "0".
+
 ## Related Modules
 
 - [ride/app](https://github.com/all-ride/ride-app)
