@@ -100,6 +100,7 @@
         <option name="behaviour.log" value="true"/>
         <option name="behaviour.date" value="true"/>
         <option name="order.field" value="dateAdded" />
+        <option name="order.direction" value="DESC" />
         <option name="scaffold.expose" value="true" />
         <option name="scaffold.menu" value="submissions.menu" />
         <option name="scaffold.title" value="title.contact" />
