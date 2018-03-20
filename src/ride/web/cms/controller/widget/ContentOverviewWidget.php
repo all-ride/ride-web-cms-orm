@@ -53,13 +53,13 @@ class ContentOverviewWidget extends AbstractOrmWidget implements StyleWidget {
      * Formatter for ORM entries
      * @var \ride\library\orm\entry\format\EntryFormatter
      */
-    private $entryFormatter;
+    protected $entryFormatter;
 
     /**
      * Processed filters of the data
      * @var array
      */
-    private $filters;
+    protected $filters;
 
     /**
      * Gets the additional sub routes for this widget
@@ -247,7 +247,7 @@ class ContentOverviewWidget extends AbstractOrmWidget implements StyleWidget {
      * @param array $arguments
      * @return \ride\library\mvc\view\View
      */
-    private function setView(ContentProperties $contentProperties, array $result, $searchForm, $numRows, $pages = 1, $page = 1, array $arguments = array()) {
+    protected function setView(ContentProperties $contentProperties, array $result, $searchForm, $numRows, $pages = 1, $page = 1, array $arguments = array()) {
         $pagination = null;
         if ($contentProperties->willShowPagination()) {
             $query = null;
@@ -352,7 +352,7 @@ class ContentOverviewWidget extends AbstractOrmWidget implements StyleWidget {
      * @param \ride\library\orm\query\ModelQuery $query
      * @return array Array with Content objects
      */
-    private function getResult(ContentProperties $contentProperties, ContentService $contentService, ModelQuery $query) {
+    protected function getResult(ContentProperties $contentProperties, ContentService $contentService, ModelQuery $query) {
         $result = $query->query();
         if (!$result) {
             return $result;
@@ -663,7 +663,7 @@ class ContentOverviewWidget extends AbstractOrmWidget implements StyleWidget {
      * Gets the properties
      * @return \ride\web\cms\orm\ContentProperties
      */
-    private function getContentProperties() {
+    protected function getContentProperties() {
         $contentProperties = new ContentProperties();
         $contentProperties->getFromWidgetProperties($this->properties, $this->locale);
 

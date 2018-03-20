@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.4.2] - 2018-03-20
+### Updated
+- made variables and methods protected in ContentOverviewWidget to open the widget up for extension
+
 ## [1.4.1] - 2017-04-26
 ### Updated
 - order contact submissions by date added descending
