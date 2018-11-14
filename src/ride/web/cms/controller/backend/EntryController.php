@@ -175,7 +175,7 @@ class EntryController extends AbstractNodeTypeController {
             'locales' => $locales,
         ));
         $view->addJavascript('js/cms/orm.js');
-        $view->addInlineJavascript('initializeNodeEntryForm("' . $this->getUrl('api.orm.list', array('model' => '%model%')) . '");');
+        $view->addInlineJavascript('initializeNodeEntryForm("' . $this->getUrl('api.orm.list', array('model' => '%model%')) . '", "' . $locale . '");');
     }
 
     /**
