@@ -109,7 +109,19 @@ class EntryController extends AbstractNodeTypeController {
                 $data = $form->getData();
 
                 if (!$data['name']) {
-                    $data['name'] = $entryOptions[$data['entry']];
+                    unset($entryOptions['']);
+                    if (!$entryOptions) {
+                        $model = $orm->getModel($data['model']);
+
+                        $entries = $model->find(null, $locale);
+                        $entryOptions += $model->getOptionsFromEntries($entries);
+                    }
+
+                    if (isset($entryOptions[$data['entry']])) {
+                        $data['name'] = $entryOptions[$data['entry']];
+                    } else {
+                        $data['name'] = 'Unnamed node';
+                    }
                 }
 
                 $node->setName($locale, $data['name']);
