@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.4.4] - 2018-11-14
+### Updated
+- added locale for js call to retrieve the entries
+
 ## [1.4.3] - 2018-11-14
 ### Updated
 - fixed creation of entry node without entering a name
