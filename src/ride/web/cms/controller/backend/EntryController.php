@@ -38,6 +38,8 @@ class EntryController extends AbstractNodeTypeController {
             'name' => $node->getName($locale),
             'model' => $node->getEntryModel(),
             'entry' => $node->getEntryId(),
+            'description' => $node->getDescription($locale),
+            'image' => $node->getImage($locale),
             'route' => $node->getRoute($locale, false),
             'theme' => $this->getThemeValueFromNode($node),
             'availableLocales' => $this->getLocalesValueFromNode($node),
@@ -83,6 +85,17 @@ class EntryController extends AbstractNodeTypeController {
                 'trim' => array(),
             ),
         ));
+        $form->addRow('description', 'text', array(
+            'label' => $translator->translate('label.description'),
+            'description' => $translator->translate('label.entry.description.description'),
+            'filters' => array(
+                'trim' => array(),
+            ),
+        ));
+        $form->addRow('image', 'image', array(
+            'label' => $translator->translate('label.image'),
+            'description' => $translator->translate('label.image.node.description'),
+        ));
         $form->addRow('theme', 'select', array(
             'label' => $translator->translate('label.theme'),
             'description' => $translator->translate('label.theme.description'),
@@ -125,7 +138,9 @@ class EntryController extends AbstractNodeTypeController {
                 }
 
                 $node->setName($locale, $data['name']);
-                $node->setRoute($locale, $data['route']);
+                $node->setDescription($locale, $data['description'] ? $data['description'] : null);
+                $node->setImage($locale, $data['image'] ? $data['image'] : null);
+                $node->setRoute($locale, $data['route'] ? $data['route'] : null);
                 $node->setTheme($this->getOptionValueFromForm($data['theme']));
                 if ($site->isLocalizationMethodCopy()) {
                     $node->setAvailableLocales($this->getOptionValueFromForm($data['availableLocales']));
