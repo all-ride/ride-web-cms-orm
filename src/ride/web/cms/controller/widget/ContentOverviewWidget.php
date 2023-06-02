@@ -204,7 +204,7 @@ class ContentOverviewWidget extends AbstractOrmWidget implements StyleWidget {
         $this->entryFormatter = $orm->getEntryFormatter();
         $this->model = $orm->getModel($modelName);
 
-        $query = $this->getModelQuery($contentProperties, $this->locale, $page, $arguments, $isFiltered);
+        $query = $this->getModelQuery($contentProperties, $this->locale,  $arguments, $page, $isFiltered);
 
         // apply pagination
         $numRows = -1;
@@ -256,7 +256,9 @@ class ContentOverviewWidget extends AbstractOrmWidget implements StyleWidget {
                 list($paginationUrl, $query) = explode('?', $paginationUrl, 2);
             }
 
-            $query = preg_replace('((\\?)?' . self::PARAM_PAGE . '=([0-9])*(&)?)', '', $query);
+            if ($query) {
+                $query = preg_replace('((\\?)?' . self::PARAM_PAGE . '=([0-9])*(&)?)', '', $query);
+            }
 
             $paginationUrl .= '?' . self::PARAM_PAGE . '='. '%page%';
             if ($query) {
@@ -282,7 +284,10 @@ class ContentOverviewWidget extends AbstractOrmWidget implements StyleWidget {
             }
         }
 
-        $filterUrl = str_replace($this->request->getQuery(), '', $this->request->getUrl());
+        $filterUrl = null;
+        if ($this->request->getQuery()) {
+            $filterUrl = str_replace($this->request->getQuery(), '', $this->request->getUrl());
+        }
         if ($this->filters) {
             $queryString = array();
             $defaultQueryParameters = $this->request->getQueryParameters();
@@ -378,7 +383,7 @@ class ContentOverviewWidget extends AbstractOrmWidget implements StyleWidget {
      * @param array $arguments Arguments for the condition
      * @return \ride\library\orm\query\ModelQuery
      */
-    public function getModelQuery(ContentProperties $contentProperties, $locale, $page = 1, array $arguments, &$isFiltered = null) {
+    public function getModelQuery(ContentProperties $contentProperties, $locale, array $arguments, $page = 1, &$isFiltered = null) {
         $isFiltered = false;
 
         $query = $this->createQuery($contentProperties, $locale);
@@ -649,7 +654,7 @@ class ContentOverviewWidget extends AbstractOrmWidget implements StyleWidget {
         $modelMappersAction = $this->getUrl('api.cms.orm.model.mappers', array('model' => '%model%'));
 
         $view = $this->setTemplateView(static::TEMPLATE_NAMESPACE . '/properties', array(
-        	'form' => $form->getView(),
+            'form' => $form->getView(),
         ));
         $view->addJavascript('js/cms/orm.js');
         $view->addInlineJavascript('joppaContentInitializeOverviewProperties("' . $orderFieldsAction . '", "' . $filterFieldsAction . '", "' . $modelMappersAction . '");');
