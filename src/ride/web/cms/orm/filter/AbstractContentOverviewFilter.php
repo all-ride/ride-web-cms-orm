@@ -46,7 +46,7 @@ abstract class AbstractContentOverviewFilter implements ContentOverviewFilter {
         if (!$query) {
             return $baseUrl;
         } else {
-            if (!strpos($baseUrl, '?')) {
+            if ($baseUrl && !strpos($baseUrl, '?')) {
                 $baseUrl .= '?';
             } else {
                 $baseUrl .= '&';
