@@ -46,6 +46,10 @@ class ContentDetailWidget extends AbstractOrmWidget implements StyleWidget {
      */
     const TEMPLATE_NAMESPACE = 'cms/widget/orm-detail';
 
+    protected $orm;
+
+    protected $entryFormatter;
+
     public function __construct(OrmManager $orm) {
         $this->orm = $orm;
     }

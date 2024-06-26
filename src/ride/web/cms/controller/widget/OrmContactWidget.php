@@ -12,6 +12,7 @@ use ride\library\orm\OrmManager;
 class OrmContactWidget extends ContactWidget {
 
     protected $ormManager;
+    protected GenericModel $model;
 
     public function __construct(GenericModel $model) {
         $this->model = $model;
