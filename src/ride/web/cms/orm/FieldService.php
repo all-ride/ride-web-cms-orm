@@ -13,6 +13,7 @@ use ride\library\orm\OrmManager;
  * Service to query a model for fields
  */
 class FieldService {
+    protected $orm;
 
     /**
      * Constructs a new field service

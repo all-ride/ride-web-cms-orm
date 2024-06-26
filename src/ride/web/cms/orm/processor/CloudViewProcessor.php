@@ -11,6 +11,9 @@ use ride\web\orm\taxonomy\TaxonomyTerm;
  * View processor for a cloud content overview
  */
 class CloudViewProcessor implements ViewProcessor {
+    protected $orm;
+
+    protected $steps;
 
     /**
      * Constructs a new taxonomy term cloud view

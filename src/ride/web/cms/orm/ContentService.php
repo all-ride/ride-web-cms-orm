@@ -46,6 +46,10 @@ class ContentService {
      */
     protected $contentFacade;
 
+    protected $mappers;
+
+    protected $defaultMappers;
+
     /**
      * Constructs a new field service
      * @param \ride\library\orm\OrmManager $orm

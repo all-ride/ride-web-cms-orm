@@ -47,6 +47,7 @@ class GenericOrmContentMapper extends OrmContentMapper {
      * @var \ride\service\RouterService
      */
     protected $routerService;
+    protected $reflectionHelper;
 
     /**
      * Constructs a new content mapper for a detail widget

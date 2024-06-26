@@ -18,6 +18,8 @@ class EntryNodeType extends AbstractNodeType implements NodeType {
      */
     const NAME = 'entry';
 
+    protected $orm;
+
     /**
      * Constructs a new entry
      * @param \ride\library\orm\OrmManager $ormManager Instance of the ORM

@@ -37,6 +37,7 @@ class ContentOverviewComponent extends AbstractContentComponent {
      * @var array
      */
     protected $nodeOptions;
+    protected $contentOverviewFilters;
 
     /**
      * Set the available nodes

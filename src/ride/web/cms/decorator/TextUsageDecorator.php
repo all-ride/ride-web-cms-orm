@@ -10,6 +10,9 @@ use ride\library\html\Anchor;
  * Decorator to show the usage of a text
  */
 class TextUsageDecorator implements Decorator {
+    protected $nodes;
+    protected $locale;
+    protected $url;
 
     /**
      * Constructs a new decorator
